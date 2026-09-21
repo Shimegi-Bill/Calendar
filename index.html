@@ -27,6 +27,15 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   * { box-sizing: border-box; }
+  .gear-btn { width: 32px; height: 32px; border-radius: 999px; border: none; background: #F5F5F3; color: #666; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .set-title { font-size: 13px; font-weight: 700; margin: 4px 0 10px; color: var(--ink); }
+  .set-note { font-size: 12px; color: #999; line-height: 1.5; margin: 0 0 12px; }
+  .set-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+  .set-btn { flex: 1; height: 44px; border-radius: 999px; border: 1.5px solid rgba(228,0,43,0.35); background: #fff; color: var(--red); font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .set-btn.solid { background: var(--red); color: #fff; border-color: var(--red); }
+  .set-btn:active { opacity: .8; }
+  .set-divider { height: 1px; background: var(--line); margin: 4px 0 18px; }
+  .gs-status { font-size: 12px; color: #888; text-align: center; margin-top: -8px; }
   html { touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   input, select, textarea { font-size: 16px !important; }
   .pick input { font-size: 16px; }
@@ -53,7 +62,7 @@
   .week-row { position: relative; border-bottom: 1px solid var(--line); }
   .week-days { display: grid; grid-template-columns: repeat(7,1fr); position: relative; z-index: 1; }
   .day-cell { height: 28px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
-  .hol-label { font-size: 8.5px; line-height: 1.2; color: var(--red); font-weight: 600; padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .hol-label { font-size: 8.5px; line-height: 1.1; color: var(--red); font-weight: 600; padding-top: 1px; text-align: right; word-break: break-all; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-width: 0; max-width: 2.3em; }
   .day-cell.selected { background: var(--red-light); }
   .daynum { width: 22px; height: 22px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
   .daynum.today { background: var(--red); color: #fff; font-weight: 700; }
@@ -152,7 +161,7 @@
   <div class="topbar">
     <div class="topbar-row">
       <div class="brand"><div class="logo">Y!</div><h1>日曆</h1></div>
-      <button class="today-btn" id="todayBtn">今日</button>
+      <div style="display:flex;gap:8px;align-items:center;"><button class="today-btn" id="todayBtn">今日</button><button class="gear-btn" id="gearBtn" aria-label="設定">⚙︎</button></div>
     </div>
     <div class="nav">
       <button class="arrow" id="prevBtn">&#8249;</button>
@@ -209,6 +218,33 @@
   </div>
 </div>
 
+<div class="overlay" id="setOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <h2>備份</h2>
+      <button class="close-btn" id="setCloseBtn">&times;</button>
+    </div>
+    <div class="set-title">備份檔案</div>
+    <p class="set-note">匯出會將全部行程存做一個檔案,可以存去「檔案」App 或者傳俾自己。匯入會用備份檔取代手機上嘅所有行程。</p>
+    <div class="set-btns">
+      <button class="set-btn" id="exportBtn">匯出備份</button>
+      <button class="set-btn" id="importBtn">匯入備份</button>
+      <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+    </div>
+    <div class="set-divider"></div>
+    <div class="set-title">Google Sheets 自動備份</div>
+    <p class="set-note">填入 Google Apps Script 嘅網址同密碼。開啟自動備份後,每次新增、修改或刪除行程都會自動備份。</p>
+    <label class="field"><span>Web App 網址</span><input type="text" id="gsUrl" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" autocapitalize="off"></label>
+    <label class="field"><span>密碼</span><input type="text" id="gsToken" placeholder="同 Apps Script 入面嘅 TOKEN 一樣" autocomplete="off" autocapitalize="off"></label>
+    <div class="allday-row"><span>自動備份</span><label class="switch"><input type="checkbox" id="gsAuto"><span class="slider"></span></label></div>
+    <div class="set-btns">
+      <button class="set-btn solid" id="gsBackupBtn">立即備份</button>
+      <button class="set-btn" id="gsRestoreBtn">從 Sheets 還原</button>
+    </div>
+    <p class="gs-status" id="gsStatus"></p>
+  </div>
+</div>
+
 <div class="overlay" id="pickerOverlay">
   <div class="sheet picker-sheet">
     <div class="sheet-header">
@@ -258,6 +294,7 @@ function loadEvents() {
 }
 function saveEvents() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); } catch (e) {}
+  if (typeof scheduleGsBackup === "function") scheduleGsBackup();
 }
 let events = loadEvents();
 
@@ -553,7 +590,6 @@ function openModal(ev) {
   updateSaveState();
 
   document.getElementById("overlay").classList.add("show");
-  document.getElementById("titleInput").focus();
 }
 
 function closeModal() { document.getElementById("overlay").classList.remove("show"); }
@@ -666,6 +702,103 @@ document.getElementById("pickerConfirmBtn").onclick = () => {
   document.getElementById("pickerOverlay").classList.remove("show");
   render();
 };
+
+/* ---------- 備份 ---------- */
+function isValidEvents(arr) {
+  return Array.isArray(arr) && arr.every(e => e && typeof e.title === "string" && /^\d{4}-\d{2}-\d{2}$/.test(e.startDate || ""));
+}
+function replaceEvents(arr) {
+  events = arr.map(e => ({ ...e, endDate: e.endDate || e.startDate, id: e.id || ("ev-" + Math.random().toString(36).slice(2)) }));
+  saveEvents();
+  render();
+}
+async function exportBackup() {
+  const data = JSON.stringify({ app: "hk-calendar", version: 1, exportedAt: new Date().toISOString(), events }, null, 2);
+  const name = `日曆備份-${dateKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())}.json`;
+  const file = new File([data], name, { type: "application/json" });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: name }); return; }
+    catch (e) { if (e.name === "AbortError") return; }
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(file); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+document.getElementById("exportBtn").onclick = exportBackup;
+document.getElementById("importBtn").onclick = () => document.getElementById("importFile").click();
+document.getElementById("importFile").onchange = async (e) => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  try {
+    const obj = JSON.parse(await f.text());
+    const arr = Array.isArray(obj) ? obj : obj.events;
+    if (!isValidEvents(arr)) throw new Error();
+    if (!confirm(`備份檔有 ${arr.length} 個行程,會取代手機上而家嘅 ${events.length} 個行程。確定匯入?`)) return;
+    replaceEvents(arr);
+    alert(`已匯入 ${arr.length} 個行程`);
+  } catch (err) { alert("匯入失敗:唔係有效嘅日曆備份檔"); }
+};
+
+/* ---------- Google Sheets 自動備份 ---------- */
+const GS_KEY = "hk-calendar-gsheet-v1";
+let gs = (() => { try { return JSON.parse(localStorage.getItem(GS_KEY)) || {}; } catch (e) { return {}; } })();
+function saveGs() { try { localStorage.setItem(GS_KEY, JSON.stringify(gs)); } catch (e) {} }
+function setGsStatus(msg) {
+  const el = document.getElementById("gsStatus");
+  if (msg) { el.textContent = msg; return; }
+  if (gs.last) {
+    const d = new Date(gs.last);
+    el.textContent = `上次備份:${d.getMonth()+1}月${d.getDate()}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } else el.textContent = "未曾備份";
+}
+let gsTimer = null;
+function scheduleGsBackup() {
+  if (!gs.auto || !gs.url) return;
+  clearTimeout(gsTimer);
+  gsTimer = setTimeout(() => gsBackup(true), 2000);
+}
+async function gsBackup(silent) {
+  if (!gs.url) { if (!silent) alert("請先填寫 Web App 網址"); return; }
+  setGsStatus("備份中…");
+  try {
+    const res = await fetch(gs.url, { method: "POST", body: JSON.stringify({ token: gs.token || "", events }) });
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error === "token" ? "密碼唔啱" : (j.error || "未知錯誤"));
+    gs.last = new Date().toISOString(); saveGs(); setGsStatus();
+  } catch (e) {
+    setGsStatus("備份失敗:" + (e.message || "網絡錯誤"));
+  }
+}
+async function gsRestore() {
+  if (!gs.url) { alert("請先填寫 Web App 網址"); return; }
+  try {
+    setGsStatus("讀取中…");
+    const res = await fetch(gs.url + "?token=" + encodeURIComponent(gs.token || ""));
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error === "token" ? "密碼唔啱" : (j.error || "未知錯誤"));
+    if (!isValidEvents(j.events)) throw new Error("備份資料有問題");
+    setGsStatus();
+    if (!confirm(`Google Sheets 最新備份有 ${j.events.length} 個行程,會取代手機上而家嘅 ${events.length} 個行程。確定還原?`)) return;
+    replaceEvents(j.events);
+    alert(`已還原 ${j.events.length} 個行程`);
+  } catch (e) {
+    setGsStatus("還原失敗:" + (e.message || "網絡錯誤"));
+  }
+}
+const gsUrlEl = document.getElementById("gsUrl"), gsTokenEl = document.getElementById("gsToken"), gsAutoEl = document.getElementById("gsAuto");
+gsUrlEl.oninput = () => { gs.url = gsUrlEl.value.trim(); saveGs(); };
+gsTokenEl.oninput = () => { gs.token = gsTokenEl.value.trim(); saveGs(); };
+gsAutoEl.onchange = () => { gs.auto = gsAutoEl.checked; saveGs(); if (gs.auto) gsBackup(true); };
+document.getElementById("gsBackupBtn").onclick = () => gsBackup(false);
+document.getElementById("gsRestoreBtn").onclick = gsRestore;
+document.getElementById("gearBtn").onclick = () => {
+  gsUrlEl.value = gs.url || ""; gsTokenEl.value = gs.token || ""; gsAutoEl.checked = !!gs.auto;
+  setGsStatus();
+  document.getElementById("setOverlay").classList.add("show");
+};
+document.getElementById("setCloseBtn").onclick = () => document.getElementById("setOverlay").classList.remove("show");
+document.getElementById("setOverlay").onclick = (e) => { if (e.target.id === "setOverlay") document.getElementById("setOverlay").classList.remove("show"); };
 
 // 禁止雙指放大
 document.addEventListener("gesturestart", e => e.preventDefault());
