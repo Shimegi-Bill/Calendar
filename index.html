@@ -27,6 +27,20 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   * { box-sizing: border-box; }
+  html, body, .sheet { scrollbar-width: none; -ms-overflow-style: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar, .sheet::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  .field-label { font-size: 12px; font-weight: 500; color: #666; margin-bottom: 6px; display: block; }
+  .seg { display: flex; background: #F5F5F3; border-radius: 10px; padding: 3px; gap: 3px; margin-bottom: 14px; }
+  .seg button { flex: 1; height: 34px; border: none; background: none; border-radius: 8px; font-size: 13px; color: #666; font-family: inherit; cursor: pointer; }
+  .seg button.on { background: #fff; color: var(--red); font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .wd-pick { display: flex; justify-content: space-between; margin-bottom: 14px; }
+  .wd-pick button { width: 38px; height: 38px; border-radius: 999px; border: none; background: #F5F5F3; color: #555; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .wd-pick button.on { background: var(--red); color: #fff; }
+  .rep-note { font-size: 12px; color: #999; margin: -6px 0 14px; }
+  .act-btn { width: 100%; height: 48px; border-radius: 12px; border: none; background: #F5F5F3; font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 10px; font-family: inherit; cursor: pointer; }
+  .act-btn.danger { color: var(--red); }
+  .rep-mark { font-size: 11px; color: #aaa; margin-left: 4px; }
+  .version { text-align: center; font-size: 11px; color: #bbb; margin: 18px 0 0; }
   .gear-btn { width: 32px; height: 32px; border-radius: 999px; border: none; background: #F5F5F3; color: #666; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .set-title { font-size: 13px; font-weight: 700; margin: 4px 0 10px; color: var(--ink); }
   .set-note { font-size: 12px; color: #999; line-height: 1.5; margin: 0 0 12px; }
@@ -191,9 +205,9 @@
       <input type="text" id="titleInput" placeholder="輸入行程名稱">
     </label>
     <div class="date-row">
-      <div class="field-half"><span>開始日期</span><div class="pick"><div class="pick-text" data-for="startInput"></div><input type="date" id="startInput"></div></div>
+      <div class="field-half"><span>開始日期</span><div class="pick"><div class="pick-text" data-for="startInput"></div><input type="date" id="startInput" min="1990-01-01" max="2110-12-31"></div></div>
       <div class="date-sep">至</div>
-      <div class="field-half"><span>結束日期</span><div class="pick"><div class="pick-text" data-for="endInput"></div><input type="date" id="endInput"></div></div>
+      <div class="field-half"><span>結束日期</span><div class="pick"><div class="pick-text" data-for="endInput"></div><input type="date" id="endInput" min="1990-01-01" max="2110-12-31"></div></div>
     </div>
     <div class="allday-row">
       <span>全天</span>
@@ -203,6 +217,14 @@
       <div class="field-half"><span>開始時間</span><div class="pick"><div class="pick-text" data-for="timeInput"></div><input type="time" id="timeInput"></div></div>
       <div class="date-sep">至</div>
       <div class="field-half"><span>結束時間</span><div class="pick"><div class="pick-text" data-for="endTimeInput"></div><input type="time" id="endTimeInput"></div></div>
+    </div>
+    <span class="field-label">重複</span>
+    <div class="seg" id="repSeg"><button data-v="none">不重複</button><button data-v="weekly">每星期</button><button data-v="monthly">每月</button><button data-v="yearly">每年</button></div>
+    <div id="repOpts">
+      <div id="wdWrap"><span class="field-label">喺星期幾重複</span><div class="wd-pick" id="wdPick"></div></div>
+      <span class="field-label">重複期間</span>
+      <div class="seg" id="durSeg"><button data-v="1m">一個月</button><button data-v="1y">一年</button><button data-v="forever">不設限</button></div>
+      <p class="rep-note" id="repNote"></p>
     </div>
     <div>
       <span style="font-size:12px;font-weight:500;color:#666;margin-bottom:8px;display:block;">顏色</span>
@@ -215,6 +237,19 @@
     <div class="sheet-actions" id="sheetActions">
       <button class="save-btn" id="saveBtn">新增</button>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="delOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <h2>刪除重複行程</h2>
+      <button class="close-btn" id="delCloseBtn">&times;</button>
+    </div>
+    <p class="set-note" id="delNote"></p>
+    <button class="act-btn danger" id="delOneBtn">只刪除呢一次</button>
+    <button class="act-btn danger" id="delFutureBtn">刪除呢日及之後嘅重複行程</button>
+    <button class="act-btn" id="delCancelBtn">取消</button>
   </div>
 </div>
 
@@ -242,6 +277,7 @@
       <button class="set-btn" id="gsRestoreBtn">從 Sheets 還原</button>
     </div>
     <p class="gs-status" id="gsStatus"></p>
+    <p class="version">版本 2026.09.21-c</p>
   </div>
 </div>
 
@@ -261,7 +297,7 @@
 </div>
 
 <script>
-const WEEKDAYS_JP = ["日","月","火","水","木","金","土"];
+const WEEKDAYS_JP = ["日","一","二","三","四","五","六"];
 const COLORS = ["#E4002B","#FF8C00","#2E7CD6","#3AA76D","#8B5FBF"];
 const ITEM_H = 44;
 const pad = n => String(n).padStart(2,"0");
@@ -326,13 +362,225 @@ let editingId = null;
 let formColor = COLORS[0];
 let formIcon = "";
 const MAX_TRACKS = 3;
-const HK_HOLIDAYS = {
-  "2026-01-01":"元旦", "2026-02-17":"年初一", "2026-02-18":"年初二", "2026-02-19":"年初三",
-  "2026-04-03":"受難節", "2026-04-04":"受難翌日", "2026-04-05":"清明節", "2026-04-06":"復活節",
-  "2026-04-07":"補假", "2026-05-01":"勞動節", "2026-05-24":"佛誕", "2026-05-25":"佛誕補假",
-  "2026-06-19":"端午節", "2026-07-01":"回歸紀念", "2026-09-26":"中秋翌日", "2026-10-01":"國慶日",
-  "2026-10-18":"重陽節", "2026-10-19":"重陽補假", "2026-12-25":"聖誕節", "2026-12-26":"聖誕翌日"
-};
+/* ===== 香港公眾假期計算(農曆以天文算法計算,UTC+8) ===== */
+const HOL = (() => {
+  const RAD = Math.PI / 180;
+  const sin = d => Math.sin(d * RAD);
+  const norm = d => ((d % 360) + 360) % 360;
+  function deltaT(y) {
+    const t = y - 2000;
+    if (y < 2005) return 63.86 + 0.3345 * t;
+    if (y < 2050) return 62.92 + 0.32217 * t + 0.005589 * t * t;
+    const u = (y - 1820) / 100;
+    return -20 + 32 * u * u - 0.5628 * (2150 - y);
+  }
+  // Meeus 第49章:新月
+  function newMoonJDE(k) {
+    const T = k / 1236.85, T2 = T*T, T3 = T2*T, T4 = T3*T;
+    let jde = 2451550.09766 + 29.530588861*k + 0.00015437*T2 - 0.00000015*T3 + 0.00000000073*T4;
+    const E = 1 - 0.002516*T - 0.0000074*T2;
+    const M = 2.5534 + 29.1053567*k - 0.0000014*T2 - 0.00000011*T3;
+    const Mp = 201.5643 + 385.81693528*k + 0.0107582*T2 + 0.00001238*T3 - 0.000000058*T4;
+    const F = 160.7108 + 390.67050284*k - 0.0016118*T2 - 0.00000227*T3 + 0.000000011*T4;
+    const Om = 124.7746 - 1.56375588*k + 0.0020672*T2 + 0.00000215*T3;
+    jde += -0.4072*sin(Mp) + 0.17241*E*sin(M) + 0.01608*sin(2*Mp) + 0.01039*sin(2*F)
+      + 0.00739*E*sin(Mp-M) - 0.00514*E*sin(Mp+M) + 0.00208*E*E*sin(2*M) - 0.00111*sin(Mp-2*F)
+      - 0.00057*sin(Mp+2*F) + 0.00056*E*sin(2*Mp+M) - 0.00042*sin(3*Mp) + 0.00042*E*sin(M+2*F)
+      + 0.00038*E*sin(M-2*F) - 0.00024*E*sin(2*Mp-M) - 0.00017*sin(Om) - 0.00007*sin(Mp+2*M)
+      + 0.00004*sin(2*Mp-2*F) + 0.00004*sin(3*M) + 0.00003*sin(Mp+M-2*F) + 0.00003*sin(2*Mp+2*F)
+      - 0.00003*sin(Mp+M+2*F) + 0.00003*sin(Mp-M+2*F) - 0.00002*sin(Mp-M-2*F) - 0.00002*sin(3*Mp+M)
+      + 0.00002*sin(4*Mp);
+    const A = [[299.77,0.107408,0.000325],[251.88,0.016321,0.000165],[251.83,26.651886,0.000164],
+      [349.42,36.412478,0.000126],[84.66,18.206239,0.00011],[141.74,53.303771,0.000062],
+      [207.14,2.453732,0.00006],[154.84,7.30686,0.000056],[34.52,27.261239,0.000047],
+      [207.19,0.121824,0.000042],[291.34,1.844379,0.00004],[161.72,24.198154,0.000037],
+      [239.56,25.513099,0.000035],[331.55,3.592518,0.000023]];
+    A.forEach(([a,b,c], i) => { let arg = a + b*k; if (i === 0) arg -= 0.009173*T2; jde += c*sin(arg); });
+    return jde;
+  }
+  // Meeus 第25章:太陽視黃經
+  function sunLon(jde) {
+    const T = (jde - 2451545) / 36525;
+    const L0 = 280.46646 + 36000.76983*T + 0.0003032*T*T;
+    const M = 357.52911 + 35999.05029*T - 0.0001537*T*T;
+    const C = (1.914602 - 0.004817*T - 0.000014*T*T)*sin(M) + (0.019993 - 0.000101*T)*sin(2*M) + 0.000289*sin(3*M);
+    const Om = 125.04 - 1934.136*T;
+    return norm(L0 + C - 0.00569 - 0.00478*sin(Om));
+  }
+  function termJDE(year, lon) { // 某年太陽到達某黃經嘅時刻
+    let jde = julian(year, 3, 20) + (norm(lon) / 360) * 365.2422;
+    for (let i = 0; i < 50; i++) {
+      let d = norm(lon - sunLon(jde)); if (d > 180) d -= 360;
+      jde += d * 365.2422 / 360;
+      if (Math.abs(d) < 1e-6) break;
+    }
+    return jde;
+  }
+  function julian(y, m, d) { // 格里曆 → JD(當日 0h)
+    if (m <= 2) { y -= 1; m += 12; }
+    const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
+    return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5;
+  }
+  const localDay = jde => Math.floor(jde - deltaT(2000 + (jde - 2451545) / 365.25) / 86400 + 0.5 + 8/24); // 香港時間日序
+  function dayToDate(n) { // 日序 → [y,m,d]
+    const Z = n, alpha = Math.floor((Z - 1867216.25) / 36524.25);
+    const A = Z + 1 + alpha - Math.floor(alpha / 4), B = A + 1524;
+    const C = Math.floor((B - 122.1) / 365.25), D = Math.floor(365.25 * C), E = Math.floor((B - D) / 30.6001);
+    const d = B - D - Math.floor(30.6001 * E), m = E < 14 ? E - 1 : E - 13, y = m > 2 ? C - 4716 : C - 4715;
+    return [y, m, d];
+  }
+  const dateToDay = (y, m, d) => julian(y, m, d) + 0.5;
+  function nmList(fromDay, count) {
+    let k = Math.floor((fromDay - 2451550.6) / 29.530588861) - 1;
+    const out = [];
+    while (out.length < count) { const d = localDay(newMoonJDE(k)); if (d >= fromDay - 31) out.push(d); k++; }
+    return out;
+  }
+  // 返回農曆年 Y(正月至十二月)每月初一嘅日序,{month, leap, day}
+  const cache = {};
+  function lunarYear(Y) {
+    if (cache[Y]) return cache[Y];
+    const ws1 = localDay(termJDE(Y - 1, 270)), ws2 = localDay(termJDE(Y, 270));
+    const nms = nmList(ws1, 20);
+    const i1 = nms.filter(d => d <= ws1).length - 1, i2 = nms.filter(d => d <= ws2).length - 1;
+    const ws3 = localDay(termJDE(Y + 1, 270));
+    const i3 = nms.filter(d => d <= ws3).length - 1;
+    const hasZhongqi = (a, b) => { // 月份 [a,b) 有冇中氣
+      for (let lon = 0; lon < 360; lon += 30) {
+        for (const yy of [dayToDate(a)[0] - 1, dayToDate(a)[0], dayToDate(a)[0] + 1]) {
+          const t = localDay(termJDE(yy, lon)); if (t >= a && t < b) return true;
+        }
+      }
+      return false;
+    };
+    const months = [];
+    const label = (start, end) => { // 由某個十一月開始編號
+      const leapYear = (end - start) === 13; let num = 11, leapUsed = false;
+      for (let i = start; i < end; i++) {
+        let leap = false;
+        if (i > start && leapYear && !leapUsed && !hasZhongqi(nms[i], nms[i + 1])) { leap = true; leapUsed = true; num--; }
+        months.push({ month: ((num - 1) % 12) + 1, leap, day: nms[i], seg: start });
+        num++;
+      }
+    };
+    label(i1, i2); label(i2, i3);
+    // 正月初一 = 第一段內第一個 month==1 非閏
+    const res = [];
+    let started = false;
+    for (const m of months) {
+      if (!started && m.month === 1 && !m.leap && m.seg === i1) started = true;
+      if (started) { res.push(m); if (res.length > 1 && m.month === 1 && !m.leap && m !== res[0]) { res.pop(); break; } }
+    }
+    return (cache[Y] = res);
+  }
+  function lunarToDay(Y, month, day) {
+    const m = lunarYear(Y).find(x => x.month === month && !x.leap);
+    return m.day + day - 1;
+  }
+  function easter(y) {
+    const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4;
+    const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19*a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4), k = c % 4, l = (32 + 2*e + 2*i - h - k) % 7;
+    const m = Math.floor((a + 11*h + 22*l) / 451), mo = Math.floor((h + l - 7*m + 114) / 31), da = ((h + l - 7*m + 114) % 31) + 1;
+    return dateToDay(y, mo, da);
+  }
+  const wd = n => (n + 1) % 7; // 0=星期日
+  const key = n => { const [y,m,d] = dayToDate(n); return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`; };
+
+  function compute(Y) {
+    const out = {};           // key -> name
+    const off = new Set();    // 已經係假期嘅日子
+    const base = [];          // [日序, 名稱, 補假名]
+    const cny = lunarToDay(Y, 1, 1);
+    const E = easter(Y);
+    base.push([dateToDay(Y,1,1), "元旦", "元旦補假"]);
+    base.push([E - 2, "受難節", "補假"], [E - 1, "受難翌日", "補假"], [E + 1, "復活節", "補假"]);
+    base.push([localDay(termJDE(Y, 15)), "清明節", "清明補假"]);
+    base.push([dateToDay(Y,5,1), "勞動節", "勞動補假"]);
+    base.push([lunarToDay(Y,4,8), "佛誕", "佛誕補假"]);
+    base.push([lunarToDay(Y,5,5), "端午節", "端午補假"]);
+    base.push([dateToDay(Y,7,1), "回歸紀念", "回歸補假"]);
+    base.push([dateToDay(Y,10,1), "國慶日", "國慶補假"]);
+    base.push([lunarToDay(Y,9,9), "重陽節", "重陽補假"]);
+    // 農曆新年
+    ["年初一","年初二","年初三"].forEach((n, i) => { out[key(cny+i)] = n; off.add(cny+i); });
+    if ([0,1,2].some(i => wd(cny+i) === 0)) { out[key(cny+3)] = "年初四"; off.add(cny+3); }
+    // 聖誕
+    const x25 = dateToDay(Y,12,25);
+    out[key(x25)] = "聖誕節"; out[key(x25+1)] = "聖誕翌日";
+    if (wd(x25) === 0) { off.add(x25+1); off.add(x25+2); out[key(x25+2)] = "聖誕補假"; }
+    else if (wd(x25+1) === 0) { off.add(x25); off.add(x25+2); out[key(x25+2)] = "聖誕翌日"; }
+    else { off.add(x25); off.add(x25+1); }
+    // 其他
+    base.sort((a, b) => a[0] - b[0]);
+    for (const [d, name, sub] of base) {
+      if (!out[key(d)]) out[key(d)] = name;
+      if (wd(d) === 0 || off.has(d)) {
+        let n = d + 1; while (wd(n) === 0 || off.has(n) || base.some(b => b[0] === n)) n++;
+        off.add(n); if (!out[key(n)]) out[key(n)] = sub;
+      } else off.add(d);
+    }
+    // 中秋節翌日;如遇星期日或其他假期,順延至下一個非假期日
+    const ma = lunarToDay(Y, 8, 15);
+    let n = ma + 1;
+    if (wd(n) === 0 || off.has(n)) { n++; while (wd(n) === 0 || off.has(n)) n++; out[key(n)] = "中秋補假"; }
+    else out[key(n)] = "中秋翌日";
+    off.add(n);
+    return out;
+  }
+  return { compute, lunarToDay, dayToDate, localDay, termJDE, key };
+})();
+
+const HOL_CACHE_KEY = "hk-calendar-holidays-1823";
+let officialHol = (() => { try { return JSON.parse(localStorage.getItem(HOL_CACHE_KEY)) || null; } catch (e) { return null; } })();
+const holYearCache = {};
+function shortHolName(n) {
+  const rules = [[/中秋節翌日的翌日|中秋.*翌日.*翌日/,"中秋補假"],[/中秋節翌日/,"中秋翌日"],[/中秋/,"中秋節"],
+    [/年初一/,"年初一"],[/年初二/,"年初二"],[/年初三/,"年初三"],[/年初四/,"年初四"],[/年三十|除夕/,"除夕"],
+    [/耶穌受難節翌日/,"受難翌日"],[/耶穌受難節/,"受難節"],[/復活節星期一翌日/,"補假"],[/復活節/,"復活節"],
+    [/清明節翌日/,"清明補假"],[/清明/,"清明節"],[/勞動節翌日/,"勞動補假"],[/勞動節/,"勞動節"],
+    [/佛誕翌日/,"佛誕補假"],[/佛誕/,"佛誕"],[/端午節翌日/,"端午補假"],[/端午/,"端午節"],
+    [/成立紀念日翌日/,"回歸補假"],[/成立紀念日/,"回歸紀念"],[/國慶日翌日/,"國慶補假"],[/國慶/,"國慶日"],
+    [/重陽節翌日/,"重陽補假"],[/重陽/,"重陽節"],[/聖誕節後第一個周日|聖誕節後第一個週日/,"聖誕翌日"],[/聖誕/,"聖誕節"],
+    [/一月一日翌日/,"元旦補假"],[/一月一日/,"元旦"]];
+  for (const [re, v] of rules) if (re.test(n)) return v;
+  return n.slice(0, 4);
+}
+function holidaysOfYear(y) {
+  if (holYearCache[y]) return holYearCache[y];
+  let map = {};
+  try { map = HOL.compute(y); } catch (e) {}
+  if (officialHol && officialHol.years && officialHol.years.includes(y)) {
+    // 有政府資料嘅年份:以政府資料為準,只保留計算出嚟、落喺星期日嘅節日名稱
+    const merged = {};
+    for (const [k, v] of Object.entries(map)) if (parseKey(k).getDay() === 0) merged[k] = v;
+    for (const [k, v] of Object.entries(officialHol.map)) if (k.startsWith(y + "-")) merged[k] = v;
+    map = merged;
+  }
+  return (holYearCache[y] = map);
+}
+const holidayOf = k => holidaysOfYear(Number(k.slice(0, 4)))[k];
+async function refreshOfficialHolidays() {
+  if (officialHol && Date.now() - officialHol.fetchedAt < 3 * 86400000) return;
+  try {
+    const res = await fetch("https://www.1823.gov.hk/common/ical/tc.json", { cache: "no-store" });
+    const txt = (await res.text()).replace(/^\uFEFF/, "");
+    const data = JSON.parse(txt);
+    const vevents = (data.vcalendar && data.vcalendar[0] && data.vcalendar[0].vevent) || [];
+    const map = {}, years = new Set();
+    vevents.forEach(v => {
+      const ds = Array.isArray(v.dtstart) ? v.dtstart[0] : v.dtstart;
+      if (!/^\d{8}$/.test(ds || "")) return;
+      const k = `${ds.slice(0,4)}-${ds.slice(4,6)}-${ds.slice(6,8)}`;
+      map[k] = shortHolName(String(v.summary || "")); years.add(Number(ds.slice(0,4)));
+    });
+    if (!years.size) return;
+    officialHol = { fetchedAt: Date.now(), years: [...years], map };
+    try { localStorage.setItem(HOL_CACHE_KEY, JSON.stringify(officialHol)); } catch (e) {}
+    for (const y of years) delete holYearCache[y];
+    render();
+  } catch (e) { /* 冇網絡或者被封鎖:用自動計算結果 */ }
+}
 function fmtPick(type, v) {
   if (!v) return "—";
   if (type === "date") { const [y,m,d] = v.split("-").map(Number); return `${y}年${m}月${d}日`; }
@@ -383,9 +631,45 @@ function escapeHtml(s) {
   return div.innerHTML;
 }
 
+function occurrencesOf(ev, fromKey, toKey) {
+  const dur = Math.round((parseKey(ev.endDate || ev.startDate) - parseKey(ev.startDate)) / 86400000);
+  const rp = ev.repeat;
+  if (!rp || rp.freq === "none") {
+    return (ev.startDate <= toKey && (ev.endDate || ev.startDate) >= fromKey) ? [{ ...ev, _base: ev, _occ: ev.startDate }] : [];
+  }
+  const out = [], ex = new Set(ev.exdates || []);
+  const until = rp.until && rp.until < toKey ? rp.until : toKey;
+  let d = parseKey(fromKey); d.setDate(d.getDate() - dur);
+  const s0 = parseKey(ev.startDate);
+  if (d < s0) d = new Date(s0);
+  const days = rp.days && rp.days.length ? rp.days : [s0.getDay()];
+  for (; ; d.setDate(d.getDate() + 1)) {
+    const k = dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+    if (k > until) break;
+    let hit = false;
+    if (rp.freq === "weekly") hit = days.includes(d.getDay());
+    else if (rp.freq === "monthly") hit = d.getDate() === s0.getDate();
+    else if (rp.freq === "yearly") hit = d.getDate() === s0.getDate() && d.getMonth() === s0.getMonth();
+    if (!hit || ex.has(k)) continue;
+    const e = addDaysKey(k, dur);
+    if (e >= fromKey) out.push({ ...ev, startDate: k, endDate: e, _base: ev, _occ: k });
+  }
+  return out;
+}
+function instancesBetween(fromKey, toKey) {
+  const out = [];
+  events.forEach(ev => out.push(...occurrencesOf(ev, fromKey, toKey)));
+  return out;
+}
+function repeatText(ev) {
+  const rp = ev.repeat; if (!rp || rp.freq === "none") return "";
+  if (rp.freq === "weekly") return "每星期" + (rp.days || []).slice().sort().map(i => "日一二三四五六"[i]).join("、");
+  return rp.freq === "monthly" ? "每月" : "每年";
+}
+
 function layoutWeek(week) {
   const weekStart = week[0].key, weekEnd = week[6].key;
-  const overlapping = events.filter(ev => ev.startDate <= weekEnd && ev.endDate >= weekStart);
+  const overlapping = instancesBetween(weekStart, weekEnd);
   overlapping.sort((a,b) => {
     if (a.startDate !== b.startDate) return a.startDate < b.startDate ? -1 : 1;
     const da = parseKey(a.endDate) - parseKey(a.startDate);
@@ -436,11 +720,11 @@ function render() {
       let numClass = "daynum";
       if (isToday) numClass += " today";
       else if (!cell.inMonth) numClass += " outmonth";
-      else if (HK_HOLIDAYS[cell.key]) numClass += " hol";
+      else if (holidayOf(cell.key)) numClass += " hol";
       else if (wd===0) numClass += " sun";
       else if (wd===6) numClass += " sat";
       if (isSelected && !isToday) numClass += " selected-ring";
-      const hol = HK_HOLIDAYS[cell.key];
+      const hol = holidayOf(cell.key);
       btn.innerHTML = `<span class="${numClass}">${cell.day}</span>` +
         (hol ? `<span class="hol-label" style="${cell.inMonth ? "" : "opacity:.4"}">${hol}</span>` : "");
       daysRow.appendChild(btn);
@@ -477,11 +761,11 @@ function render() {
   const [sy, sm, sd] = selectedDate.split("-").map(Number);
   const wdLabel = WEEKDAYS_JP[new Date(sy, sm-1, sd).getDay()];
   document.getElementById("agendaHeader").innerHTML =
-    `<span class="agenda-date">${sm}月${sd}日</span><span class="agenda-weekday">(${wdLabel})</span>` +
+    `<span class="agenda-date">${sm}月${sd}日</span><span class="agenda-weekday">(星期${wdLabel})</span>` +
     (selectedDate === todayKey ? `<span class="agenda-today-badge">今日</span>` : "");
 
   const list = document.getElementById("agendaList");
-  const dayEvents = events.filter(ev => ev.startDate <= selectedDate && ev.endDate >= selectedDate)
+  const dayEvents = instancesBetween(selectedDate, selectedDate)
     .slice().sort((a,b) => {
       if (a.allDay !== b.allDay) return a.allDay ? -1 : 1;
       return (a.time||"").localeCompare(b.time||"");
@@ -505,7 +789,7 @@ function render() {
       card.innerHTML = `<span class="event-bar-side" style="background:${ev.color}"></span>${iconHtml}
         <div style="flex:1;min-width:0;">
           <p class="event-title">${escapeHtml(ev.title)}</p>
-          <span class="event-time">${timeText}</span>
+          <span class="event-time">${timeText}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}</span>
         </div>`;
       list.appendChild(card);
     });
@@ -550,8 +834,74 @@ function updateTimeFieldVisibility() {
   document.getElementById("timeField").style.display = document.getElementById("alldayInput").checked ? "none" : "flex";
 }
 
-function openModal(ev) {
+let currentOcc = null;
+let formRepeat = { freq: "none", days: [], dur: "1y" };
+function renderRepeat() {
+  document.querySelectorAll("#repSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === formRepeat.freq));
+  document.querySelectorAll("#durSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === formRepeat.dur));
+  document.getElementById("repOpts").style.display = formRepeat.freq === "none" ? "none" : "block";
+  document.getElementById("wdWrap").style.display = formRepeat.freq === "weekly" ? "block" : "none";
+  const wp = document.getElementById("wdPick"); wp.innerHTML = "";
+  "日一二三四五六".split("").forEach((c, i) => {
+    const b = document.createElement("button"); b.textContent = c;
+    b.className = formRepeat.days.includes(i) ? "on" : "";
+    b.onclick = () => {
+      const set = new Set(formRepeat.days); set.has(i) ? set.delete(i) : set.add(i);
+      formRepeat.days = [...set]; renderRepeat();
+    };
+    wp.appendChild(b);
+  });
+  const note = document.getElementById("repNote");
+  if (formRepeat.freq === "none") { note.textContent = ""; return; }
+  const u = computeUntil(document.getElementById("startInput").value || selectedDate, formRepeat);
+  if (formRepeat.dur === "custom" && formRepeat.until) {
+    const [y,m,d] = formRepeat.until.split("-").map(Number); note.textContent = `重複至 ${y}年${m}月${d}日`;
+  } else if (u) { const [y,m,d] = u.split("-").map(Number); note.textContent = `重複至 ${y}年${m}月${d}日`; }
+  else note.textContent = "會一直重複落去";
+}
+function computeUntil(startKey, rp) {
+  if (rp.dur === "custom") return rp.until || null;
+  if (rp.dur === "forever") return null;
+  const d = parseKey(startKey);
+  if (rp.dur === "1m") d.setMonth(d.getMonth() + 1); else d.setFullYear(d.getFullYear() + 1);
+  d.setDate(d.getDate() - 1);
+  return dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+}
+document.querySelectorAll("#repSeg button").forEach(b => b.onclick = () => {
+  formRepeat.freq = b.dataset.v;
+  if (formRepeat.freq === "weekly" && !formRepeat.days.length) formRepeat.days = [parseKey(document.getElementById("startInput").value || selectedDate).getDay()];
+  renderRepeat();
+});
+document.querySelectorAll("#durSeg button").forEach(b => b.onclick = () => { formRepeat.dur = b.dataset.v; formRepeat.until = null; renderRepeat(); });
+document.getElementById("startInput").addEventListener("change", renderRepeat);
+
+function deleteSeries(id) { events = events.filter(e => e.id !== id); saveEvents(); closeModal(); render(); }
+function openDeleteChoice(base, occ) {
+  const [y,m,d] = occ.split("-").map(Number);
+  document.getElementById("delNote").textContent = `「${base.title}」係重複行程。你想刪除 ${m}月${d}日 呢一次,定係連之後所有重複都刪除?`;
+  const ov = document.getElementById("delOverlay");
+  const close = () => ov.classList.remove("show");
+  document.getElementById("delOneBtn").onclick = () => {
+    base.exdates = [...new Set([...(base.exdates || []), occ])];
+    saveEvents(); close(); closeModal(); render();
+  };
+  document.getElementById("delFutureBtn").onclick = () => {
+    if (occ <= base.startDate) { close(); deleteSeries(base.id); return; }
+    base.repeat = { ...base.repeat, dur: "custom", until: addDaysKey(occ, -1) };
+    saveEvents(); close(); closeModal(); render();
+  };
+  document.getElementById("delCancelBtn").onclick = close;
+  document.getElementById("delCloseBtn").onclick = close;
+  ov.onclick = (e) => { if (e.target.id === "delOverlay") close(); };
+  ov.classList.add("show");
+}
+
+function openModal(inst) {
+  const ev = inst ? (inst._base || inst) : null;
+  currentOcc = inst ? (inst._occ || inst.startDate) : null;
   editingId = ev ? ev.id : null;
+  formRepeat = ev && ev.repeat ? { freq: ev.repeat.freq, days: [...(ev.repeat.days || [])], dur: ev.repeat.dur || "1y", until: ev.repeat.until || null }
+                               : { freq: "none", days: [], dur: "1y", until: null };
   document.getElementById("sheetTitle").textContent = ev ? "編輯行程" : "新增行程";
   document.getElementById("titleInput").value = ev ? ev.title : "";
   document.getElementById("startInput").value = ev ? ev.startDate : selectedDate;
@@ -574,10 +924,8 @@ function openModal(ev) {
     del.className = "delete-btn";
     del.textContent = "🗑";
     del.onclick = () => {
-      events = events.filter(e => e.id !== editingId);
-      saveEvents();
-      closeModal();
-      render();
+      if (ev.repeat && ev.repeat.freq !== "none") openDeleteChoice(ev, currentOcc);
+      else if (confirm(`確定刪除「${ev.title}」?`)) deleteSeries(ev.id);
     };
     actions.appendChild(del);
   }
@@ -588,6 +936,7 @@ function openModal(ev) {
   save.onclick = saveEvent;
   actions.appendChild(save);
   updateSaveState();
+  renderRepeat();
 
   document.getElementById("overlay").classList.add("show");
 }
@@ -610,19 +959,27 @@ function saveEvent() {
   let endTime = allDay ? "" : (document.getElementById("endTimeInput").value || addHour(time));
   if (!allDay && startDate === endDate && endTime <= time) endTime = addHour(time);
 
+  let repeat = null;
+  if (formRepeat.freq !== "none") {
+    const days = formRepeat.freq === "weekly" ? (formRepeat.days.length ? formRepeat.days : [parseKey(startDate).getDay()]) : [];
+    repeat = { freq: formRepeat.freq, days, dur: formRepeat.dur, until: computeUntil(startDate, formRepeat) };
+  }
   if (editingId) {
     const idx = events.findIndex(e => e.id === editingId);
-    if (idx >= 0) events[idx] = { id: editingId, title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon };
+    if (idx >= 0) events[idx] = { ...events[idx], id: editingId, title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat,
+      exdates: repeat ? (events[idx].exdates || []) : [] };
   } else {
-    events.push({ id: "ev-"+Date.now(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon });
+    events.push({ id: "ev-"+Date.now(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat, exdates: [] });
   }
   saveEvents();
-  selectedDate = startDate;
+  if (!editingId) selectedDate = startDate;
   closeModal();
   render();
 }
 
 function changeMonth(dir) {
+  if (dir > 0 && viewYear === 2110 && viewMonth === 11) return;
+  if (dir < 0 && viewYear === 1990 && viewMonth === 0) return;
   if (dir > 0) { if (viewMonth===11){viewMonth=0;viewYear++;} else viewMonth++; }
   else { if (viewMonth===0){viewMonth=11;viewYear--;} else viewMonth--; }
   render();
@@ -634,21 +991,28 @@ function changeMonth(dir) {
 document.getElementById("prevBtn").onclick = () => changeMonth(-1);
 document.getElementById("nextBtn").onclick = () => changeMonth(1);
 
-// 喺月曆左右滑動切換月份
+// 左右滑動切換月份(Safari 同主畫面模式都適用)
 (function () {
-  const g = document.getElementById("grid");
-  let sx = 0, sy = 0, tracking = false;
-  g.addEventListener("touchstart", e => {
-    if (e.touches.length !== 1) { tracking = false; return; }
-    sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
+  const area = document.querySelector(".app");
+  let sx = 0, sy = 0, tracking = false, locked = null;
+  const overlayOpen = () => !!document.querySelector(".overlay.show");
+  area.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1 || overlayOpen()) { tracking = false; return; }
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true; locked = null;
   }, { passive: true });
-  g.addEventListener("touchend", e => {
+  area.addEventListener("touchmove", e => {
+    if (!tracking) return;
+    const dx = e.touches[0].clientX - sx, dy = e.touches[0].clientY - sy;
+    if (!locked && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) locked = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+    if (locked === "h" && e.cancelable) e.preventDefault();
+  }, { passive: false });
+  area.addEventListener("touchend", e => {
     if (!tracking) return;
     tracking = false;
-    const dx = e.changedTouches[0].clientX - sx;
-    const dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) changeMonth(dx < 0 ? 1 : -1);
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (locked === "h" && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) changeMonth(dx < 0 ? 1 : -1);
   }, { passive: true });
+  area.addEventListener("touchcancel", () => { tracking = false; }, { passive: true });
 })();
 document.getElementById("todayBtn").onclick = () => { viewYear=today.getFullYear(); viewMonth=today.getMonth(); selectedDate=todayKey; render(); };
 document.getElementById("fabBtn").onclick = () => openModal(null);
@@ -667,8 +1031,8 @@ document.getElementById("timeInput").addEventListener("change", (e) => {
 });
 
 /* --- Year / Month scroll picker --- */
-const YEAR_MIN = today.getFullYear() - 15;
-const YEAR_MAX = today.getFullYear() + 15;
+const YEAR_MIN = 1990;
+const YEAR_MAX = 2110;
 
 function buildPickerCol(colEl, items, selectedIndex) {
   colEl.innerHTML = "";
@@ -832,6 +1196,7 @@ document.addEventListener("gesturechange", e => e.preventDefault());
 document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
 render();
+refreshOfficialHolidays();
 </script>
 </body>
 </html>
