@@ -58,7 +58,7 @@
   .weekdays span { text-align: center; font-size: 11px; font-weight: 600; padding: 8px 0; color: var(--gray); }
   .weekdays span.sun { color: var(--red); }
   .weekdays span.sat { color: var(--blue); }
-  .grid { background: #fff; }
+  .grid { background: #fff; overflow: hidden; }
   .week-row { position: relative; border-bottom: 1px solid var(--line); }
   .week-days { display: grid; grid-template-columns: repeat(7,1fr); position: relative; z-index: 1; }
   .day-cell { height: 28px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
@@ -622,8 +622,34 @@ function saveEvent() {
   render();
 }
 
-document.getElementById("prevBtn").onclick = () => { if (viewMonth===0){viewMonth=11;viewYear--;} else viewMonth--; render(); };
-document.getElementById("nextBtn").onclick = () => { if (viewMonth===11){viewMonth=0;viewYear++;} else viewMonth++; render(); };
+function changeMonth(dir) {
+  if (dir > 0) { if (viewMonth===11){viewMonth=0;viewYear++;} else viewMonth++; }
+  else { if (viewMonth===0){viewMonth=11;viewYear--;} else viewMonth--; }
+  render();
+  const g = document.getElementById("grid");
+  if (g.animate) g.animate(
+    [{ transform: `translateX(${dir > 0 ? 40 : -40}px)`, opacity: 0.2 }, { transform: "none", opacity: 1 }],
+    { duration: 200, easing: "ease-out" });
+}
+document.getElementById("prevBtn").onclick = () => changeMonth(-1);
+document.getElementById("nextBtn").onclick = () => changeMonth(1);
+
+// 喺月曆左右滑動切換月份
+(function () {
+  const g = document.getElementById("grid");
+  let sx = 0, sy = 0, tracking = false;
+  g.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
+  }, { passive: true });
+  g.addEventListener("touchend", e => {
+    if (!tracking) return;
+    tracking = false;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) changeMonth(dx < 0 ? 1 : -1);
+  }, { passive: true });
+})();
 document.getElementById("todayBtn").onclick = () => { viewYear=today.getFullYear(); viewMonth=today.getMonth(); selectedDate=todayKey; render(); };
 document.getElementById("fabBtn").onclick = () => openModal(null);
 document.getElementById("closeBtn").onclick = closeModal;
