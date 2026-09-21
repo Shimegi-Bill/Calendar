@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>日曆</title>
+<style>
+  :root {
+    --red: #E4002B;
+    --red-light: #FFF1F1;
+    --blue: #2E7CD6;
+    --bg: #F7F7F5;
+    --ink: #1A1A1A;
+    --gray: #888;
+    --line: #F0F0EE;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif; background: var(--bg); color: var(--ink); }
+  .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+  .topbar { background: #fff; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  .topbar-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 8px; }
+  .brand { display: flex; align-items: center; gap: 6px; }
+  .logo { width: 28px; height: 28px; border-radius: 6px; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 12px; }
+  h1 { font-size: 17px; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
+  .today-btn { font-size: 13px; font-weight: 500; color: var(--red); padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(228,0,43,0.3); background: none; }
+  .today-btn:active { background: rgba(228,0,43,0.1); }
+  .nav { display: flex; align-items: center; justify-content: center; gap: 20px; padding-bottom: 12px; }
+  .nav button.arrow { width: 32px; height: 32px; border-radius: 999px; border: none; background: none; display: flex; align-items: center; justify-content: center; color: #555; font-size: 18px; cursor: pointer; }
+  .nav button.arrow:active { background: rgba(0,0,0,0.05); }
+  .month-label { font-size: 16px; font-weight: 700; min-width: 120px; text-align: center; font-variant-numeric: tabular-nums; background: none; border: none; color: var(--ink); cursor: pointer; padding: 4px 10px; border-radius: 8px; display: flex; align-items: center; gap: 4px; justify-content: center; }
+  .month-label:active { background: rgba(0,0,0,0.05); }
+  .month-label .caret { font-size: 10px; color: #aaa; }
+  .weekdays { display: grid; grid-template-columns: repeat(7,1fr); border-top: 1px solid var(--line); }
+  .weekdays span { text-align: center; font-size: 11px; font-weight: 600; padding: 8px 0; color: var(--gray); }
+  .weekdays span.sun { color: var(--red); }
+  .weekdays span.sat { color: var(--blue); }
+  .grid { background: #fff; }
+  .week-row { position: relative; border-bottom: 1px solid var(--line); }
+  .week-days { display: grid; grid-template-columns: repeat(7,1fr); position: relative; z-index: 1; }
+  .day-cell { height: 28px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
+  .hol-label { font-size: 8.5px; line-height: 1.2; color: var(--red); font-weight: 600; padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .day-cell.selected { background: var(--red-light); }
+  .daynum { width: 22px; height: 22px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .daynum.today { background: var(--red); color: #fff; font-weight: 700; }
+  .daynum.outmonth { color: #ccc; }
+  .daynum.hol { color: var(--red); }
+  .daynum.sun { color: var(--red); }
+  .daynum.sat { color: var(--blue); }
+  .daynum.selected-ring { outline: 2px solid rgba(228,0,43,0.4); outline-offset: 1px; }
+  .week-select-bg { position: absolute; top: 0; bottom: 0; width: calc(100%/7); background: var(--red-light); z-index: 0; pointer-events: none; }
+  .events-area { position: relative; display: grid; grid-template-columns: repeat(7,1fr); grid-template-rows: repeat(3, 17px); gap: 2px 0; padding: 1px 0 4px; height: 60px; overflow: hidden; z-index: 1; pointer-events: none; }
+  .week-hit { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7,1fr); z-index: 3; }
+  .week-hit button { background: none; border: none; border-right: 1px solid #EDEDEA; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .week-hit button:last-child { border-right: none; }
+  .week-hit button:active { background: rgba(0,0,0,0.03); }
+  .bar { font-size: 10px; color: #333; font-weight: 500; border-radius: 4px; padding: 0 3px; display: flex; align-items: center; gap: 2px; white-space: nowrap; overflow: hidden; margin: 0 1px; cursor: pointer; border-left: 3px solid transparent; }
+  .bar span { overflow: hidden; text-overflow: ellipsis; }
+  .bar svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .bar.cont-l { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: 0; border-left-width: 0; }
+  .ev-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ev-icon svg { width: 22px; height: 22px; }
+  .bar.cont-r { border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: 0; }
+  .agenda { flex: 1; padding: 16px 16px 96px; }
+  .agenda-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .agenda-date { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .agenda-weekday { font-size: 13px; color: #999; }
+  .agenda-today-badge { font-size: 11px; font-weight: 600; color: var(--red); background: var(--red-light); padding: 2px 8px; border-radius: 999px; }
+  .empty { text-align: center; padding: 40px 0; color: #b0b0ac; }
+  .empty p:first-child { font-size: 13px; }
+  .empty p:last-child { font-size: 12px; margin-top: 4px; }
+  .event-card { width: 100%; display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); border: none; text-align: left; cursor: pointer; margin-bottom: 8px; }
+  .event-card:active { background: rgba(0,0,0,0.02); }
+  .event-bar-side { width: 4px; align-self: stretch; border-radius: 999px; min-height: 32px; }
+  .event-title { font-size: 14px; font-weight: 500; margin: 0 0 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .event-time { font-size: 12px; color: #999; font-variant-numeric: tabular-nums; }
+  .fab { position: fixed; bottom: max(24px, env(safe-area-inset-bottom, 0px)); right: 20px; width: 56px; height: 56px; border-radius: 999px; background: var(--red); box-shadow: 0 8px 20px rgba(228,0,43,0.3); border: none; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; cursor: pointer; z-index: 25; }
+  .app { position: relative; }
+  .fab:active { transform: scale(0.95); }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 30; display: none; align-items: flex-end; justify-content: center; }
+  .overlay.show { display: flex; }
+  .sheet { width: 100%; max-width: 480px; background: #fff; border-radius: 20px 20px 0 0; padding: 20px 20px 32px; transform: translateY(100%); transition: transform 0.2s ease-out; max-height: 88vh; overflow-y: auto; }
+  .overlay.show .sheet { transform: translateY(0); }
+  .sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .sheet-header h2 { font-size: 16px; font-weight: 700; margin: 0; }
+  .close-btn { width: 32px; height: 32px; border-radius: 999px; border: none; background: none; color: #888; font-size: 18px; cursor: pointer; }
+  .close-btn:active { background: rgba(0,0,0,0.05); }
+  label.field { display: block; margin-bottom: 14px; }
+  label.field span { font-size: 12px; font-weight: 500; color: #666; margin-bottom: 6px; display: block; }
+  label.field input[type=text], label.field input[type=date], label.field input[type=time] { width: 100%; background: #F5F5F3; border-radius: 8px; padding: 10px 14px; font-size: 14px; color: var(--ink); border: none; outline: none; }
+  label.field input:focus { box-shadow: 0 0 0 2px rgba(228,0,43,0.3); }
+  .date-row { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 14px; }
+  .date-row .field-half { flex: 1 1 0; min-width: 0; }
+  .date-row .field-half > span { font-size: 12px; font-weight: 500; color: #666; margin-bottom: 6px; display: block; }
+  .pick { position: relative; height: 42px; background: #F5F5F3; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; overflow: hidden; }
+  .pick input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: none; margin: 0; padding: 0; -webkit-appearance: none; appearance: none; cursor: pointer; }
+  .date-sep { flex: 0 0 auto; height: 42px; display: flex; align-items: center; color: #aaa; font-size: 13px; }
+  .allday-row { display: flex; align-items: center; justify-content: space-between; background: #F5F5F3; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; }
+  .allday-row span { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .switch { position: relative; width: 40px; height: 24px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #ddd; border-radius: 999px; cursor: pointer; transition: 0.15s; }
+  .slider::before { content: ""; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 999px; transition: 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+  .switch input:checked + .slider { background: var(--red); }
+  .switch input:checked + .slider::before { transform: translateX(16px); }
+  .colors { display: flex; gap: 10px; margin-bottom: 22px; }
+  .swatch { width: 32px; height: 32px; border-radius: 999px; border: none; cursor: pointer; }
+  .swatch.active { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .icons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 22px; }
+  .icon-btn { border: none; background: #F5F5F3; border-radius: 12px; padding: 8px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; font-size: 10px; color: #666; font-family: inherit; }
+  .icon-btn svg { width: 28px; height: 28px; }
+  .icon-btn.active { background: var(--red-light); box-shadow: inset 0 0 0 2px var(--red); color: var(--red); font-weight: 700; }
+  .icon-none { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #bbb; }
+  .badge-chip { width: 34px; height: 34px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .sheet-actions { display: flex; gap: 10px; }
+  .delete-btn { width: 48px; height: 48px; border-radius: 999px; background: #F5F5F3; color: var(--red); border: none; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+  .delete-btn:active { background: var(--red-light); }
+  .save-btn { flex: 1; background: var(--red); color: #fff; font-size: 14px; font-weight: 700; padding: 14px; border-radius: 999px; border: none; cursor: pointer; }
+  .save-btn:disabled { background: rgba(228,0,43,0.4); }
+  .save-btn:active:not(:disabled) { opacity: 0.9; }
+
+  /* Year/Month picker */
+  .picker-sheet { text-align: center; }
+  .picker-cols { display: flex; justify-content: center; gap: 8px; position: relative; margin: 8px 0 20px; }
+  .picker-highlight { position: absolute; top: 60px; left: 0; right: 0; height: 44px; background: var(--red-light); border-radius: 10px; pointer-events: none; z-index: 0; }
+  .picker-col { width: 110px; height: 164px; overflow-y: auto; scroll-snap-type: y mandatory; position: relative; z-index: 1; -webkit-overflow-scrolling: touch; }
+  .picker-col::-webkit-scrollbar { display: none; }
+  .picker-col { scrollbar-width: none; }
+  .picker-pad { height: 60px; }
+  .picker-item { height: 44px; display: flex; align-items: center; justify-content: center; scroll-snap-align: center; font-size: 16px; color: #bbb; font-weight: 500; font-variant-numeric: tabular-nums; transition: color 0.1s, font-weight 0.1s; }
+  .picker-item.center { color: var(--ink); font-weight: 700; font-size: 18px; }
+  .picker-confirm { width: 100%; background: var(--red); color: #fff; font-size: 14px; font-weight: 700; padding: 14px; border-radius: 999px; border: none; cursor: pointer; }
+  .picker-confirm:active { opacity: 0.9; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="brand"><div class="logo">Y!</div><h1>日曆</h1></div>
+      <button class="today-btn" id="todayBtn">今日</button>
+    </div>
+    <div class="nav">
+      <button class="arrow" id="prevBtn">&#8249;</button>
+      <button class="month-label" id="monthLabel"></button>
+      <button class="arrow" id="nextBtn">&#8250;</button>
+    </div>
+    <div class="weekdays">
+      <span class="sun">日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span class="sat">六</span>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="agenda">
+    <div class="agenda-header" id="agendaHeader"></div>
+    <div id="agendaList"></div>
+  </div>
+  <button class="fab" id="fabBtn">+</button>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <h2 id="sheetTitle">予定を追加</h2>
+      <button class="close-btn" id="closeBtn">&times;</button>
+    </div>
+    <label class="field">
+      <span>標題</span>
+      <input type="text" id="titleInput" placeholder="輸入行程名稱">
+    </label>
+    <div class="date-row">
+      <div class="field-half"><span>開始日期</span><div class="pick"><div class="pick-text" data-for="startInput"></div><input type="date" id="startInput"></div></div>
+      <div class="date-sep">至</div>
+      <div class="field-half"><span>結束日期</span><div class="pick"><div class="pick-text" data-for="endInput"></div><input type="date" id="endInput"></div></div>
+    </div>
+    <div class="allday-row">
+      <span>全天</span>
+      <label class="switch"><input type="checkbox" id="alldayInput"><span class="slider"></span></label>
+    </div>
+    <div class="date-row" id="timeField">
+      <div class="field-half"><span>開始時間</span><div class="pick"><div class="pick-text" data-for="timeInput"></div><input type="time" id="timeInput"></div></div>
+      <div class="date-sep">至</div>
+      <div class="field-half"><span>結束時間</span><div class="pick"><div class="pick-text" data-for="endTimeInput"></div><input type="time" id="endTimeInput"></div></div>
+    </div>
+    <div>
+      <span style="font-size:12px;font-weight:500;color:#666;margin-bottom:8px;display:block;">顏色</span>
+      <div class="colors" id="colors"></div>
+    </div>
+    <div>
+      <span style="font-size:12px;font-weight:500;color:#666;margin-bottom:8px;display:block;">圖案</span>
+      <div class="icons" id="icons"></div>
+    </div>
+    <div class="sheet-actions" id="sheetActions">
+      <button class="save-btn" id="saveBtn">新增</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="pickerOverlay">
+  <div class="sheet picker-sheet">
+    <div class="sheet-header">
+      <h2>選擇年月</h2>
+      <button class="close-btn" id="pickerCloseBtn">&times;</button>
+    </div>
+    <div class="picker-cols">
+      <div class="picker-highlight"></div>
+      <div class="picker-col" id="yearCol"></div>
+      <div class="picker-col" id="monthCol"></div>
+    </div>
+    <button class="picker-confirm" id="pickerConfirmBtn">確定</button>
+  </div>
+</div>
+
+<script>
+const WEEKDAYS_JP = ["日","月","火","水","木","金","土"];
+const COLORS = ["#E4002B","#FF8C00","#2E7CD6","#3AA76D","#8B5FBF"];
+const ITEM_H = 44;
+const pad = n => String(n).padStart(2,"0");
+const dateKey = (y,m,d) => `${y}-${pad(m+1)}-${pad(d)}`;
+const parseKey = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y,m-1,d); };
+const addDaysKey = (key, n) => { const d = parseKey(key); d.setDate(d.getDate()+n); return dateKey(d.getFullYear(), d.getMonth(), d.getDate()); };
+
+const today = new Date();
+let viewYear = today.getFullYear();
+let viewMonth = today.getMonth();
+const todayKey = dateKey(viewYear, viewMonth, today.getDate());
+let selectedDate = todayKey;
+
+const DEMO_EVENTS = [
+  { id:"s1", title:"團隊會議", startDate:todayKey, endDate:todayKey, allDay:false, time:"10:00", endTime:"11:30", color:"#2E7CD6", icon:"meeting" },
+  { id:"s2", title:"睇牙醫", startDate:todayKey, endDate:todayKey, allDay:false, time:"15:30", endTime:"16:30", color:"#3AA76D", icon:"hospital" },
+  { id:"s3", title:"同朋友食晏", startDate: addDaysKey(todayKey,3), endDate: addDaysKey(todayKey,3), allDay:false, time:"12:00", endTime:"13:30", color:"#FF8C00", icon:"ramen" },
+  { id:"s4", title:"沖繩旅行", startDate: addDaysKey(todayKey,5), endDate: addDaysKey(todayKey,8), allDay:true, time:"", color:"#2E7CD6", icon:"plane" },
+  { id:"s5", title:"公司飲酒會", startDate: addDaysKey(todayKey,7), endDate: addDaysKey(todayKey,7), allDay:false, time:"19:00", endTime:"22:00", color:"#FF8C00", icon:"beer" },
+  { id:"s6", title:"媽媽生日", startDate: addDaysKey(todayKey,10), endDate: addDaysKey(todayKey,10), allDay:true, time:"", color:"#E4002B", icon:"cake" }
+];
+
+const STORAGE_KEY = "hk-calendar-events-v1";
+function loadEvents() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) { const arr = JSON.parse(raw); if (Array.isArray(arr)) return arr; }
+  } catch (e) {}
+  return DEMO_EVENTS;
+}
+function saveEvents() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); } catch (e) {}
+}
+let events = loadEvents();
+
+/* 原創日系可愛圖案 (24x24 SVG) */
+const ICONS = [
+  { id:"cake", label:"生日", svg:'<rect x="3" y="19" width="18" height="2.2" rx="1.1" fill="#C98B5E"/><rect x="4" y="11" width="16" height="8.5" rx="2.2" fill="#F7A8B8"/><path d="M4 13.5c2 1.4 3.3 1.4 5.3 0s3.4-1.4 5.4 0 3.3 1.4 5.3 0" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="8" cy="16.5" r=".9" fill="#E4002B"/><circle cx="12" cy="17" r=".9" fill="#E4002B"/><circle cx="16" cy="16.5" r=".9" fill="#E4002B"/><rect x="11" y="6.5" width="2" height="4.5" rx="1" fill="#FFD166"/><path d="M12 2.6c1.3 1.3 1.3 2.8 0 3.6-1.3-.8-1.3-2.3 0-3.6z" fill="#FF7A45"/>' },
+  { id:"meeting", label:"會議", svg:'<rect x="3" y="3.5" width="18" height="12.5" rx="2" fill="#4A90D9"/><rect x="5" y="5.5" width="14" height="8.5" rx="1" fill="#fff"/><path d="M7 12l3-3 2 2 4-4" stroke="#4A90D9" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 16l-2 5M16 16l2 5M12 16v3" stroke="#8A8A8A" stroke-width="1.7" stroke-linecap="round"/>' },
+  { id:"beer", label:"飲酒會", svg:'<path d="M16 10h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2" stroke="#F5A623" stroke-width="2.2" fill="none"/><rect x="5" y="7.5" width="11" height="13.5" rx="2.2" fill="#FFC23D"/><path d="M8.5 11v7M12.5 11v7" stroke="#fff" stroke-width="1.3" opacity=".65" stroke-linecap="round"/><path d="M4.3 9a2.6 2.6 0 0 1 2.3-4.2 2.9 2.9 0 0 1 5.2-.6 2.7 2.7 0 0 1 4.9 2.3A2 2 0 0 1 16.7 9z" fill="#fff" stroke="#EADFC8" stroke-width=".9"/>' },
+  { id:"train", label:"出差", svg:'<path d="M2.5 16.5c0-4.2 3.3-7.5 8.5-7.5h7.5a3.5 3.5 0 0 1 3.5 3.5v4a2 2 0 0 1-2 2h-15.5a2 2 0 0 1-2-2z" fill="#fff" stroke="#2E7CD6" stroke-width="1.5"/><path d="M3.2 15.4h18.6" stroke="#2E7CD6" stroke-width="2"/><path d="M6 12.8c1-1.6 2.6-2.3 4.3-2.3v2.3z" fill="#2E7CD6"/><rect x="12" y="10.6" width="3" height="2.4" rx=".6" fill="#2E7CD6"/><rect x="16.3" y="10.6" width="3" height="2.4" rx=".6" fill="#2E7CD6"/><path d="M2 20.8h20" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>' },
+  { id:"movie", label:"電影", svg:'<circle cx="8" cy="6.5" r="3.3" fill="#555"/><circle cx="15.3" cy="6.5" r="3.3" fill="#555"/><circle cx="8" cy="6.5" r="1.1" fill="#fff"/><circle cx="15.3" cy="6.5" r="1.1" fill="#fff"/><rect x="3" y="10" width="14" height="9.5" rx="2.2" fill="#333"/><path d="M17 13.2l4.2-2.6v8.3L17 16.3z" fill="#333"/><circle cx="6.3" cy="13" r="1" fill="#FFC23D"/>' },
+  { id:"plane", label:"旅行", svg:'<path d="M21.5 12c0-.9-.7-1.6-1.6-1.6h-5.6L9.8 3H7.6l2.4 7.4H5.1L3.3 8H2l1.3 4L2 16h1.3l1.8-2.4H10L7.6 21h2.2l4.5-7.4h5.6c.9 0 1.6-.7 1.6-1.6z" fill="#4FB3E8"/><circle cx="17.5" cy="12" r=".8" fill="#fff"/>' },
+  { id:"ramen", label:"用餐", svg:'<path d="M7.5 2.8l3.4 8.4M16.8 2.8l-3.6 8.4" stroke="#A0703C" stroke-width="1.5" stroke-linecap="round"/><path d="M2.8 12h18.4a9.2 7.5 0 0 1-18.4 0z" fill="#E4572E"/><ellipse cx="12" cy="12" rx="9.2" ry="1.9" fill="#FFE3A3"/><path d="M6.5 15.5h11" stroke="#fff" stroke-width="1.2" stroke-dasharray="1.6 1.6" opacity=".8"/><rect x="9" y="19.2" width="6" height="2" rx="1" fill="#C43D1A"/>' },
+  { id:"ball", label:"運動", svg:'<circle cx="12" cy="12" r="9" fill="#fff" stroke="#333" stroke-width="1.5"/><path d="M12 8.4l3.1 2.3-1.2 3.6h-3.8l-1.2-3.6z" fill="#333"/><path d="M12 8.4V3.5M15.1 10.7l4.4-1.5M13.9 14.3l2.8 3.8M10.1 14.3l-2.8 3.8M8.9 10.7L4.5 9.2" stroke="#333" stroke-width="1.2"/>' },
+  { id:"gym", label:"健身", svg:'<rect x="6" y="11" width="12" height="2" rx="1" fill="#999"/><rect x="2.5" y="7" width="3.2" height="10" rx="1.2" fill="#E4002B"/><rect x="18.3" y="7" width="3.2" height="10" rx="1.2" fill="#E4002B"/><rect x="5.3" y="8.6" width="2.2" height="6.8" rx=".9" fill="#FF7B8F"/><rect x="16.5" y="8.6" width="2.2" height="6.8" rx=".9" fill="#FF7B8F"/>' },
+  { id:"hospital", label:"醫院", svg:'<rect x="3" y="3" width="18" height="18" rx="4.5" fill="#fff" stroke="#3AA76D" stroke-width="1.6"/><path d="M10 6.8h4v3.2h3.2v4H14v3.2h-4V14H6.8v-4H10z" fill="#3AA76D"/>' },
+  { id:"shop", label:"購物", svg:'<path d="M9 9.5V6.5a3 3 0 0 1 6 0v3" stroke="#C2185B" stroke-width="1.7" fill="none" stroke-linecap="round"/><path d="M4.5 8h15l-1.1 12.3a1 1 0 0 1-1 .9H6.6a1 1 0 0 1-1-.9z" fill="#FF8FB1"/><path d="M12 13.2c.9-1 2.5-.3 2.2 1-.3 1.1-2.2 2.3-2.2 2.3s-1.9-1.2-2.2-2.3c-.3-1.3 1.3-2 2.2-1z" fill="#fff"/>' },
+  { id:"heart", label:"約會", svg:'<path d="M12 20.5s-8.5-5.1-8.5-11A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8.5 2.5c0 5.9-8.5 11-8.5 11z" fill="#FF4D6D"/><ellipse cx="8.3" cy="9.6" rx="1.6" ry="1.1" fill="#fff" opacity=".6"/>' },
+  { id:"book", label:"學習", svg:'<path d="M2.8 5.2c3.2-1.2 6.2-1 9.2 1v14c-3-2-6-2.2-9.2-1z" fill="#8B5FBF"/><path d="M21.2 5.2c-3.2-1.2-6.2-1-9.2 1v14c3-2 6-2.2 9.2-1z" fill="#B794E0"/><path d="M5 8.5c1.6-.4 3.2-.2 4.8.5M5 11.5c1.6-.4 3.2-.2 4.8.5" stroke="#fff" stroke-width="1" opacity=".6" stroke-linecap="round"/>' },
+  { id:"music", label:"音樂", svg:'<path d="M9 17.2V6.2l10.5-2.3v11" stroke="#444" stroke-width="1.8" fill="none" stroke-linejoin="round"/><circle cx="6.8" cy="17.3" r="2.8" fill="#FF8C00"/><circle cx="17.3" cy="15" r="2.8" fill="#FF8C00"/>' },
+  { id:"sun", label:"假期", svg:'<g stroke="#FFB300" stroke-width="1.9" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></g><circle cx="12" cy="12" r="4.6" fill="#FFC23D"/><circle cx="10.5" cy="11.5" r=".6" fill="#8A5A00"/><circle cx="13.5" cy="11.5" r=".6" fill="#8A5A00"/><path d="M10.6 13.4c.8.7 2 .7 2.8 0" stroke="#8A5A00" stroke-width=".8" fill="none" stroke-linecap="round"/>' },
+  { id:"sakura", label:"賞花", svg:'<g fill="#FFB7C5"><circle cx="12" cy="6.5" r="3.6"/><circle cx="17.3" cy="10.3" r="3.6"/><circle cx="15.3" cy="16.6" r="3.6"/><circle cx="8.7" cy="16.6" r="3.6"/><circle cx="6.7" cy="10.3" r="3.6"/></g><circle cx="12" cy="12" r="2.3" fill="#FF6B8A"/>' },
+  { id:"cat", label:"寵物", svg:'<path d="M4 9.5l.8-6 5 4h4.4l5-4 .8 6v4.5a8 7 0 0 1-16 0z" fill="#F4A259"/><circle cx="9" cy="12.3" r="1.2" fill="#333"/><circle cx="15" cy="12.3" r="1.2" fill="#333"/><path d="M11 14.8h2l-1 1.1z" fill="#E4572E"/><path d="M3 14.5h4M3.3 16.5l3.7-.9M21 14.5h-4M20.7 16.5l-3.7-.9" stroke="#C47A35" stroke-width=".8" stroke-linecap="round"/>' },
+  { id:"coffee", label:"咖啡", svg:'<path d="M8 2.8c-1 1.5 1 2.2 0 4M12 2.8c-1 1.5 1 2.2 0 4" stroke="#bbb" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M17 11h1.6a2.1 2.1 0 0 1 0 4.2H17" stroke="#8D5B3E" stroke-width="1.6" fill="none"/><path d="M4 9h13v6.3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="#fff" stroke="#8D5B3E" stroke-width="1.6"/><path d="M8.5 14.3c.7.6 1.7.6 2.4 0" stroke="#8D5B3E" stroke-width=".9" fill="none" stroke-linecap="round"/><circle cx="8" cy="12.5" r=".6" fill="#8D5B3E"/><circle cx="11.4" cy="12.5" r=".6" fill="#8D5B3E"/>' },
+  { id:"gift", label:"禮物", svg:'<rect x="3.5" y="9" width="17" height="4" rx="1" fill="#FF6B81"/><rect x="4.8" y="13" width="14.4" height="8" rx="1.2" fill="#FF8FA3"/><rect x="10.8" y="9" width="2.4" height="12" fill="#FFD166"/><path d="M12 9c-1.5-3.5-5-4-5-1.6C7 9 12 9 12 9zM12 9c1.5-3.5 5-4 5-1.6C17 9 12 9 12 9z" fill="#FFD166"/>' }
+];
+const ICON_MAP = Object.fromEntries(ICONS.map(i => [i.id, i]));
+const iconSvg = (id) => ICON_MAP[id] ? `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">${ICON_MAP[id].svg}</svg>` : "";
+let editingId = null;
+let formColor = COLORS[0];
+let formIcon = "";
+const MAX_TRACKS = 3;
+const HK_HOLIDAYS = {
+  "2026-01-01":"元旦", "2026-02-17":"年初一", "2026-02-18":"年初二", "2026-02-19":"年初三",
+  "2026-04-03":"受難節", "2026-04-04":"受難翌日", "2026-04-05":"清明節", "2026-04-06":"復活節",
+  "2026-04-07":"補假", "2026-05-01":"勞動節", "2026-05-24":"佛誕", "2026-05-25":"佛誕補假",
+  "2026-06-19":"端午節", "2026-07-01":"回歸紀念", "2026-09-26":"中秋翌日", "2026-10-01":"國慶日",
+  "2026-10-18":"重陽節", "2026-10-19":"重陽補假", "2026-12-25":"聖誕節", "2026-12-26":"聖誕翌日"
+};
+function fmtPick(type, v) {
+  if (!v) return "—";
+  if (type === "date") { const [y,m,d] = v.split("-").map(Number); return `${y}年${m}月${d}日`; }
+  const [h, mi] = v.split(":").map(Number);
+  return `${h < 12 ? "上午" : "下午"}${h % 12 || 12}:${pad(mi)}`;
+}
+function syncPickers() {
+  document.querySelectorAll(".pick-text").forEach(el => {
+    const inp = document.getElementById(el.dataset.for);
+    el.textContent = fmtPick(inp.type, inp.value);
+  });
+}
+function addHour(t) {
+  const [h, m] = (t || "09:00").split(":").map(Number);
+  return `${pad((h + 1) % 24)}:${pad(m)}`;
+}
+
+function buildMonthGrid(year, month) {
+  const firstDay = new Date(year, month, 1);
+  const startWeekday = firstDay.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+  const cells = [];
+  for (let i = startWeekday-1; i>=0; i--) cells.push({day: daysInPrevMonth-i, inMonth:false, month: month-1});
+  for (let d=1; d<=daysInMonth; d++) cells.push({day:d, inMonth:true, month});
+  while (cells.length % 7 !== 0 || cells.length < 42) {
+    const nextDay = cells.length - (startWeekday + daysInMonth) + 1;
+    cells.push({day: nextDay, inMonth:false, month: month+1});
+  }
+  return cells;
+}
+
+function buildWeeks(year, month) {
+  const cells = buildMonthGrid(year, month);
+  const enriched = cells.map(cell => {
+    const y = cell.month < 0 ? year-1 : cell.month > 11 ? year+1 : year;
+    const m = ((cell.month % 12)+12) % 12;
+    return { ...cell, y, m, key: dateKey(y, m, cell.day) };
+  });
+  const weeks = [];
+  for (let i=0;i<enriched.length;i+=7) weeks.push(enriched.slice(i,i+7));
+  return weeks;
+}
+
+function escapeHtml(s) {
+  const div = document.createElement("div");
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function layoutWeek(week) {
+  const weekStart = week[0].key, weekEnd = week[6].key;
+  const overlapping = events.filter(ev => ev.startDate <= weekEnd && ev.endDate >= weekStart);
+  overlapping.sort((a,b) => {
+    if (a.startDate !== b.startDate) return a.startDate < b.startDate ? -1 : 1;
+    const da = parseKey(a.endDate) - parseKey(a.startDate);
+    const db = parseKey(b.endDate) - parseKey(b.startDate);
+    return db - da;
+  });
+  const trackEnds = [];
+  const placed = [];
+  overlapping.forEach(ev => {
+    const contL = ev.startDate < weekStart;
+    const contR = ev.endDate > weekEnd;
+    const segStart = contL ? 0 : week.findIndex(c => c.key === ev.startDate);
+    const segEnd = contR ? 6 : week.findIndex(c => c.key === ev.endDate);
+    let track = trackEnds.findIndex(end => end < segStart);
+    if (track === -1) { track = trackEnds.length; trackEnds.push(segEnd); }
+    else trackEnds[track] = segEnd;
+    if (track < MAX_TRACKS) placed.push({ ev, segStart, segEnd, track, contL, contR });
+  });
+  return placed;
+}
+
+function render() {
+  document.getElementById("monthLabel").innerHTML = `${viewYear}年 ${viewMonth+1}月 <span class="caret">▾</span>`;
+  const gridEl = document.getElementById("grid");
+  gridEl.innerHTML = "";
+  const weeks = buildWeeks(viewYear, viewMonth);
+
+  weeks.forEach(week => {
+    const row = document.createElement("div");
+    row.className = "week-row";
+
+    const selIdx = week.findIndex(c => c.key === selectedDate);
+    if (selIdx >= 0) {
+      const bg = document.createElement("div");
+      bg.className = "week-select-bg";
+      bg.style.left = `calc(${selIdx} * (100% / 7))`;
+      row.appendChild(bg);
+    }
+
+    const daysRow = document.createElement("div");
+    daysRow.className = "week-days";
+    week.forEach((cell, wd) => {
+      const isToday = cell.key === todayKey;
+      const isSelected = cell.key === selectedDate;
+      const btn = document.createElement("button");
+      btn.className = "day-cell" + (isSelected ? " selected" : "");
+      btn.onclick = () => { selectedDate = cell.key; render(); };
+      let numClass = "daynum";
+      if (isToday) numClass += " today";
+      else if (!cell.inMonth) numClass += " outmonth";
+      else if (HK_HOLIDAYS[cell.key]) numClass += " hol";
+      else if (wd===0) numClass += " sun";
+      else if (wd===6) numClass += " sat";
+      if (isSelected && !isToday) numClass += " selected-ring";
+      const hol = HK_HOLIDAYS[cell.key];
+      btn.innerHTML = `<span class="${numClass}">${cell.day}</span>` +
+        (hol ? `<span class="hol-label" style="${cell.inMonth ? "" : "opacity:.4"}">${hol}</span>` : "");
+      daysRow.appendChild(btn);
+    });
+    row.appendChild(daysRow);
+
+    const evArea = document.createElement("div");
+    evArea.className = "events-area";
+    const placed = layoutWeek(week);
+    placed.forEach(p => {
+      const bar = document.createElement("div");
+      bar.className = "bar" + (p.contL ? " cont-l" : "") + (p.contR ? " cont-r" : "");
+      bar.style.gridColumn = `${p.segStart+1} / ${p.segEnd+2}`;
+      bar.style.gridRow = `${p.track+1}`;
+      bar.style.background = p.ev.color + "26";
+      bar.style.borderLeftColor = p.ev.color;
+      const text = p.ev.title;
+      bar.innerHTML = iconSvg(p.ev.icon) + `<span>${escapeHtml(text)}${p.contR ? " ▸" : ""}</span>`;
+      evArea.appendChild(bar);
+    });
+    row.appendChild(evArea);
+    const hit = document.createElement("div");
+    hit.className = "week-hit";
+    week.forEach(cell => {
+      const b = document.createElement("button");
+      b.setAttribute("aria-label", cell.key);
+      b.onclick = () => { selectedDate = cell.key; render(); };
+      hit.appendChild(b);
+    });
+    row.appendChild(hit);
+    gridEl.appendChild(row);
+  });
+
+  const [sy, sm, sd] = selectedDate.split("-").map(Number);
+  const wdLabel = WEEKDAYS_JP[new Date(sy, sm-1, sd).getDay()];
+  document.getElementById("agendaHeader").innerHTML =
+    `<span class="agenda-date">${sm}月${sd}日</span><span class="agenda-weekday">(${wdLabel})</span>` +
+    (selectedDate === todayKey ? `<span class="agenda-today-badge">今日</span>` : "");
+
+  const list = document.getElementById("agendaList");
+  const dayEvents = events.filter(ev => ev.startDate <= selectedDate && ev.endDate >= selectedDate)
+    .slice().sort((a,b) => {
+      if (a.allDay !== b.allDay) return a.allDay ? -1 : 1;
+      return (a.time||"").localeCompare(b.time||"");
+    });
+  list.innerHTML = "";
+  if (dayEvents.length === 0) {
+    list.innerHTML = `<div class="empty"><p>沒有行程</p><p>點擊右下角的 + 新增行程</p></div>`;
+  } else {
+    dayEvents.forEach(ev => {
+      const card = document.createElement("button");
+      card.className = "event-card";
+      card.onclick = () => openModal(ev);
+      const isMulti = ev.startDate !== ev.endDate;
+      let timeText = ev.allDay ? "全天" : (ev.time ? `${ev.time} – ${ev.endTime || addHour(ev.time)}` : "");
+      if (isMulti) {
+        const [ , m1, d1] = ev.startDate.split("-").map(Number);
+        const [ , m2, d2] = ev.endDate.split("-").map(Number);
+        timeText += (timeText ? " ・ " : "") + `${m1}/${d1} 至 ${m2}/${d2}`;
+      }
+      const iconHtml = ev.icon ? `<span class="ev-icon" style="background:${ev.color}1F">${iconSvg(ev.icon)}</span>` : "";
+      card.innerHTML = `<span class="event-bar-side" style="background:${ev.color}"></span>${iconHtml}
+        <div style="flex:1;min-width:0;">
+          <p class="event-title">${escapeHtml(ev.title)}</p>
+          <span class="event-time">${timeText}</span>
+        </div>`;
+      list.appendChild(card);
+    });
+  }
+}
+
+function renderColors() {
+  const wrap = document.getElementById("colors");
+  wrap.innerHTML = "";
+  COLORS.forEach(c => {
+    const sw = document.createElement("button");
+    sw.className = "swatch" + (formColor === c ? " active" : "");
+    sw.style.background = c;
+    sw.onclick = () => { formColor = c; renderColors(); };
+    wrap.appendChild(sw);
+  });
+}
+
+function renderIcons() {
+  const wrap = document.getElementById("icons");
+  wrap.innerHTML = "";
+  const noneBtn = document.createElement("button");
+  noneBtn.className = "icon-btn" + (formIcon === "" ? " active" : "");
+  noneBtn.innerHTML = `<span class="icon-none">✕</span>無`;
+  noneBtn.onclick = () => { formIcon = ""; renderIcons(); };
+  wrap.appendChild(noneBtn);
+  ICONS.forEach(ic => {
+    const btn = document.createElement("button");
+    btn.className = "icon-btn" + (formIcon === ic.id ? " active" : "");
+    btn.innerHTML = iconSvg(ic.id) + ic.label;
+    btn.onclick = () => {
+      formIcon = ic.id;
+      const t = document.getElementById("titleInput");
+      if (!t.value.trim()) { t.value = ic.label; updateSaveState(); }
+      renderIcons();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function updateTimeFieldVisibility() {
+  document.getElementById("timeField").style.display = document.getElementById("alldayInput").checked ? "none" : "flex";
+}
+
+function openModal(ev) {
+  editingId = ev ? ev.id : null;
+  document.getElementById("sheetTitle").textContent = ev ? "編輯行程" : "新增行程";
+  document.getElementById("titleInput").value = ev ? ev.title : "";
+  document.getElementById("startInput").value = ev ? ev.startDate : selectedDate;
+  document.getElementById("endInput").value = ev ? ev.endDate : selectedDate;
+  document.getElementById("alldayInput").checked = ev ? ev.allDay : false;
+  const st = ev ? (ev.time || "09:00") : "09:00";
+  document.getElementById("timeInput").value = st;
+  document.getElementById("endTimeInput").value = ev && ev.endTime ? ev.endTime : addHour(st);
+  updateTimeFieldVisibility();
+  syncPickers();
+  formColor = ev ? ev.color : COLORS[0];
+  formIcon = ev ? (ev.icon || "") : "";
+  renderColors();
+  renderIcons();
+
+  const actions = document.getElementById("sheetActions");
+  actions.innerHTML = "";
+  if (editingId) {
+    const del = document.createElement("button");
+    del.className = "delete-btn";
+    del.textContent = "🗑";
+    del.onclick = () => {
+      events = events.filter(e => e.id !== editingId);
+      saveEvents();
+      closeModal();
+      render();
+    };
+    actions.appendChild(del);
+  }
+  const save = document.createElement("button");
+  save.className = "save-btn";
+  save.id = "saveBtn";
+  save.textContent = editingId ? "更新" : "新增";
+  save.onclick = saveEvent;
+  actions.appendChild(save);
+  updateSaveState();
+
+  document.getElementById("overlay").classList.add("show");
+  document.getElementById("titleInput").focus();
+}
+
+function closeModal() { document.getElementById("overlay").classList.remove("show"); }
+
+function updateSaveState() {
+  const save = document.getElementById("saveBtn");
+  if (save) save.disabled = !document.getElementById("titleInput").value.trim();
+}
+
+function saveEvent() {
+  const title = document.getElementById("titleInput").value.trim();
+  if (!title) return;
+  let startDate = document.getElementById("startInput").value || selectedDate;
+  let endDate = document.getElementById("endInput").value || startDate;
+  if (endDate < startDate) endDate = startDate;
+  const allDay = document.getElementById("alldayInput").checked;
+  const time = allDay ? "" : (document.getElementById("timeInput").value || "00:00");
+  let endTime = allDay ? "" : (document.getElementById("endTimeInput").value || addHour(time));
+  if (!allDay && startDate === endDate && endTime <= time) endTime = addHour(time);
+
+  if (editingId) {
+    const idx = events.findIndex(e => e.id === editingId);
+    if (idx >= 0) events[idx] = { id: editingId, title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon };
+  } else {
+    events.push({ id: "ev-"+Date.now(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon });
+  }
+  saveEvents();
+  selectedDate = startDate;
+  closeModal();
+  render();
+}
+
+document.getElementById("prevBtn").onclick = () => { if (viewMonth===0){viewMonth=11;viewYear--;} else viewMonth--; render(); };
+document.getElementById("nextBtn").onclick = () => { if (viewMonth===11){viewMonth=0;viewYear++;} else viewMonth++; render(); };
+document.getElementById("todayBtn").onclick = () => { viewYear=today.getFullYear(); viewMonth=today.getMonth(); selectedDate=todayKey; render(); };
+document.getElementById("fabBtn").onclick = () => openModal(null);
+document.getElementById("closeBtn").onclick = closeModal;
+document.getElementById("overlay").onclick = (e) => { if (e.target.id === "overlay") closeModal(); };
+document.getElementById("titleInput").addEventListener("input", updateSaveState);
+document.getElementById("alldayInput").addEventListener("change", updateTimeFieldVisibility);
+document.getElementById("timeInput").addEventListener("change", (e) => {
+  document.getElementById("endTimeInput").value = addHour(e.target.value);
+  syncPickers();
+});
+["startInput","endInput","timeInput","endTimeInput"].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener("input", syncPickers);
+  el.addEventListener("change", syncPickers);
+});
+
+/* --- Year / Month scroll picker --- */
+const YEAR_MIN = today.getFullYear() - 15;
+const YEAR_MAX = today.getFullYear() + 15;
+
+function buildPickerCol(colEl, items, selectedIndex) {
+  colEl.innerHTML = "";
+  colEl.appendChild(Object.assign(document.createElement("div"), {className:"picker-pad"}));
+  items.forEach((label, i) => {
+    const item = document.createElement("div");
+    item.className = "picker-item";
+    item.textContent = label;
+    item.dataset.index = i;
+    colEl.appendChild(item);
+  });
+  colEl.appendChild(Object.assign(document.createElement("div"), {className:"picker-pad"}));
+  colEl.scrollTop = selectedIndex * ITEM_H;
+  highlightCenter(colEl);
+}
+
+function highlightCenter(colEl) {
+  const centerIdx = Math.round(colEl.scrollTop / ITEM_H);
+  colEl.querySelectorAll(".picker-item").forEach(el => {
+    el.classList.toggle("center", Number(el.dataset.index) === centerIdx);
+  });
+}
+
+let scrollTimers = {};
+function attachPickerScroll(colEl, key) {
+  colEl.addEventListener("scroll", () => {
+    highlightCenter(colEl);
+    clearTimeout(scrollTimers[key]);
+    scrollTimers[key] = setTimeout(() => {
+      const centerIdx = Math.round(colEl.scrollTop / ITEM_H);
+      colEl.scrollTo({ top: centerIdx * ITEM_H, behavior: "smooth" });
+    }, 120);
+  });
+}
+
+const yearCol = document.getElementById("yearCol");
+const monthCol = document.getElementById("monthCol");
+const yearItems = []; for (let y=YEAR_MIN; y<=YEAR_MAX; y++) yearItems.push(`${y}年`);
+const monthItems = []; for (let m=1; m<=12; m++) monthItems.push(`${m}月`);
+attachPickerScroll(yearCol, "y");
+attachPickerScroll(monthCol, "m");
+
+document.getElementById("monthLabel").onclick = () => {
+  document.getElementById("pickerOverlay").classList.add("show");
+  requestAnimationFrame(() => {
+    buildPickerCol(yearCol, yearItems, viewYear - YEAR_MIN);
+    buildPickerCol(monthCol, monthItems, viewMonth);
+  });
+};
+document.getElementById("pickerCloseBtn").onclick = () => document.getElementById("pickerOverlay").classList.remove("show");
+document.getElementById("pickerOverlay").onclick = (e) => { if (e.target.id === "pickerOverlay") document.getElementById("pickerOverlay").classList.remove("show"); };
+document.getElementById("pickerConfirmBtn").onclick = () => {
+  const yIdx = Math.round(yearCol.scrollTop / ITEM_H);
+  const mIdx = Math.round(monthCol.scrollTop / ITEM_H);
+  viewYear = YEAR_MIN + yIdx;
+  viewMonth = mIdx;
+  document.getElementById("pickerOverlay").classList.remove("show");
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
