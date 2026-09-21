@@ -40,6 +40,8 @@
   .act-btn { width: 100%; height: 48px; border-radius: 12px; border: none; background: #F5F5F3; font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 10px; font-family: inherit; cursor: pointer; }
   .act-btn.danger { color: var(--red); }
   .rep-mark { font-size: 11px; color: #aaa; margin-left: 4px; }
+  .share-mark { font-size: 11px; color: #E4507A; margin-left: 4px; }
+  .bar .heart { font-size: 8px; color: #E4507A; flex-shrink: 0; }
   .version { text-align: center; font-size: 11px; color: #bbb; margin: 18px 0 0; }
   .gear-btn { width: 32px; height: 32px; border-radius: 999px; border: none; background: #F5F5F3; color: #666; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .set-title { font-size: 13px; font-weight: 700; margin: 4px 0 10px; color: var(--ink); }
@@ -218,6 +220,7 @@
       <div class="date-sep">至</div>
       <div class="field-half"><span>結束時間</span><div class="pick"><div class="pick-text" data-for="endTimeInput"></div><input type="time" id="endTimeInput"></div></div>
     </div>
+    <div class="allday-row" id="shareRow"><span>♥ 同對方共享</span><label class="switch"><input type="checkbox" id="sharedInput"><span class="slider"></span></label></div>
     <span class="field-label">重複</span>
     <div class="seg" id="repSeg"><button data-v="none">不重複</button><button data-v="weekly">每星期</button><button data-v="monthly">每月</button><button data-v="yearly">每年</button></div>
     <div id="repOpts">
@@ -256,9 +259,18 @@
 <div class="overlay" id="setOverlay">
   <div class="sheet">
     <div class="sheet-header">
-      <h2>備份</h2>
+      <h2>設定</h2>
       <button class="close-btn" id="setCloseBtn">&times;</button>
     </div>
+    <div class="set-title">♥ 共享日曆</div>
+    <p class="set-note">開啟後,新增嘅行程預設會同對方共享,亦會見到對方共享嘅行程。關閉後,新增嘅行程只有你自己見到。兩個人要填同一個網址同密碼。</p>
+    <div class="allday-row"><span>開啟共享日曆</span><label class="switch"><input type="checkbox" id="shOn"><span class="slider"></span></label></div>
+    <label class="field"><span>你嘅名稱(對方會見到)</span><input type="text" id="shName" placeholder="例如:Bill" autocomplete="off"></label>
+    <label class="field"><span>共享 Web App 網址</span><input type="text" id="shUrl" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" autocapitalize="off"></label>
+    <label class="field"><span>共享密碼</span><input type="text" id="shToken" placeholder="同共享 Apps Script 入面嘅 TOKEN 一樣" autocomplete="off" autocapitalize="off"></label>
+    <div class="set-btns"><button class="set-btn solid" id="shSyncBtn">立即同步</button></div>
+    <p class="gs-status" id="shStatus"></p>
+    <div class="set-divider"></div>
     <div class="set-title">備份檔案</div>
     <p class="set-note">匯出會將全部行程存做一個檔案,可以存去「檔案」App 或者傳俾自己。匯入會用備份檔取代手機上嘅所有行程。</p>
     <div class="set-btns">
@@ -277,7 +289,7 @@
       <button class="set-btn" id="gsRestoreBtn">從 Sheets 還原</button>
     </div>
     <p class="gs-status" id="gsStatus"></p>
-    <p class="version">版本 2026.09.21-c</p>
+    <p class="version">版本 2026.09.21-d</p>
   </div>
 </div>
 
@@ -333,6 +345,10 @@ function saveEvents() {
   if (typeof scheduleGsBackup === "function") scheduleGsBackup();
 }
 let events = loadEvents();
+const SH_KEY = "hk-calendar-share-v1", SHQ_KEY = "hk-calendar-share-queue-v1";
+let shareCfg = (() => { try { return JSON.parse(localStorage.getItem(SH_KEY)) || {}; } catch (e) { return {}; } })();
+let shareQueue = (() => { try { return JSON.parse(localStorage.getItem(SHQ_KEY)) || {}; } catch (e) { return {}; } })();
+const newId = () => "ev-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
 
 /* 原創日系可愛圖案 (24x24 SVG) */
 const ICONS = [
@@ -658,7 +674,7 @@ function occurrencesOf(ev, fromKey, toKey) {
 }
 function instancesBetween(fromKey, toKey) {
   const out = [];
-  events.forEach(ev => out.push(...occurrencesOf(ev, fromKey, toKey)));
+  events.forEach(ev => { if (ev.shared && !shareCfg.on) return; out.push(...occurrencesOf(ev, fromKey, toKey)); });
   return out;
 }
 function repeatText(ev) {
@@ -742,7 +758,7 @@ function render() {
       bar.style.background = p.ev.color + "26";
       bar.style.borderLeftColor = p.ev.color;
       const text = p.ev.title;
-      bar.innerHTML = iconSvg(p.ev.icon) + `<span>${escapeHtml(text)}${p.contR ? " ▸" : ""}</span>`;
+      bar.innerHTML = (p.ev.shared ? `<span class="heart">♥</span>` : "") + iconSvg(p.ev.icon) + `<span>${escapeHtml(text)}${p.contR ? " ▸" : ""}</span>`;
       evArea.appendChild(bar);
     });
     row.appendChild(evArea);
@@ -789,7 +805,7 @@ function render() {
       card.innerHTML = `<span class="event-bar-side" style="background:${ev.color}"></span>${iconHtml}
         <div style="flex:1;min-width:0;">
           <p class="event-title">${escapeHtml(ev.title)}</p>
-          <span class="event-time">${timeText}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}</span>
+          <span class="event-time">${timeText}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}${ev.shared ? `<span class="share-mark">♥ 共享${ev.by && ev.by !== (shareCfg.name || "") ? " · " + escapeHtml(ev.by) : ""}</span>` : ""}</span>
         </div>`;
       list.appendChild(card);
     });
@@ -875,7 +891,11 @@ document.querySelectorAll("#repSeg button").forEach(b => b.onclick = () => {
 document.querySelectorAll("#durSeg button").forEach(b => b.onclick = () => { formRepeat.dur = b.dataset.v; formRepeat.until = null; renderRepeat(); });
 document.getElementById("startInput").addEventListener("change", renderRepeat);
 
-function deleteSeries(id) { events = events.filter(e => e.id !== id); saveEvents(); closeModal(); render(); }
+function deleteSeries(id) {
+  const ev = events.find(e => e.id === id);
+  if (ev && ev.shared) queueShare({ ...ev, updatedAt: Date.now() }, true);
+  events = events.filter(e => e.id !== id); saveEvents(); closeModal(); render();
+}
 function openDeleteChoice(base, occ) {
   const [y,m,d] = occ.split("-").map(Number);
   document.getElementById("delNote").textContent = `「${base.title}」係重複行程。你想刪除 ${m}月${d}日 呢一次,定係連之後所有重複都刪除?`;
@@ -883,11 +903,13 @@ function openDeleteChoice(base, occ) {
   const close = () => ov.classList.remove("show");
   document.getElementById("delOneBtn").onclick = () => {
     base.exdates = [...new Set([...(base.exdates || []), occ])];
+    if (base.shared) { base.updatedAt = Date.now(); queueShare(base); }
     saveEvents(); close(); closeModal(); render();
   };
   document.getElementById("delFutureBtn").onclick = () => {
     if (occ <= base.startDate) { close(); deleteSeries(base.id); return; }
     base.repeat = { ...base.repeat, dur: "custom", until: addDaysKey(occ, -1) };
+    if (base.shared) { base.updatedAt = Date.now(); queueShare(base); }
     saveEvents(); close(); closeModal(); render();
   };
   document.getElementById("delCancelBtn").onclick = close;
@@ -900,6 +922,8 @@ function openModal(inst) {
   const ev = inst ? (inst._base || inst) : null;
   currentOcc = inst ? (inst._occ || inst.startDate) : null;
   editingId = ev ? ev.id : null;
+  document.getElementById("shareRow").style.display = shareCfg.on ? "flex" : "none";
+  document.getElementById("sharedInput").checked = ev ? !!ev.shared : !!shareCfg.on;
   formRepeat = ev && ev.repeat ? { freq: ev.repeat.freq, days: [...(ev.repeat.days || [])], dur: ev.repeat.dur || "1y", until: ev.repeat.until || null }
                                : { freq: "none", days: [], dur: "1y", until: null };
   document.getElementById("sheetTitle").textContent = ev ? "編輯行程" : "新增行程";
@@ -964,12 +988,28 @@ function saveEvent() {
     const days = formRepeat.freq === "weekly" ? (formRepeat.days.length ? formRepeat.days : [parseKey(startDate).getDay()]) : [];
     repeat = { freq: formRepeat.freq, days, dur: formRepeat.dur, until: computeUntil(startDate, formRepeat) };
   }
+  const wantShared = !!shareCfg.on && document.getElementById("sharedInput").checked;
+  const now = Date.now();
   if (editingId) {
     const idx = events.findIndex(e => e.id === editingId);
-    if (idx >= 0) events[idx] = { ...events[idx], id: editingId, title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat,
-      exdates: repeat ? (events[idx].exdates || []) : [] };
+    if (idx >= 0) {
+      const old = events[idx];
+      let ev = { ...old, title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat,
+        exdates: repeat ? (old.exdates || []) : [], updatedAt: now };
+      if (old.shared && !wantShared) {          // 由共享改返私人:通知對方刪除,自己保留一份私人
+        queueShare({ ...old, updatedAt: now }, true);
+        ev = { ...ev, id: newId(), shared: false, by: undefined };
+      } else if (wantShared) {
+        ev.shared = true; ev.by = old.by || shareCfg.name || "";
+        if (!old.shared) { ev.id = newId(); }    // 由私人改做共享
+        queueShare(ev);
+      }
+      events[idx] = ev;
+    }
   } else {
-    events.push({ id: "ev-"+Date.now(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat, exdates: [] });
+    const ev = { id: newId(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat, exdates: [], updatedAt: now };
+    if (wantShared) { ev.shared = true; ev.by = shareCfg.name || ""; queueShare(ev); }
+    events.push(ev);
   }
   saveEvents();
   if (!editingId) selectedDate = startDate;
@@ -1195,8 +1235,82 @@ document.addEventListener("gesturestart", e => e.preventDefault());
 document.addEventListener("gesturechange", e => e.preventDefault());
 document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
+/* ---------- 共享日曆同步 ---------- */
+function saveShareCfg() { try { localStorage.setItem(SH_KEY, JSON.stringify(shareCfg)); } catch (e) {} }
+function saveQueue() { try { localStorage.setItem(SHQ_KEY, JSON.stringify(shareQueue)); } catch (e) {} }
+function queueShare(ev, deleted) {
+  if (!shareCfg.on) return;
+  const data = { ...ev }; delete data._base; delete data._occ;
+  shareQueue[ev.id] = { id: ev.id, updatedAt: ev.updatedAt || Date.now(), deleted: !!deleted, by: ev.by || shareCfg.name || "", data: deleted ? {} : data };
+  saveQueue(); scheduleShareSync(600);
+}
+function setShareStatus(msg) {
+  const el = document.getElementById("shStatus"); if (!el) return;
+  if (msg) { el.textContent = msg; return; }
+  if (!shareCfg.on) { el.textContent = "共享日曆已關閉"; return; }
+  if (shareCfg.last) { const d = new Date(shareCfg.last); el.textContent = `上次同步:${d.getMonth()+1}月${d.getDate()}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+  else el.textContent = "未曾同步";
+}
+let shTimer = null, shSyncing = false;
+function scheduleShareSync(ms) { clearTimeout(shTimer); shTimer = setTimeout(() => shareSync(false), ms || 800); }
+async function shareSync(manual) {
+  if (!shareCfg.on || !shareCfg.url) { if (manual) alert("請先開啟共享日曆並填寫網址"); return; }
+  if (shSyncing) return;
+  shSyncing = true; setShareStatus("同步中…");
+  const changes = Object.values(shareQueue);
+  try {
+    const res = await fetch(shareCfg.url, { method: "POST", body: JSON.stringify({ token: shareCfg.token || "", changes }) });
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error === "token" ? "密碼唔啱" : (j.error || "未知錯誤"));
+    changes.forEach(c => { if (shareQueue[c.id] && shareQueue[c.id].updatedAt === c.updatedAt) delete shareQueue[c.id]; });
+    saveQueue();
+    mergeRemote(j.events || []);
+    shareCfg.last = Date.now(); saveShareCfg(); setShareStatus();
+  } catch (e) {
+    setShareStatus("同步失敗:" + (e.message || "網絡錯誤"));
+  } finally { shSyncing = false; }
+}
+function mergeRemote(list) {
+  let changed = false;
+  list.forEach(r => {
+    if (!r || !r.id || shareQueue[r.id]) return;          // 自己未上載嘅改動優先
+    const i = events.findIndex(e => e.id === r.id);
+    const local = i >= 0 ? events[i] : null;
+    if (r.deleted) {
+      if (local && local.shared && (local.updatedAt || 0) <= r.updatedAt) { events.splice(i, 1); changed = true; }
+      return;
+    }
+    if (!local || (local.shared && (local.updatedAt || 0) < r.updatedAt)) {
+      const ev = { ...r.data, id: r.id, shared: true, updatedAt: r.updatedAt, by: r.by };
+      if (!isValidEvents([ev])) return;
+      if (i >= 0) events[i] = ev; else events.push(ev);
+      changed = true;
+    }
+  });
+  if (changed) { saveEvents(); render(); }
+}
+const shOnEl = document.getElementById("shOn"), shNameEl = document.getElementById("shName"),
+      shUrlEl = document.getElementById("shUrl"), shTokenEl = document.getElementById("shToken");
+shNameEl.oninput = () => { shareCfg.name = shNameEl.value.trim(); saveShareCfg(); };
+shUrlEl.oninput = () => { shareCfg.url = shUrlEl.value.trim(); saveShareCfg(); };
+shTokenEl.oninput = () => { shareCfg.token = shTokenEl.value.trim(); saveShareCfg(); };
+shOnEl.onchange = () => {
+  shareCfg.on = shOnEl.checked; saveShareCfg(); setShareStatus(); render();
+  if (shareCfg.on) shareSync(false);
+};
+document.getElementById("shSyncBtn").onclick = () => shareSync(true);
+const _openSettings = document.getElementById("gearBtn").onclick;
+document.getElementById("gearBtn").onclick = () => {
+  shOnEl.checked = !!shareCfg.on; shNameEl.value = shareCfg.name || ""; shUrlEl.value = shareCfg.url || ""; shTokenEl.value = shareCfg.token || "";
+  setShareStatus();
+  _openSettings();
+};
+setInterval(() => { if (document.visibilityState === "visible") shareSync(false); }, 30000);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") shareSync(false); });
+
 render();
 refreshOfficialHolidays();
+shareSync(false);
 </script>
 </body>
 </html>
