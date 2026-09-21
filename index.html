@@ -62,7 +62,8 @@
   .topbar { background: #fff; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
   .topbar-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 8px; }
   .brand { display: flex; align-items: center; gap: 6px; }
-  .logo { width: 28px; height: 28px; border-radius: 6px; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 12px; }
+  .logo { width: 28px; height: 28px; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+  .logo svg { display: block; }
   h1 { font-size: 17px; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
   .today-btn { font-size: 13px; font-weight: 500; color: var(--red); padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(228,0,43,0.3); background: none; }
   .today-btn:active { background: rgba(228,0,43,0.1); }
@@ -144,7 +145,10 @@
   .slider::before { content: ""; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 999px; transition: 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
   .switch input:checked + .slider { background: var(--red); }
   .switch input:checked + .slider::before { transform: translateX(16px); }
-  .colors { display: flex; gap: 10px; margin-bottom: 22px; }
+  .colors { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; align-items: center; }
+  .color-note { font-size: 11px; color: #aaa; margin: 0 0 20px; }
+  .swatch.add { background: #F5F5F3 !important; color: #999; font-size: 20px; line-height: 32px; text-align: center; border: 1.5px dashed #ccc; }
+  .color-sep { width: 1px; height: 22px; background: #E5E5E2; margin: 0 2px; }
   .swatch { width: 32px; height: 32px; border-radius: 999px; border: none; cursor: pointer; }
   .swatch.active { outline: 2px solid var(--ink); outline-offset: 2px; }
   .icons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 22px; }
@@ -178,7 +182,7 @@
 <div class="app">
   <div class="topbar">
     <div class="topbar-row">
-      <div class="brand"><div class="logo">Y!</div><h1>日曆</h1></div>
+      <div class="brand"><div class="logo"><svg width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><rect width="1024" height="1024" rx="220" fill="#E4002B"/><rect x="204" y="252" width="644" height="620" rx="70" fill="#AA001E"/><rect x="190" y="230" width="644" height="620" rx="70" fill="#fff"/><rect x="190" y="230" width="644" height="170" rx="70" fill="#FFD6DE"/><rect x="190" y="330" width="644" height="70" fill="#FFD6DE"/><rect x="332" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="344" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="636" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="648" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="262" y="470" width="110" height="110" rx="26" fill="#FFB300"/><rect x="398" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><circle cx="589" cy="661" r="61" fill="#E4002B"/><path d="M589 693L560 655A16 16 0 0 1 589 641A16 16 0 0 1 618 655Z" fill="#fff"/><rect x="670" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/></svg></div><h1>日曆</h1></div>
       <div style="display:flex;gap:8px;align-items:center;"><button class="today-btn" id="todayBtn">今日</button><button class="gear-btn" id="gearBtn" aria-label="設定">⚙︎</button></div>
     </div>
     <div class="nav">
@@ -233,7 +237,7 @@
     </div>
     <div>
       <span style="font-size:12px;font-weight:500;color:#666;margin-bottom:8px;display:block;">顏色</span>
-      <div class="colors" id="colors"></div>
+      <div class="colors" id="colors"></div><input type="color" id="colorPicker" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0">
     </div>
     <div>
       <span style="font-size:12px;font-weight:500;color:#666;margin-bottom:8px;display:block;">圖案</span>
@@ -291,7 +295,7 @@
       <button class="set-btn" id="gsRestoreBtn">從 Sheets 還原</button>
     </div>
     <p class="gs-status" id="gsStatus"></p>
-    <p class="version">版本 2026.09.21-e</p>
+    <p class="version">版本 2026.09.21-h</p>
   </div>
 </div>
 
@@ -350,6 +354,8 @@ let events = loadEvents();
 const SH_KEY = "hk-calendar-share-v1", SHQ_KEY = "hk-calendar-share-queue-v1";
 let shareCfg = (() => { try { return JSON.parse(localStorage.getItem(SH_KEY)) || {}; } catch (e) { return {}; } })();
 let shareQueue = (() => { try { return JSON.parse(localStorage.getItem(SHQ_KEY)) || {}; } catch (e) { return {}; } })();
+if (!shareCfg.uid) { shareCfg.uid = "u-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); try { localStorage.setItem(SH_KEY, JSON.stringify(shareCfg)); } catch (e) {} }
+function isMine(ev) { return ev.byId ? ev.byId === shareCfg.uid : (ev.by || "") === (shareCfg.name || ""); }
 const newId = () => "ev-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
 
 /* 原創日系可愛圖案 (24x24 SVG) */
@@ -361,7 +367,7 @@ const ICONS = [
   { id:"movie", label:"電影", svg:'<circle cx="8" cy="6.5" r="3.3" fill="#555"/><circle cx="15.3" cy="6.5" r="3.3" fill="#555"/><circle cx="8" cy="6.5" r="1.1" fill="#fff"/><circle cx="15.3" cy="6.5" r="1.1" fill="#fff"/><rect x="3" y="10" width="14" height="9.5" rx="2.2" fill="#333"/><path d="M17 13.2l4.2-2.6v8.3L17 16.3z" fill="#333"/><circle cx="6.3" cy="13" r="1" fill="#FFC23D"/>' },
   { id:"plane", label:"旅行", svg:'<path d="M21.5 12c0-.9-.7-1.6-1.6-1.6h-5.6L9.8 3H7.6l2.4 7.4H5.1L3.3 8H2l1.3 4L2 16h1.3l1.8-2.4H10L7.6 21h2.2l4.5-7.4h5.6c.9 0 1.6-.7 1.6-1.6z" fill="#4FB3E8"/><circle cx="17.5" cy="12" r=".8" fill="#fff"/>' },
   { id:"ramen", label:"用餐", svg:'<path d="M7.5 2.8l3.4 8.4M16.8 2.8l-3.6 8.4" stroke="#A0703C" stroke-width="1.5" stroke-linecap="round"/><path d="M2.8 12h18.4a9.2 7.5 0 0 1-18.4 0z" fill="#E4572E"/><ellipse cx="12" cy="12" rx="9.2" ry="1.9" fill="#FFE3A3"/><path d="M6.5 15.5h11" stroke="#fff" stroke-width="1.2" stroke-dasharray="1.6 1.6" opacity=".8"/><rect x="9" y="19.2" width="6" height="2" rx="1" fill="#C43D1A"/>' },
-  { id:"ball", label:"運動", svg:'<circle cx="12" cy="12" r="9" fill="#fff" stroke="#333" stroke-width="1.5"/><path d="M12 8.4l3.1 2.3-1.2 3.6h-3.8l-1.2-3.6z" fill="#333"/><path d="M12 8.4V3.5M15.1 10.7l4.4-1.5M13.9 14.3l2.8 3.8M10.1 14.3l-2.8 3.8M8.9 10.7L4.5 9.2" stroke="#333" stroke-width="1.2"/>' },
+  { id:"ball", label:"瑜伽", svg:'<rect x="3" y="19.6" width="18" height="2" rx="1" fill="#B794E0"/><ellipse cx="12" cy="17.7" rx="7.6" ry="2.2" fill="#8B5FBF"/><path d="M9.3 17.2v-5.6a2.7 2.7 0 0 1 5.4 0v5.6z" fill="#FF8FB1"/><path d="M9.7 12.6L5.9 16.2M14.3 12.6l3.8 3.6" stroke="#F4C7A1" stroke-width="1.6" stroke-linecap="round"/><circle cx="5.7" cy="16.4" r=".9" fill="#F4C7A1"/><circle cx="18.3" cy="16.4" r=".9" fill="#F4C7A1"/><circle cx="12" cy="6.4" r="2.6" fill="#F4C7A1"/><path d="M9.4 6.1c.2-2 1.4-3 2.6-3s2.4 1 2.6 3c-.9-.8-1.8-1.2-2.6-1.2s-1.7.4-2.6 1.2z" fill="#5D4037"/><circle cx="12" cy="2.7" r="1" fill="#5D4037"/><path d="M10.3 6.6q.45.45.9 0M12.8 6.6q.45.45.9 0" stroke="#5D4037" stroke-width=".55" fill="none" stroke-linecap="round"/>' },
   { id:"gym", label:"健身", svg:'<rect x="6" y="11" width="12" height="2" rx="1" fill="#999"/><rect x="2.5" y="7" width="3.2" height="10" rx="1.2" fill="#E4002B"/><rect x="18.3" y="7" width="3.2" height="10" rx="1.2" fill="#E4002B"/><rect x="5.3" y="8.6" width="2.2" height="6.8" rx=".9" fill="#FF7B8F"/><rect x="16.5" y="8.6" width="2.2" height="6.8" rx=".9" fill="#FF7B8F"/>' },
   { id:"hospital", label:"醫院", svg:'<rect x="3" y="3" width="18" height="18" rx="4.5" fill="#fff" stroke="#3AA76D" stroke-width="1.6"/><path d="M10 6.8h4v3.2h3.2v4H14v3.2h-4V14H6.8v-4H10z" fill="#3AA76D"/>' },
   { id:"shop", label:"購物", svg:'<path d="M9 9.5V6.5a3 3 0 0 1 6 0v3" stroke="#C2185B" stroke-width="1.7" fill="none" stroke-linecap="round"/><path d="M4.5 8h15l-1.1 12.3a1 1 0 0 1-1 .9H6.6a1 1 0 0 1-1-.9z" fill="#FF8FB1"/><path d="M12 13.2c.9-1 2.5-.3 2.2 1-.3 1.1-2.2 2.3-2.2 2.3s-1.9-1.2-2.2-2.3c-.3-1.3 1.3-2 2.2-1z" fill="#fff"/>' },
@@ -370,13 +376,13 @@ const ICONS = [
   { id:"music", label:"音樂", svg:'<path d="M9 17.2V6.2l10.5-2.3v11" stroke="#444" stroke-width="1.8" fill="none" stroke-linejoin="round"/><circle cx="6.8" cy="17.3" r="2.8" fill="#FF8C00"/><circle cx="17.3" cy="15" r="2.8" fill="#FF8C00"/>' },
   { id:"sun", label:"假期", svg:'<g stroke="#FFB300" stroke-width="1.9" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></g><circle cx="12" cy="12" r="4.6" fill="#FFC23D"/><circle cx="10.5" cy="11.5" r=".6" fill="#8A5A00"/><circle cx="13.5" cy="11.5" r=".6" fill="#8A5A00"/><path d="M10.6 13.4c.8.7 2 .7 2.8 0" stroke="#8A5A00" stroke-width=".8" fill="none" stroke-linecap="round"/>' },
   { id:"sakura", label:"賞花", svg:'<g fill="#FFB7C5"><circle cx="12" cy="6.5" r="3.6"/><circle cx="17.3" cy="10.3" r="3.6"/><circle cx="15.3" cy="16.6" r="3.6"/><circle cx="8.7" cy="16.6" r="3.6"/><circle cx="6.7" cy="10.3" r="3.6"/></g><circle cx="12" cy="12" r="2.3" fill="#FF6B8A"/>' },
-  { id:"cat", label:"寵物", svg:'<path d="M4 9.5l.8-6 5 4h4.4l5-4 .8 6v4.5a8 7 0 0 1-16 0z" fill="#F4A259"/><circle cx="9" cy="12.3" r="1.2" fill="#333"/><circle cx="15" cy="12.3" r="1.2" fill="#333"/><path d="M11 14.8h2l-1 1.1z" fill="#E4572E"/><path d="M3 14.5h4M3.3 16.5l3.7-.9M21 14.5h-4M20.7 16.5l-3.7-.9" stroke="#C47A35" stroke-width=".8" stroke-linecap="round"/>' },
+  { id:"cat", label:"貓貓", svg:'<path d="M4 9.5l.8-6 5 4h4.4l5-4 .8 6v4.5a8 7 0 0 1-16 0z" fill="#F4A259"/><circle cx="9" cy="12.3" r="1.2" fill="#333"/><circle cx="15" cy="12.3" r="1.2" fill="#333"/><path d="M11 14.8h2l-1 1.1z" fill="#E4572E"/><path d="M3 14.5h4M3.3 16.5l3.7-.9M21 14.5h-4M20.7 16.5l-3.7-.9" stroke="#C47A35" stroke-width=".8" stroke-linecap="round"/>' },
   { id:"coffee", label:"咖啡", svg:'<path d="M8 2.8c-1 1.5 1 2.2 0 4M12 2.8c-1 1.5 1 2.2 0 4" stroke="#bbb" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M17 11h1.6a2.1 2.1 0 0 1 0 4.2H17" stroke="#8D5B3E" stroke-width="1.6" fill="none"/><path d="M4 9h13v6.3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="#fff" stroke="#8D5B3E" stroke-width="1.6"/><path d="M8.5 14.3c.7.6 1.7.6 2.4 0" stroke="#8D5B3E" stroke-width=".9" fill="none" stroke-linecap="round"/><circle cx="8" cy="12.5" r=".6" fill="#8D5B3E"/><circle cx="11.4" cy="12.5" r=".6" fill="#8D5B3E"/>' },
   { id:"gift", label:"禮物", svg:'<rect x="3.5" y="9" width="17" height="4" rx="1" fill="#FF6B81"/><rect x="4.8" y="13" width="14.4" height="8" rx="1.2" fill="#FF8FA3"/><rect x="10.8" y="9" width="2.4" height="12" fill="#FFD166"/><path d="M12 9c-1.5-3.5-5-4-5-1.6C7 9 12 9 12 9zM12 9c1.5-3.5 5-4 5-1.6C17 9 12 9 12 9z" fill="#FFD166"/>' }
 ];
 const NEW_ICONS = [
   { id:"work", label:"上班", svg:'<rect x="3" y="7.5" width="18" height="12.5" rx="2.5" fill="#8D6E63"/><path d="M9 7.5V5.8A1.8 1.8 0 0 1 10.8 4h2.4A1.8 1.8 0 0 1 15 5.8v1.7" stroke="#5D4037" stroke-width="1.6" fill="none"/><rect x="3" y="11.5" width="18" height="2" fill="#6D4C41"/><rect x="10.5" y="10.8" width="3" height="3.4" rx=".8" fill="#FFC23D"/>' },
-  { id:"school", label:"上學", svg:'<path d="M9 6V4.8a3 3 0 0 1 6 0V6" stroke="#E4506A" stroke-width="1.6" fill="none"/><rect x="5" y="6" width="14" height="15" rx="4" fill="#FF7B8F"/><rect x="7.5" y="13" width="9" height="6" rx="1.8" fill="#FFB3BF"/><path d="M7.5 15.5h9" stroke="#E4506A" stroke-width="1.2"/><circle cx="12" cy="10" r="1.2" fill="#fff"/>' },
+  { id:"school", label:"上學", svg:'<path d="M12 5.2V1.6" stroke="#888" stroke-width=".9"/><path d="M12 1.7l2.8.9-2.8.9z" fill="#E4002B"/><rect x="4" y="10" width="16" height="10.6" fill="#FFE3A3"/><path d="M2.5 10.8L12 5l9.5 5.8z" fill="#E4572E"/><circle cx="12" cy="8.9" r="1.3" fill="#fff" stroke="#C9A24A" stroke-width=".7"/><rect x="5.6" y="12" width="2.8" height="2.4" rx=".4" fill="#9FD8F5"/><rect x="15.6" y="12" width="2.8" height="2.4" rx=".4" fill="#9FD8F5"/><rect x="5.6" y="16.2" width="2.8" height="2.4" rx=".4" fill="#9FD8F5"/><rect x="15.6" y="16.2" width="2.8" height="2.4" rx=".4" fill="#9FD8F5"/><rect x="10.2" y="15.4" width="3.6" height="5.2" rx=".7" fill="#C98B5E"/><path d="M3 20.9h18" stroke="#8D6E63" stroke-width="1.2" stroke-linecap="round"/>' },
   { id:"morning", label:"早上", svg:'<g stroke="#FFA726" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.5v2.5M5.2 6.7l1.7 1.7M18.8 6.7l-1.7 1.7M2.5 12.5h2M19.5 12.5h2"/></g><path d="M5 15.5a7 7 0 0 1 14 0z" fill="#FFB74D"/><path d="M2.5 17.5h19" stroke="#4FB3E8" stroke-width="1.8" stroke-linecap="round"/><path d="M6 20.5h12" stroke="#4FB3E8" stroke-width="1.8" stroke-linecap="round" opacity=".6"/>' },
   { id:"night", label:"晚上", svg:'<path d="M14 3.2a8.8 8.8 0 1 0 6.8 14.2A7.2 7.2 0 0 1 14 3.2z" fill="#FFD166"/><circle cx="9" cy="12" r="1.1" fill="#E6B84A"/><circle cx="11.5" cy="16.5" r=".8" fill="#E6B84A"/><path d="M18.5 3l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="#8B7BD8"/><path d="M21 9.5l.4 1 1 .4-1 .4-.4 1-.4-1-1-.4 1-.4z" fill="#8B7BD8"/>' },
   { id:"park", label:"遊樂園", svg:'<path d="M8 21l4-11 4 11" stroke="#8A8A8A" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M6 21h12" stroke="#8A8A8A" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="10" r="7" fill="none" stroke="#FF8FB1" stroke-width="1.6"/><g stroke="#FFC7D6" stroke-width="1"><path d="M12 3v14M5 10h14M7 5l10 10M17 5L7 15"/></g><g fill="#4FB3E8"><circle cx="12" cy="3" r="1.6"/><circle cx="19" cy="10" r="1.6"/><circle cx="5" cy="10" r="1.6"/></g><g fill="#FFC23D"><circle cx="17" cy="15" r="1.6"/><circle cx="7" cy="15" r="1.6"/></g><g fill="#6CC08B"><circle cx="17" cy="5" r="1.6"/><circle cx="7" cy="5" r="1.6"/></g><circle cx="12" cy="10" r="1.5" fill="#E4507A"/>' },
@@ -400,8 +406,9 @@ const NEW_ICONS = [
   { id:"exam", label:"考試", svg:'<rect x="4" y="3" width="13" height="17.5" rx="1.8" fill="#fff" stroke="#AAA" stroke-width="1.2"/><path d="M6.8 7.5h7.5M6.8 10.5h7.5M6.8 13.5h4.5" stroke="#CCC" stroke-width="1.2" stroke-linecap="round"/><g transform="rotate(45 17 15)"><rect x="15.6" y="8.5" width="2.8" height="10" rx=".6" fill="#FFC23D"/><rect x="15.6" y="7.3" width="2.8" height="1.8" rx=".6" fill="#FF7B8F"/><path d="M15.6 18.5h2.8L17 21.2z" fill="#F3D9A4"/><path d="M16.5 20.2h1L17 21.2z" fill="#555"/></g>' },
   { id:"basket", label:"籃球", svg:'<circle cx="12" cy="12" r="9" fill="#FF8C42"/><path d="M3 12h18M12 3v18M5.8 5.5c2.8 3 2.8 10 0 13M18.2 5.5c-2.8 3-2.8 10 0 13" stroke="#8A3B0E" stroke-width="1.1" fill="none"/>' }
 ];
-ICONS.push(...NEW_ICONS);
-const ICON_ORDER = ["work","school","morning","night","meeting","cake","ramen","dimsum","coffee","beer","heart","ring",
+const FROG = { id:"chacha", label:"茶茶", svg:'<ellipse cx="12" cy="15" rx="9.4" ry="6.6" fill="#A6C73A"/><circle cx="7.7" cy="9.2" r="3.2" fill="#A6C73A"/><circle cx="16.3" cy="9.2" r="3.2" fill="#A6C73A"/><path d="M5.2 7.6c.8-1.3 2.3-1.9 3.6-1.5-.3.9-1.2 1.4-2.2 1.3-.4.4-.9.5-1.4.2z" fill="#5E5A44"/><path d="M18.8 7.6c-.8-1.3-2.3-1.9-3.6-1.5.3.9 1.2 1.4 2.2 1.3.4.4.9.5 1.4.2z" fill="#5E5A44"/><path d="M3.4 12.6c.6-.7 1.6-.7 2 0-.3.8-1.4 1-2 0z" fill="#5E5A44"/><path d="M18.6 12.6c.4-.7 1.4-.7 2 0-.6 1-1.7.8-2 0z" fill="#5E5A44"/><ellipse cx="12" cy="10.6" rx="1.3" ry=".7" fill="#5E5A44" opacity=".85"/><path d="M5.3 13.4Q12 16.2 18.7 13.4Q12 17.6 5.3 13.4z" fill="#E6D36A"/><path d="M5.3 13.4Q12 16.2 18.7 13.4" stroke="#6E7F2A" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M7 16.2Q12 18.2 17 16.2 16.4 20.4 12 20.8 7.6 20.4 7 16.2z" fill="#F2E3A6"/><g fill="#9C7A5A" opacity=".85"><ellipse cx="9.6" cy="17.4" rx=".8" ry=".45"/><ellipse cx="12.3" cy="17.9" rx=".9" ry=".45"/><ellipse cx="14.6" cy="17.3" rx=".7" ry=".4"/><ellipse cx="10.8" cy="19.2" rx=".6" ry=".35"/><ellipse cx="13.6" cy="19.3" rx=".7" ry=".35"/></g><ellipse cx="5.8" cy="18.6" rx="1.9" ry="2.2" fill="#9ABB32"/><ellipse cx="18.2" cy="18.6" rx="1.9" ry="2.2" fill="#9ABB32"/><path d="M4.4 20.6l-.9.7M5.6 21l-.2.9M6.9 20.8l.5.8M19.6 20.6l.9.7M18.4 21l.2.9M17.1 20.8l-.5.8" stroke="#E9CFC3" stroke-width=".9" stroke-linecap="round"/><circle cx="7.7" cy="9.4" r="2.1" fill="#C9A24A"/><circle cx="16.3" cy="9.4" r="2.1" fill="#C9A24A"/><circle cx="7.7" cy="9.4" r="1.6" fill="#231A12"/><circle cx="16.3" cy="9.4" r="1.6" fill="#231A12"/><circle cx="8.3" cy="8.8" r=".5" fill="#fff"/><circle cx="16.9" cy="8.8" r=".5" fill="#fff"/>' };
+ICONS.push(...NEW_ICONS, FROG);
+const ICON_ORDER = ["chacha","work","school","morning","night","meeting","cake","ramen","dimsum","coffee","beer","heart","ring",
   "park","game","movie","mic","shop","plane","train","car","hike","beach","swim","ball","basket","gym",
   "hospital","tooth","hair","book","exam","music","camera","party","gift","sun","sakura","cat","dog","cook","home","bed","money"];
 ICONS.sort((a, b) => (ICON_ORDER.indexOf(a.id) + 1 || 999) - (ICON_ORDER.indexOf(b.id) + 1 || 999));
@@ -791,7 +798,7 @@ function render() {
       bar.style.background = p.ev.color + "26";
       bar.style.borderLeftColor = p.ev.color;
       const text = p.ev.title;
-      if (p.ev.shared) { bar.classList.add("shared"); bar.style.setProperty("--c", p.ev.color); }
+      if (p.ev.shared && !isMine(p.ev)) { bar.classList.add("shared"); bar.style.setProperty("--c", p.ev.color); }
       bar.innerHTML = iconSvg(p.ev.icon) + `<span>${escapeHtml(text)}${p.contR ? " ▸" : ""}</span>`;
       evArea.appendChild(bar);
     });
@@ -836,27 +843,52 @@ function render() {
         timeText += (timeText ? " ・ " : "") + `${m1}/${d1} 至 ${m2}/${d2}`;
       }
       const iconHtml = ev.icon ? `<span class="ev-icon" style="background:${ev.color}1F">${iconSvg(ev.icon)}</span>` : "";
-      if (ev.shared) { card.classList.add("shared"); card.style.setProperty("--c", ev.color); }
+      if (ev.shared && !isMine(ev)) { card.classList.add("shared"); card.style.setProperty("--c", ev.color); }
       card.innerHTML = `<span class="event-bar-side" style="background:${ev.color}"></span>${iconHtml}
         <div style="flex:1;min-width:0;">
           <p class="event-title">${escapeHtml(ev.title)}</p>
-          <span class="event-time">${timeText}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}${ev.shared ? `<span class="share-mark">共享${ev.by && ev.by !== (shareCfg.name || "") ? " · " + escapeHtml(ev.by) : ""}</span>` : ""}</span>
+          <span class="event-time">${timeText}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}${ev.shared ? `<span class="share-mark">${isMine(ev) ? "已共享" : "共享 · " + escapeHtml(ev.by || "對方")}</span>` : ""}</span>
         </div>`;
       list.appendChild(card);
     });
   }
 }
 
+const CUSTOM_KEY = "hk-calendar-custom-colors";
+let customColors = (() => { try { const a = JSON.parse(localStorage.getItem(CUSTOM_KEY)); return Array.isArray(a) ? a.slice(0, 4) : []; } catch (e) { return []; } })();
+function saveCustomColors() { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(customColors)); } catch (e) {} }
+let pickerTarget = null; // null = 新增;數字 = 修改第幾個
+function openColorPicker(idx) {
+  pickerTarget = idx;
+  const cp = document.getElementById("colorPicker");
+  cp.value = idx === null ? "#FF6FB5" : customColors[idx];
+  cp.click();
+}
+document.getElementById("colorPicker").addEventListener("change", e => {
+  const c = e.target.value.toUpperCase();
+  if (pickerTarget === null) { if (customColors.length < 4) customColors.push(c); }
+  else customColors[pickerTarget] = c;
+  saveCustomColors(); formColor = c; renderColors();
+});
 function renderColors() {
   const wrap = document.getElementById("colors");
   wrap.innerHTML = "";
-  COLORS.forEach(c => {
+  const mk = (c, onclick, extra) => {
     const sw = document.createElement("button");
-    sw.className = "swatch" + (formColor === c ? " active" : "");
-    sw.style.background = c;
-    sw.onclick = () => { formColor = c; renderColors(); };
-    wrap.appendChild(sw);
-  });
+    sw.className = "swatch" + (extra || "") + (c && formColor.toUpperCase() === c.toUpperCase() ? " active" : "");
+    if (c) sw.style.background = c;
+    sw.onclick = onclick; wrap.appendChild(sw); return sw;
+  };
+  COLORS.forEach(c => mk(c, () => { formColor = c; renderColors(); }));
+  const sep = document.createElement("span"); sep.className = "color-sep"; wrap.appendChild(sep);
+  customColors.forEach((c, i) => mk(c, () => {
+    if (formColor.toUpperCase() === c.toUpperCase()) openColorPicker(i);   // 再撳一次已揀嘅自訂顏色 = 修改
+    else { formColor = c; renderColors(); }
+  }));
+  if (customColors.length < 4) { const add = mk(null, () => openColorPicker(null), " add"); add.textContent = "+"; add.setAttribute("aria-label", "加入自訂顏色"); }
+  let note = document.getElementById("colorNote");
+  if (!note) { note = document.createElement("p"); note.id = "colorNote"; note.className = "color-note"; wrap.after(note); }
+  note.textContent = customColors.length ? "自訂顏色:再撳一次已揀嘅自訂顏色可以修改" : "撳「+」可以加入最多 4 個自訂顏色";
 }
 
 function renderIcons() {
@@ -1035,7 +1067,7 @@ function saveEvent() {
         queueShare({ ...old, updatedAt: now }, true);
         ev = { ...ev, id: newId(), shared: false, by: undefined };
       } else if (wantShared) {
-        ev.shared = true; ev.by = old.by || shareCfg.name || "";
+        ev.shared = true; ev.by = old.by || shareCfg.name || ""; ev.byId = old.byId || (old.shared ? undefined : shareCfg.uid);
         if (!old.shared) { ev.id = newId(); }    // 由私人改做共享
         queueShare(ev);
       }
@@ -1043,7 +1075,7 @@ function saveEvent() {
     }
   } else {
     const ev = { id: newId(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat, exdates: [], updatedAt: now };
-    if (wantShared) { ev.shared = true; ev.by = shareCfg.name || ""; queueShare(ev); }
+    if (wantShared) { ev.shared = true; ev.by = shareCfg.name || ""; ev.byId = shareCfg.uid; queueShare(ev); }
     events.push(ev);
   }
   saveEvents();
