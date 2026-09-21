@@ -2,7 +2,16 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="日曆">
+<meta name="application-name" content="日曆">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>日曆</title>
 <style>
   :root {
@@ -18,6 +27,9 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   * { box-sizing: border-box; }
+  html { touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  input, select, textarea { font-size: 16px !important; }
+  .pick input { font-size: 16px; }
   html, body { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif; background: var(--bg); color: var(--ink); }
   .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; }
   .topbar { background: #fff; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
@@ -654,6 +666,11 @@ document.getElementById("pickerConfirmBtn").onclick = () => {
   document.getElementById("pickerOverlay").classList.remove("show");
   render();
 };
+
+// 禁止雙指放大
+document.addEventListener("gesturestart", e => e.preventDefault());
+document.addEventListener("gesturechange", e => e.preventDefault());
+document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
 render();
 </script>
