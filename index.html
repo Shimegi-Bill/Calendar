@@ -12,6 +12,10 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap&text=%E7%95%AA%E6%97%A9%E5%A4%9C%21">
+<script>try{if(localStorage.getItem("hk-calendar-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
 <title>日曆</title>
 <style>
   :root {
@@ -80,10 +84,11 @@
   .grid { background: #fff; overflow: hidden; }
   .week-row { position: relative; border-bottom: 1px solid var(--line); }
   .week-days { display: grid; grid-template-columns: repeat(7,1fr); position: relative; z-index: 1; }
-  .day-cell { height: 28px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
+  .cute { font-family: 'Hachi Maru Pop', 'Hiragino Maru Gothic ProN', 'Yuanti TC', 'Arial Rounded MT Bold', sans-serif; font-weight: 400; }
+  .day-cell { color: #262626;  height: 28px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
   .hol-label { font-size: 8.5px; line-height: 1.1; color: var(--red); font-weight: 600; padding-top: 1px; text-align: right; word-break: break-all; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-width: 0; max-width: 2.3em; }
   .day-cell.selected { background: var(--red-light); }
-  .daynum { width: 22px; height: 22px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .daynum { color: #262626; width: 22px; height: 22px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
   .daynum.today { background: var(--red); color: #fff; font-weight: 700; }
   .daynum.outmonth { color: #ccc; }
   .daynum.hol { color: var(--red); }
@@ -96,9 +101,9 @@
   .week-hit button { background: none; border: none; border-right: 1px solid #EDEDEA; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .week-hit button:last-child { border-right: none; }
   .week-hit button:active { background: rgba(0,0,0,0.03); }
-  .bar { font-size: 10px; color: #333; font-weight: 500; border-radius: 4px; padding: 0 3px; display: flex; align-items: center; gap: 2px; white-space: nowrap; overflow: hidden; margin: 0 1px; cursor: pointer; border-left: 3px solid transparent; }
+  .bar { font-size: 10px; color: #333; font-weight: 700; border-radius: 4px; padding: 0 3px; display: flex; align-items: center; gap: 2px; white-space: nowrap; overflow: hidden; margin: 0 1px; cursor: pointer; border-left: 3px solid transparent; }
   .bar span { overflow: hidden; text-overflow: ellipsis; }
-  .bar svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .bar svg { width: 14px; height: 14px; flex-shrink: 0; }
   .bar.cont-l { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: 0; border-left-width: 0; }
   .ev-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .ev-icon svg { width: 22px; height: 22px; }
@@ -114,7 +119,7 @@
   .event-card { width: 100%; display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); border: none; text-align: left; cursor: pointer; margin-bottom: 8px; }
   .event-card:active { background: rgba(0,0,0,0.02); }
   .event-bar-side { width: 4px; align-self: stretch; border-radius: 999px; min-height: 32px; }
-  .event-title { font-size: 14px; font-weight: 500; margin: 0 0 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .event-title { font-size: 14px; font-weight: 700; margin: 0 0 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .event-time { font-size: 12px; color: #999; font-variant-numeric: tabular-nums; }
   .fab { position: fixed; bottom: max(24px, env(safe-area-inset-bottom, 0px)); right: 20px; width: 56px; height: 56px; border-radius: 999px; background: var(--red); box-shadow: 0 8px 20px rgba(228,0,43,0.3); border: none; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; cursor: pointer; z-index: 25; }
   .app { position: relative; }
@@ -198,6 +203,43 @@
   .picker-item.center { color: var(--ink); font-weight: 700; font-size: 18px; }
   .picker-confirm { width: 100%; background: var(--red); color: #fff; font-size: 14px; font-weight: 700; padding: 14px; border-radius: 999px; border: none; cursor: pointer; }
   .picker-confirm:active { opacity: 0.9; }
+  html[data-theme="dark"] { --bg: #141416; --ink: #ECECEC; --gray: #9A9A9A; --line: #2B2B30; --red-light: #3B1820; color-scheme: dark; }
+  html[data-theme="dark"] body, html[data-theme="dark"] .app { background: #141416; color: #ECECEC; }
+  html[data-theme="dark"] .topbar, html[data-theme="dark"] .grid, html[data-theme="dark"] .sheet, html[data-theme="dark"] .event-card { background: #1E1E22; }
+  html[data-theme="dark"] .topbar { box-shadow: 0 1px 0 #2B2B30; }
+  html[data-theme="dark"] h1, html[data-theme="dark"] .month-label, html[data-theme="dark"] .sheet-header h2, html[data-theme="dark"] .agenda-date, html[data-theme="dark"] .event-title, html[data-theme="dark"] .set-title, html[data-theme="dark"] .cp-hex, html[data-theme="dark"] .allday-row span, html[data-theme="dark"] .pick { color: #ECECEC; }
+  html[data-theme="dark"] .weekdays { border-top-color: #2B2B30; }
+  html[data-theme="dark"] .week-row { border-bottom-color: #2B2B30; }
+  html[data-theme="dark"] .week-hit button { border-right-color: #2B2B30; }
+  html[data-theme="dark"] .day-cell, html[data-theme="dark"] .daynum { color: #E4E4E4; }
+  html[data-theme="dark"] .daynum.outmonth { color: #4E4E54; }
+  html[data-theme="dark"] .daynum.today { color: #fff; }
+  html[data-theme="dark"] .daynum.sat, html[data-theme="dark"] .weekdays span.sat { color: #6AA8F0; }
+  html[data-theme="dark"] .daynum.sun, html[data-theme="dark"] .daynum.hol { color: #FF5C7A; }
+  html[data-theme="dark"] .week-select-bg, html[data-theme="dark"] .day-cell.selected { background: #3B1820; }
+  html[data-theme="dark"] .bar { color: #F2F2F2; }
+  html[data-theme="dark"] .nav button.arrow, html[data-theme="dark"] .close-btn, html[data-theme="dark"] .month-label .caret { color: #BBBBBB; }
+  html[data-theme="dark"] label.field input[type=text], html[data-theme="dark"] label.field input[type=time], html[data-theme="dark"] label.field input[type=date], html[data-theme="dark"] .pick, html[data-theme="dark"] .allday-row, html[data-theme="dark"] .seg, html[data-theme="dark"] .icon-btn, html[data-theme="dark"] .wd-pick button, html[data-theme="dark"] .gear-btn, html[data-theme="dark"] .act-btn, html[data-theme="dark"] .delete-btn, html[data-theme="dark"] .swatch.add { background: #2A2A2F !important; color: #DDDDDD; }
+  html[data-theme="dark"] .swatch.add { border-color: #555; }
+  html[data-theme="dark"] .seg button { color: #AAAAAA; }
+  html[data-theme="dark"] .seg button.on { background: #3A3A40; color: #FF5C7A; box-shadow: none; }
+  html[data-theme="dark"] .icon-btn { color: #BBBBBB; }
+  html[data-theme="dark"] .icon-btn.active { background: #3B1820 !important; color: #FF5C7A; }
+  html[data-theme="dark"] .wd-pick button.on { background: var(--red) !important; color: #fff; }
+  html[data-theme="dark"] .set-btn { background: #1E1E22; }
+  html[data-theme="dark"] .set-btn.solid { background: var(--red); }
+  html[data-theme="dark"] .slider { background: #48484E; }
+  html[data-theme="dark"] .overlay { background: rgba(0,0,0,.6); }
+  html[data-theme="dark"] .picker-item { color: #5A5A60; }
+  html[data-theme="dark"] .picker-item.center { color: #ECECEC; }
+  html[data-theme="dark"] .picker-highlight { background: #3B1820; }
+  html[data-theme="dark"] .empty { color: #66666C; }
+  html[data-theme="dark"] .field-label, html[data-theme="dark"] label.field span, html[data-theme="dark"] .date-row .field-half > span, html[data-theme="dark"] .cp-row span, html[data-theme="dark"] .agenda-weekday, html[data-theme="dark"] .event-time { color: #9A9A9A; }
+  html[data-theme="dark"] .event-card { box-shadow: none; }
+  html[data-theme="dark"] .color-sep { background: #3A3A40; }
+  html[data-theme="dark"] .today-btn { border-color: rgba(255,92,122,.45); color: #FF5C7A; }
+  .theme-seg { margin-bottom: 20px; }
+  .credit { text-align: center; font-size: 11px; color: #bbb; margin: 4px 0 0; letter-spacing: .3px; }
 </style>
 </head>
 <body>
@@ -290,6 +332,14 @@
       <h2>設定</h2>
       <button class="close-btn" id="setCloseBtn">&times;</button>
     </div>
+    <div class="set-title">備份檔案</div>
+    <p class="set-note">匯出會將全部行程存做一個檔案,可以存去「檔案」App 或者傳俾自己。匯入會用備份檔取代手機上嘅所有行程。</p>
+    <div class="set-btns">
+      <button class="set-btn" id="exportBtn">匯出備份</button>
+      <button class="set-btn" id="importBtn">匯入備份</button>
+      <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+    </div>
+    <div class="set-divider"></div>
     <div class="set-title">♥ 共享日曆</div>
     <p class="set-note">開啟後,新增嘅行程預設會同對方共享,亦會見到對方共享嘅行程。關閉後,新增嘅行程只有你自己見到。兩個人要填同一個網址同密碼。</p>
     <div class="allday-row"><span>開啟共享日曆</span><label class="switch"><input type="checkbox" id="shOn"><span class="slider"></span></label></div>
@@ -298,14 +348,6 @@
     <label class="field"><span>共享密碼</span><input type="text" id="shToken" placeholder="同共享 Apps Script 入面嘅 TOKEN 一樣" autocomplete="off" autocapitalize="off"></label>
     <div class="set-btns"><button class="set-btn solid" id="shSyncBtn">立即同步</button></div>
     <p class="gs-status" id="shStatus"></p>
-    <div class="set-divider"></div>
-    <div class="set-title">備份檔案</div>
-    <p class="set-note">匯出會將全部行程存做一個檔案,可以存去「檔案」App 或者傳俾自己。匯入會用備份檔取代手機上嘅所有行程。</p>
-    <div class="set-btns">
-      <button class="set-btn" id="exportBtn">匯出備份</button>
-      <button class="set-btn" id="importBtn">匯入備份</button>
-      <input type="file" id="importFile" accept=".json,application/json" style="display:none">
-    </div>
     <div class="set-divider"></div>
     <div class="set-title">Google Sheets 自動備份</div>
     <p class="set-note">填入 Google Apps Script 嘅網址同密碼。開啟自動備份後,每次新增、修改或刪除行程都會自動備份。</p>
@@ -317,7 +359,11 @@
       <button class="set-btn" id="gsRestoreBtn">從 Sheets 還原</button>
     </div>
     <p class="gs-status" id="gsStatus"></p>
-    <p class="version">版本 2026.09.21-j</p>
+    <div class="set-divider"></div>
+    <div class="set-title">背景主題</div>
+    <div class="seg theme-seg" id="themeSeg"><button data-v="light">☃︎ 白雪</button><button data-v="dark">☾ 黑夜</button></div>
+    <p class="version">版本 2026.09.21-k</p>
+    <p class="credit">Developed by Bill Chiu</p>
   </div>
 </div>
 
@@ -448,7 +494,16 @@ const NEW_ICONS = [
   { id:"basket", label:"籃球", svg:'<circle cx="12" cy="12" r="9" fill="#FF8C42"/><path d="M3 12h18M12 3v18M5.8 5.5c2.8 3 2.8 10 0 13M18.2 5.5c-2.8 3-2.8 10 0 13" stroke="#8A3B0E" stroke-width="1.1" fill="none"/>' }
 ];
 const FROG = { id:"chacha", label:"茶茶", svg:'<ellipse cx="12" cy="15" rx="9.4" ry="6.6" fill="#A6C73A"/><circle cx="7.7" cy="9.2" r="3.2" fill="#A6C73A"/><circle cx="16.3" cy="9.2" r="3.2" fill="#A6C73A"/><path d="M5.2 7.6c.8-1.3 2.3-1.9 3.6-1.5-.3.9-1.2 1.4-2.2 1.3-.4.4-.9.5-1.4.2z" fill="#5E5A44"/><path d="M18.8 7.6c-.8-1.3-2.3-1.9-3.6-1.5.3.9 1.2 1.4 2.2 1.3.4.4.9.5 1.4.2z" fill="#5E5A44"/><path d="M3.4 12.6c.6-.7 1.6-.7 2 0-.3.8-1.4 1-2 0z" fill="#5E5A44"/><path d="M18.6 12.6c.4-.7 1.4-.7 2 0-.6 1-1.7.8-2 0z" fill="#5E5A44"/><ellipse cx="12" cy="10.6" rx="1.3" ry=".7" fill="#5E5A44" opacity=".85"/><path d="M5.3 13.4Q12 16.2 18.7 13.4Q12 17.6 5.3 13.4z" fill="#E6D36A"/><path d="M5.3 13.4Q12 16.2 18.7 13.4" stroke="#6E7F2A" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M7 16.2Q12 18.2 17 16.2 16.4 20.4 12 20.8 7.6 20.4 7 16.2z" fill="#F2E3A6"/><g fill="#9C7A5A" opacity=".85"><ellipse cx="9.6" cy="17.4" rx=".8" ry=".45"/><ellipse cx="12.3" cy="17.9" rx=".9" ry=".45"/><ellipse cx="14.6" cy="17.3" rx=".7" ry=".4"/><ellipse cx="10.8" cy="19.2" rx=".6" ry=".35"/><ellipse cx="13.6" cy="19.3" rx=".7" ry=".35"/></g><ellipse cx="5.8" cy="18.6" rx="1.9" ry="2.2" fill="#9ABB32"/><ellipse cx="18.2" cy="18.6" rx="1.9" ry="2.2" fill="#9ABB32"/><path d="M4.4 20.6l-.9.7M5.6 21l-.2.9M6.9 20.8l.5.8M19.6 20.6l.9.7M18.4 21l.2.9M17.1 20.8l-.5.8" stroke="#E9CFC3" stroke-width=".9" stroke-linecap="round"/><circle cx="7.7" cy="9.4" r="2.1" fill="#C9A24A"/><circle cx="16.3" cy="9.4" r="2.1" fill="#C9A24A"/><circle cx="7.7" cy="9.4" r="1.6" fill="#231A12"/><circle cx="16.3" cy="9.4" r="1.6" fill="#231A12"/><circle cx="8.3" cy="8.8" r=".5" fill="#fff"/><circle cx="16.9" cy="8.8" r=".5" fill="#fff"/>' };
-ICONS.push(...NEW_ICONS, FROG);
+const MORE_ICONS = [
+  { id:"sunset", label:"日落", svg:'<path d="M12 3v5.2M9.7 6l2.3 2.4L14.3 6" stroke="#FF7043" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 15a7 7 0 0 1 14 0z" fill="#FF7043"/><path d="M2.5 15h19" stroke="#8B5FBF" stroke-width="1.8" stroke-linecap="round"/><path d="M5.5 18h13M8.5 21h7" stroke="#B794E0" stroke-width="1.6" stroke-linecap="round"/>' },
+  { id:"early", label:"番早", svg:'<text x="12" y="10.2" class="cute" font-size="9.6" text-anchor="middle" fill="#5A3E2B">番早</text><g stroke="#FFA726" stroke-width="1.3" stroke-linecap="round"><path d="M12 13.3v1.3M7.4 15.4l.9.9M16.6 15.4l-.9.9M4.2 20.6h1.5M18.3 20.6h1.5"/></g><path d="M6.6 21a5.4 5.4 0 0 1 10.8 0z" fill="#FFB74D"/>' },
+  { id:"nshift", label:"番夜", svg:'<circle cx="12" cy="12" r="10.5" fill="#8C9EF0"/><path d="M8.6 3.6a4.6 4.6 0 1 0 5.8 6.1A3.8 3.8 0 0 1 8.6 3.6z" fill="#FFE066"/><circle cx="17.5" cy="6.5" r=".8" fill="#FFF6C8"/><circle cx="19" cy="10" r=".55" fill="#FFF6C8"/><text x="12" y="18.6" class="cute" font-size="8.8" text-anchor="middle" fill="#2E2A5E" stroke="#fff" stroke-width="1.8" paint-order="stroke" stroke-linejoin="round">番夜</text>' },
+  { id:"alert", label:"重要", svg:'<circle cx="12" cy="12" r="10" fill="#FF6B6B"/><circle cx="8" cy="7.5" r="1.6" fill="#fff" opacity=".35"/><text x="12.2" y="18.4" class="cute" font-size="17" text-anchor="middle" fill="#fff">!</text>' },
+  { id:"cricket", label:"蟋蟀", svg:'<path d="M8.4 9.4C6.8 6.2 4.6 4.6 2.4 4.2M9.4 8.9C8.6 5.4 7.2 3.2 5.2 2.2" stroke="#6D4C41" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M10.2 14.2l-1.6 4.2M12.8 15.4l-.6 3.8" stroke="#5D4037" stroke-width="1.1" stroke-linecap="round"/><ellipse cx="14.6" cy="13" rx="7" ry="3.5" fill="#8D6E63"/><path d="M11 10.6c3.2-1.6 7.2-1.4 10.2.9-3.2.9-7.2.8-10.2-.9z" fill="#BCAAA4"/><path d="M15.6 14.4l4.6-4.4 1.6 7.6" stroke="#5D4037" stroke-width="1.7" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="8.6" cy="11.4" r="2.9" fill="#795548"/><circle cx="7.8" cy="10.8" r=".85" fill="#fff"/><circle cx="7.7" cy="10.9" r=".45" fill="#222"/>' },
+  { id:"butterfly", label:"蝴蝶", svg:'<path d="M12 12C9 6 3.5 4 3 7.5c-.4 3 3.5 5 9 4.5z" fill="#FF8FB1"/><path d="M12 12c3-6 8.5-8 9-4.5.4 3-3.5 5-9 4.5z" fill="#FF8FB1"/><path d="M12 12c-4 .5-7.5 3-6 6 1.3 2.4 4.5.5 6-6z" fill="#FFC23D"/><path d="M12 12c4 .5 7.5 3 6 6-1.3 2.4-4.5.5-6-6z" fill="#FFC23D"/><circle cx="6.4" cy="8" r="1.1" fill="#fff" opacity=".8"/><circle cx="17.6" cy="8" r="1.1" fill="#fff" opacity=".8"/><ellipse cx="12" cy="12.6" rx="1" ry="4.8" fill="#5D4037"/><path d="M11.6 8C11 5.6 10 4.6 9 4.2M12.4 8c.6-2.4 1.6-3.4 2.6-3.8" stroke="#5D4037" stroke-width=".8" fill="none" stroke-linecap="round"/>' },
+  { id:"gecko", label:"守宮", svg:'<path d="M12 16.5c0 3 2.4 5 5.2 4.3" stroke="#E6B84A" stroke-width="2.4" fill="none" stroke-linecap="round"/><g stroke="#E6B84A" stroke-width="1.6" stroke-linecap="round"><path d="M10.6 9.6L7 8M13.4 9.6L17 8M10.6 14.6L7 16.6M13.4 14.6L17 16.6"/></g><g fill="#E6B84A"><circle cx="6.5" cy="7.8" r="1.1"/><circle cx="17.5" cy="7.8" r="1.1"/><circle cx="6.5" cy="16.9" r="1.1"/><circle cx="17.5" cy="16.9" r="1.1"/></g><ellipse cx="12" cy="12.2" rx="2.9" ry="5" fill="#F6C453"/><ellipse cx="12" cy="5.9" rx="3.1" ry="2.7" fill="#F6C453"/><circle cx="10.3" cy="5.1" r=".95" fill="#333"/><circle cx="13.7" cy="5.1" r=".95" fill="#333"/><path d="M11 7.1q1 .7 2 0" stroke="#B5835A" stroke-width=".6" fill="none" stroke-linecap="round"/><g fill="#B5835A"><circle cx="11.1" cy="10.4" r=".6"/><circle cx="12.9" cy="12" r=".6"/><circle cx="11.3" cy="13.9" r=".6"/></g>' }
+];
+ICONS.push(...NEW_ICONS, FROG, ...MORE_ICONS);
 const ICON_ORDER = ["chacha","work","school","morning","night","meeting","cake","ramen","dimsum","coffee","beer","heart","ring",
   "park","game","movie","mic","shop","plane","train","car","hike","beach","swim","ball","basket","gym",
   "hospital","tooth","hair","book","exam","music","camera","party","gift","sun","sakura","cat","dog","cook","home","bed","money"];
@@ -836,7 +891,7 @@ function render() {
       bar.className = "bar" + (p.contL ? " cont-l" : "") + (p.contR ? " cont-r" : "");
       bar.style.gridColumn = `${p.segStart+1} / ${p.segEnd+2}`;
       bar.style.gridRow = `${p.track+1}`;
-      bar.style.background = p.ev.color + "26";
+      bar.style.background = p.ev.color + (document.documentElement.getAttribute("data-theme") === "dark" ? "55" : "26");
       bar.style.borderLeftColor = p.ev.color;
       const text = p.ev.title;
       if (p.ev.shared && !isMine(p.ev)) { bar.classList.add("shared"); bar.style.setProperty("--c", p.ev.color); }
@@ -896,7 +951,7 @@ function render() {
 }
 
 const CUSTOM_KEY = "hk-calendar-custom-colors";
-let customColors = (() => { try { const a = JSON.parse(localStorage.getItem(CUSTOM_KEY)); return Array.isArray(a) ? a.slice(0, 4) : []; } catch (e) { return []; } })();
+let customColors = (() => { try { const a = JSON.parse(localStorage.getItem(CUSTOM_KEY)); return Array.isArray(a) ? a.slice(0, 11) : []; } catch (e) { return []; } })();
 function saveCustomColors() { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(customColors)); } catch (e) {} }
 function renderColors() {
   const wrap = document.getElementById("colors");
@@ -914,10 +969,10 @@ function renderColors() {
     if (same(formColor, c)) openColorPanel(i);          // 再撳一次已揀嘅自訂顏色 = 修改
     else { formColor = c; renderColors(); }
   }));
-  if (customColors.length < 4) { const add = mk(null, " add", () => openColorPanel(null)); add.innerHTML = "<span>+</span>"; add.setAttribute("aria-label", "加入自訂顏色"); }
+  if (customColors.length < 11) { const add = mk(null, " add", () => openColorPanel(null)); add.innerHTML = "<span>+</span>"; add.setAttribute("aria-label", "加入自訂顏色"); }
   let note = document.getElementById("colorNote");
   if (!note) { note = document.createElement("p"); note.id = "colorNote"; note.className = "color-note"; wrap.after(note); }
-  note.textContent = customColors.length ? "自訂顏色:再撳一次已揀嘅自訂顏色可以修改或刪除" : "撳「+」可以加入最多 4 個自訂顏色";
+  note.textContent = customColors.length ? "自訂顏色:再撳一次已揀嘅自訂顏色可以修改或刪除" : "撳「+」可以加入最多 11 個自訂顏色";
 }
 
 /* ---------- 自家調色面板 ---------- */
@@ -971,7 +1026,7 @@ function closeColorPanel() { document.getElementById("cpOverlay").classList.remo
 ["cpH","cpS","cpL"].forEach((id, i) => document.getElementById(id).addEventListener("input", e => { cpHSL[i] = Number(e.target.value); cpRender(); }));
 document.getElementById("cpOkBtn").onclick = () => {
   const c = cpRender.hex;
-  if (cpIdx === null) { if (customColors.length < 4) customColors.push(c); }
+  if (cpIdx === null) { if (customColors.length < 11) customColors.push(c); }
   else customColors[cpIdx] = c;
   saveCustomColors(); formColor = c; closeColorPanel(); renderColors();
 };
@@ -987,7 +1042,8 @@ document.getElementById("cpCloseBtn").onclick = closeColorPanel;
 document.getElementById("cpOverlay").onclick = e => { if (e.target.id === "cpOverlay") closeColorPanel(); };
 
 const ICON_CATS = [
-  ["時間", ["morning","night"]],
+  ["時間", ["morning","sunset","night"]],
+  ["班次・提示", ["early","nshift","alert"]],
   ["工作・學習", ["work","meeting","train","school","book","exam"]],
   ["飲食", ["ramen","dimsum","coffee","beer","cook"]],
   ["節日・紀念", ["cake","ring","heart","gift","party"]],
@@ -995,7 +1051,7 @@ const ICON_CATS = [
   ["出行", ["plane","car","hike","beach","sakura"]],
   ["運動", ["ball","basket","gym","swim"]],
   ["健康・生活", ["hospital","tooth","hair","bed","home","money","sun"]],
-  ["動物", ["chacha","cat","dog"]]
+  ["動物", ["chacha","cat","dog","cricket","butterfly","gecko"]]
 ];
 const USAGE_KEY = "hk-calendar-icon-usage";
 let iconUsage = (() => { try { return JSON.parse(localStorage.getItem(USAGE_KEY)) || null; } catch (e) { return null; } })();
@@ -1505,6 +1561,22 @@ document.getElementById("gearBtn").onclick = () => {
 };
 setInterval(() => { if (document.visibilityState === "visible") shareSync(false); }, 30000);
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") shareSync(false); });
+
+/* ---------- 背景主題 ---------- */
+function applyTheme(t) {
+  if (t === "dark") document.documentElement.setAttribute("data-theme", "dark");
+  else document.documentElement.removeAttribute("data-theme");
+  const mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.setAttribute("content", t === "dark" ? "#1E1E22" : "#FFFFFF");
+  document.querySelectorAll("#themeSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === (t === "dark" ? "dark" : "light")));
+}
+let currentTheme = (() => { try { return localStorage.getItem("hk-calendar-theme") || "light"; } catch (e) { return "light"; } })();
+document.querySelectorAll("#themeSeg button").forEach(b => b.onclick = () => {
+  currentTheme = b.dataset.v;
+  try { localStorage.setItem("hk-calendar-theme", currentTheme); } catch (e) {}
+  applyTheme(currentTheme);
+  render();
+});
+applyTheme(currentTheme);
 
 render();
 refreshOfficialHolidays();
