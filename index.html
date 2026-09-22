@@ -85,25 +85,25 @@
   .week-row { position: relative; border-bottom: 1px solid var(--line); }
   .week-days { display: grid; grid-template-columns: repeat(7,1fr); position: relative; z-index: 1; }
   .cute { font-family: 'Hachi Maru Pop', 'Hiragino Maru Gothic ProN', 'Yuanti TC', 'Arial Rounded MT Bold', sans-serif; font-weight: 400; }
-  .day-cell { color: #262626;  height: 28px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
+  .day-cell { color: #262626;  height: 30px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
   .hol-label { font-size: 8.5px; line-height: 1.1; color: var(--red); font-weight: 600; padding-top: 1px; text-align: right; word-break: break-all; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-width: 0; max-width: 2.3em; }
   .day-cell.selected { background: var(--red-light); }
-  .daynum { color: #262626; width: 22px; height: 22px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .daynum { color: #262626; min-width: 20px; height: 18px; padding: 0 3px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
   .daynum.today { background: var(--red); color: #fff; font-weight: 700; }
   .daynum.outmonth { color: #ccc; }
   .daynum.hol { color: var(--red); }
   .daynum.sun { color: var(--red); }
   .daynum.sat { color: var(--blue); }
-  .daynum.selected-ring { outline: 2px solid rgba(228,0,43,0.4); outline-offset: 1px; }
+  .daynum.selected-ring { outline: 1.5px solid rgba(228,0,43,0.45); outline-offset: 0; }
   .week-select-bg { position: absolute; top: 0; bottom: 0; width: calc(100%/7); background: var(--red-light); z-index: 0; pointer-events: none; }
-  .events-area { position: relative; display: grid; grid-template-columns: repeat(7,1fr); grid-template-rows: repeat(3, 17px); gap: 2px 0; padding: 1px 0 4px; height: 60px; overflow: hidden; z-index: 2; pointer-events: none; }
+  .events-area { position: relative; display: grid; grid-template-columns: repeat(7,1fr); grid-template-rows: repeat(3, 19px); gap: 2px 0; padding: 1px 0 4px; height: 68px; overflow: hidden; z-index: 2; pointer-events: none; }
   .week-hit { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7,1fr); z-index: 0; }
   .week-hit button { background: none; border: none; border-right: 1px solid #EDEDEA; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .week-hit button:last-child { border-right: none; }
   .week-hit button:active { background: rgba(0,0,0,0.03); }
-  .bar { font-size: 10px; color: #333; font-weight: 700; border-radius: 4px; padding: 0 3px; display: flex; align-items: center; gap: 2px; white-space: nowrap; overflow: hidden; margin: 0 1px; cursor: pointer; border-left: 3px solid transparent; }
-  .bar span { overflow: hidden; text-overflow: ellipsis; }
-  .bar svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .bar { line-height: 1; font-size: 10px; color: #333; font-weight: 700; border-radius: 4px; padding: 0 3px; display: flex; align-items: center; gap: 2px; white-space: nowrap; overflow: hidden; margin: 0 1px; cursor: pointer; border-left: 3px solid transparent; }
+  .bar span { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: clip; }
+  .bar svg { width: 16px; height: 16px; flex-shrink: 0; display: block; }
   .bar.cont-l { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: 0; border-left-width: 0; }
   .ev-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .ev-icon svg { width: 22px; height: 22px; }
@@ -239,6 +239,15 @@
   html[data-theme="dark"] .color-sep { background: #3A3A40; }
   html[data-theme="dark"] .today-btn { border-color: rgba(255,92,122,.45); color: #FF5C7A; }
   .theme-seg { margin-bottom: 20px; }
+  .dn-wrap { display: flex; flex-direction: column; align-items: center; min-width: 20px; flex-shrink: 0; }
+  .lunar { font-size: 8px; line-height: 1; color: #9A9A9A; margin-top: 1px; white-space: nowrap; font-weight: 500; }
+  .lunar.lm { color: #D0506E; font-weight: 700; }
+  html[data-theme="dark"] .lunar { color: #7A7A80; }
+  html[data-theme="dark"] .lunar.lm { color: #FF7A96; }
+  .every-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 14px; }
+  .every-row input { width: 80px; height: 42px; text-align: center; background: #F5F5F3; border: none; border-radius: 8px; font-weight: 700; color: var(--ink); outline: none; font-family: inherit; }
+  html[data-theme="dark"] .every-row input { background: #2A2A2F; }
+  #repSeg button { font-size: 12.5px; }
   #overlay .sheet { padding-bottom: 0; }
   #overlay .sheet-actions { position: sticky; bottom: 0; z-index: 5; background: #fff; margin: 0 -20px; padding: 12px 20px calc(16px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -10px 14px -10px rgba(0,0,0,.18); }
   html[data-theme="dark"] #overlay .sheet-actions { background: #1E1E22; box-shadow: 0 -10px 14px -10px rgba(0,0,0,.6); }
@@ -309,11 +318,15 @@
     </div>
     <div class="allday-row" id="shareRow"><span>♥ 同對方共享</span><label class="switch"><input type="checkbox" id="sharedInput"><span class="slider"></span></label></div>
     <span class="field-label">重複</span>
-    <div class="seg" id="repSeg"><button data-v="none">不重複</button><button data-v="weekly">每星期</button><button data-v="monthly">每月</button><button data-v="yearly">每年</button></div>
+    <div class="seg" id="repSeg"><button data-v="none">不重複</button><button data-v="interval">每幾日</button><button data-v="weekly">每星期</button><button data-v="monthly">每月</button><button data-v="yearly">每年</button></div>
     <div id="repOpts">
+      <div id="everyWrap" class="every-row"><span>每</span><input type="number" id="everyInput" min="1" max="999" inputmode="numeric"><span>日重複一次</span></div>
       <div id="wdWrap"><span class="field-label">喺星期幾重複</span><div class="wd-pick" id="wdPick"></div></div>
+      <span class="field-label">日子計法</span>
+      <div class="seg" id="calSeg"><button data-v="solar">西曆</button><button data-v="lunar">農曆</button></div>
       <span class="field-label">重複期間</span>
-      <div class="seg" id="durSeg"><button data-v="1m">一個月</button><button data-v="1y">一年</button><button data-v="forever">不設限</button></div>
+      <div class="seg" id="durSeg"><button data-v="1m">一個月</button><button data-v="1y">一年</button><button data-v="date">選擇日期</button><button data-v="forever">不設限</button></div>
+      <div id="untilWrap" style="margin:-4px 0 14px"><span class="field-label">去到呢日就唔再重複</span><div class="pick"><div class="pick-text" data-for="untilInput"></div><input type="date" id="untilInput" min="1990-01-01" max="2110-12-31"></div></div>
       <p class="rep-note" id="repNote"></p>
     </div>
     <div>
@@ -379,7 +392,7 @@
     <div class="set-divider"></div>
     <div class="set-title">背景主題</div>
     <div class="seg theme-seg" id="themeSeg"><button data-v="light">☃︎ 白雪</button><button data-v="dark">☾ 黑夜</button></div>
-    <p class="version">版本 2026.09.22-c</p>
+    <p class="version">版本 2026.09.22-e</p>
     <p class="credit">Developed by Bill Chiu</p>
   </div>
 </div>
@@ -617,7 +630,7 @@ const HOL = (() => {
   function lunarYear(Y) {
     if (cache[Y]) return cache[Y];
     const ws1 = localDay(termJDE(Y - 1, 270)), ws2 = localDay(termJDE(Y, 270));
-    const nms = nmList(ws1, 20);
+    const nms = nmList(ws1, 30);
     const i1 = nms.filter(d => d <= ws1).length - 1, i2 = nms.filter(d => d <= ws2).length - 1;
     const ws3 = localDay(termJDE(Y + 1, 270));
     const i3 = nms.filter(d => d <= ws3).length - 1;
@@ -704,7 +717,20 @@ const HOL = (() => {
     off.add(n);
     return out;
   }
-  return { compute, lunarToDay, dayToDate, localDay, termJDE, key };
+  function lunarOfDay(n) {
+    const y = dayToDate(n)[0];
+    for (const Y of [y, y - 1]) {
+      const ms = lunarYear(Y);
+      const next = lunarYear(Y + 1)[0].day;
+      if (n < ms[0].day || n >= next) continue;
+      for (let i = ms.length - 1; i >= 0; i--) if (ms[i].day <= n) {
+        const end = i + 1 < ms.length ? ms[i + 1].day : next;
+        return { year: Y, month: ms[i].month, leap: ms[i].leap, day: n - ms[i].day + 1, len: end - ms[i].day };
+      }
+    }
+    return null;
+  }
+  return { compute, lunarToDay, lunarOfDay, dateToDay, dayToDate, localDay, termJDE, key };
 })();
 
 const HOL_CACHE_KEY = "hk-calendar-holidays-1823";
@@ -734,6 +760,22 @@ function holidaysOfYear(y) {
     map = merged;
   }
   return (holYearCache[y] = map);
+}
+const LUNAR_MONTH = ["正","二","三","四","五","六","七","八","九","十","冬","臘"];
+const LUNAR_DAY = ["初一","初二","初三","初四","初五","初六","初七","初八","初九","初十","十一","十二","十三","十四","十五",
+  "十六","十七","十八","十九","二十","廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+const lunarCache = {};
+function lunarOfKey(k) {
+  if (k in lunarCache) return lunarCache[k];
+  const [y, m, d] = k.split("-").map(Number);
+  let r = null; try { r = HOL.lunarOfDay(HOL.dateToDay(y, m, d)); } catch (e) {}
+  return (lunarCache[k] = r);
+}
+function lunarLabel(k) {
+  const r = lunarOfKey(k);
+  if (!r) return { text: "", start: false };
+  if (r.day === 1) return { text: (r.leap ? "閏" : "") + LUNAR_MONTH[r.month - 1] + "月", start: true };
+  return { text: LUNAR_DAY[r.day - 1], start: false };
 }
 const holidayOf = k => holidaysOfYear(Number(k.slice(0, 4)))[k];
 async function refreshOfficialHolidays() {
@@ -819,13 +861,22 @@ function occurrencesOf(ev, fromKey, toKey) {
   const s0 = parseKey(ev.startDate);
   if (d < s0) d = new Date(s0);
   const days = rp.days && rp.days.length ? rp.days : [s0.getDay()];
+  const every = Math.max(1, parseInt(rp.every, 10) || 1);
+  const baseL = rp.lunar ? lunarOfKey(ev.startDate) : null;
   for (; ; d.setDate(d.getDate() + 1)) {
     const k = dateKey(d.getFullYear(), d.getMonth(), d.getDate());
     if (k > until) break;
     let hit = false;
     if (rp.freq === "weekly") hit = days.includes(d.getDay());
-    else if (rp.freq === "monthly") hit = d.getDate() === s0.getDate();
-    else if (rp.freq === "yearly") hit = d.getDate() === s0.getDate() && d.getMonth() === s0.getMonth();
+    else if (rp.freq === "interval") hit = Math.round((d - s0) / 86400000) % every === 0;
+    else if (rp.freq === "monthly") {
+      if (baseL) { const l = lunarOfKey(k); hit = !!l && l.day === baseL.day; }
+      else hit = d.getDate() === s0.getDate();
+    }
+    else if (rp.freq === "yearly") {
+      if (baseL) { const l = lunarOfKey(k); hit = !!l && !l.leap && l.month === baseL.month && l.day === baseL.day; }
+      else hit = d.getDate() === s0.getDate() && d.getMonth() === s0.getMonth();
+    }
     if (!hit || ex.has(k)) continue;
     const e = addDaysKey(k, dur);
     if (e >= fromKey) out.push({ ...ev, startDate: k, endDate: e, _base: ev, _occ: k });
@@ -839,8 +890,11 @@ function instancesBetween(fromKey, toKey) {
 }
 function repeatText(ev) {
   const rp = ev.repeat; if (!rp || rp.freq === "none") return "";
+  const bl = rp.lunar ? lunarOfKey((ev._base || ev).startDate) : null;
+  if (rp.freq === "interval") return `每${rp.every || 1}日`;
   if (rp.freq === "weekly") return "每星期" + (rp.days || []).slice().sort().map(i => "日一二三四五六"[i]).join("、");
-  return rp.freq === "monthly" ? "每月" : "每年";
+  if (rp.freq === "monthly") return bl ? `每月(農曆${LUNAR_DAY[bl.day - 1]})` : "每月";
+  return bl ? `每年(農曆${LUNAR_MONTH[bl.month - 1]}月${LUNAR_DAY[bl.day - 1]})` : "每年";
 }
 
 function layoutWeek(week) {
@@ -901,7 +955,8 @@ function render() {
       else if (wd===6) numClass += " sat";
       if (isSelected && !isToday) numClass += " selected-ring";
       const hol = holidayOf(cell.key);
-      btn.innerHTML = `<span class="${numClass}">${cell.day}</span>` +
+      const lun = lunarLabel(cell.key);
+      btn.innerHTML = `<span class="dn-wrap"><span class="${numClass}">${cell.day}</span><span class="lunar${lun.start ? " lm" : ""}" style="${cell.inMonth ? "" : "opacity:.45"}">${lun.text}</span></span>` +
         (hol ? `<span class="hol-label" style="${cell.inMonth ? "" : "opacity:.4"}">${hol}</span>` : "");
       daysRow.appendChild(btn);
     });
@@ -1136,7 +1191,7 @@ function renderIcons() {
   noneBtn.innerHTML = `<span class="icon-none">✕</span>無`;
   noneBtn.onclick = () => { formIcon = ""; renderIcons(); };
   wrap.appendChild(noneBtn);
-  const fav = Object.entries(iconUsage).filter(([id, n]) => n > 0 && ICON_MAP[id]).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  const fav = Object.entries(iconUsage).filter(([id, n]) => n > 0 && ICON_MAP[id]).sort((a, b) => b[1] - a[1]).slice(0, 9);
   if (fav.length) fav.forEach(([id]) => btnFor(ICON_MAP[id]));
   else { const h = document.createElement("div"); h.className = "icon-hint"; h.textContent = "用得多嘅圖案會自動出現喺呢度"; wrap.appendChild(h); }
   // 各分類
@@ -1156,12 +1211,18 @@ function updateTimeFieldVisibility() {
 }
 
 let currentOcc = null;
-let formRepeat = { freq: "none", days: [], dur: "1y" };
+let formRepeat = { freq: "none", days: [], dur: "forever", every: 2, lunar: false, untilDate: null };
+const fmtKey = k => { const [y, m, d] = k.split("-").map(Number); return `${y}年${m}月${d}日`; };
 function renderRepeat() {
-  document.querySelectorAll("#repSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === formRepeat.freq));
-  document.querySelectorAll("#durSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === formRepeat.dur));
+  const on = (sel, v) => document.querySelectorAll(sel + " button").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+  on("#repSeg", formRepeat.freq); on("#durSeg", formRepeat.dur); on("#calSeg", formRepeat.lunar ? "lunar" : "solar");
   document.getElementById("repOpts").style.display = formRepeat.freq === "none" ? "none" : "block";
   document.getElementById("wdWrap").style.display = formRepeat.freq === "weekly" ? "block" : "none";
+  document.getElementById("everyWrap").style.display = formRepeat.freq === "interval" ? "flex" : "none";
+  document.getElementById("untilWrap").style.display = formRepeat.dur === "date" ? "block" : "none";
+  document.getElementById("everyInput").value = formRepeat.every;
+  if (formRepeat.untilDate) document.getElementById("untilInput").value = formRepeat.untilDate;
+  syncPickers();
   const wp = document.getElementById("wdPick"); wp.innerHTML = "";
   "日一二三四五六".split("").forEach((c, i) => {
     const b = document.createElement("button"); b.textContent = c;
@@ -1174,15 +1235,28 @@ function renderRepeat() {
   });
   const note = document.getElementById("repNote");
   if (formRepeat.freq === "none") { note.textContent = ""; return; }
-  const u = computeUntil(document.getElementById("startInput").value || selectedDate, formRepeat);
-  if (formRepeat.dur === "custom" && formRepeat.until) {
-    const [y,m,d] = formRepeat.until.split("-").map(Number); note.textContent = `重複至 ${y}年${m}月${d}日`;
-  } else if (u) { const [y,m,d] = u.split("-").map(Number); note.textContent = `重複至 ${y}年${m}月${d}日`; }
-  else note.textContent = "會一直重複落去";
+  const start = document.getElementById("startInput").value || selectedDate;
+  const lunarTip = formRepeat.lunar && (formRepeat.freq === "monthly" || formRepeat.freq === "yearly")
+    ? (() => { const l = lunarOfKey(start); return l ? `按農曆${formRepeat.freq === "yearly" ? LUNAR_MONTH[l.month - 1] + "月" : "每月"}${LUNAR_DAY[l.day - 1]}重複。` : ""; })() : "";
+  if (formRepeat.dur === "date") {
+    note.textContent = lunarTip + (formRepeat.untilDate ? (formRepeat.untilDate <= start ? "停止日期要遲過開始日期" : `去到 ${fmtKey(formRepeat.untilDate)} 就唔再重複`) : "請揀停止日期");
+    return;
+  }
+  const u = computeUntil(start, formRepeat);
+  note.textContent = lunarTip + (u ? `重複至 ${fmtKey(u)}${formRepeat.lunar && formRepeat.dur !== "custom" ? "(按農曆計)" : ""}` : "會一直重複落去");
 }
 function computeUntil(startKey, rp) {
   if (rp.dur === "custom") return rp.until || null;
   if (rp.dur === "forever") return null;
+  if (rp.dur === "date") return rp.untilDate ? addDaysKey(rp.untilDate, -1) : null;
+  if (rp.lunar) {
+    try {
+      const [y, m, d] = startKey.split("-").map(Number);
+      const n = HOL.dateToDay(y, m, d), l = HOL.lunarOfDay(n);
+      const target = rp.dur === "1m" ? n + l.len : HOL.lunarToDay(l.year + 1, l.month, l.day);
+      return HOL.key(target - 1);
+    } catch (e) {}
+  }
   const d = parseKey(startKey);
   if (rp.dur === "1m") d.setMonth(d.getMonth() + 1); else d.setFullYear(d.getFullYear() + 1);
   d.setDate(d.getDate() - 1);
@@ -1193,7 +1267,17 @@ document.querySelectorAll("#repSeg button").forEach(b => b.onclick = () => {
   if (formRepeat.freq === "weekly" && !formRepeat.days.length) formRepeat.days = [parseKey(document.getElementById("startInput").value || selectedDate).getDay()];
   renderRepeat();
 });
-document.querySelectorAll("#durSeg button").forEach(b => b.onclick = () => { formRepeat.dur = b.dataset.v; formRepeat.until = null; renderRepeat(); });
+document.querySelectorAll("#durSeg button").forEach(b => b.onclick = () => {
+  formRepeat.dur = b.dataset.v; formRepeat.until = null;
+  if (formRepeat.dur === "date" && !formRepeat.untilDate) formRepeat.untilDate = addDaysKey(document.getElementById("startInput").value || selectedDate, 30);
+  renderRepeat();
+});
+document.querySelectorAll("#calSeg button").forEach(b => b.onclick = () => { formRepeat.lunar = b.dataset.v === "lunar"; renderRepeat(); });
+document.getElementById("everyInput").addEventListener("input", e => {
+  const v = parseInt(e.target.value, 10); if (v >= 1) { formRepeat.every = Math.min(999, v); renderRepeat(); }
+});
+document.getElementById("everyInput").addEventListener("blur", e => { e.target.value = formRepeat.every; });
+document.getElementById("untilInput").addEventListener("change", e => { formRepeat.untilDate = e.target.value || null; renderRepeat(); });
 document.getElementById("startInput").addEventListener("change", renderRepeat);
 
 function deleteSeries(id) {
@@ -1229,8 +1313,9 @@ function openModal(inst) {
   editingId = ev ? ev.id : null;
   document.getElementById("shareRow").style.display = shareCfg.on ? "flex" : "none";
   document.getElementById("sharedInput").checked = ev ? !!ev.shared : !!shareCfg.on;
-  formRepeat = ev && ev.repeat ? { freq: ev.repeat.freq, days: [...(ev.repeat.days || [])], dur: ev.repeat.dur || "1y", until: ev.repeat.until || null }
-                               : { freq: "none", days: [], dur: "1y", until: null };
+  formRepeat = ev && ev.repeat ? { freq: ev.repeat.freq, days: [...(ev.repeat.days || [])], dur: ev.repeat.dur || "1y", until: ev.repeat.until || null,
+                                   every: ev.repeat.every || 2, lunar: !!ev.repeat.lunar, untilDate: ev.repeat.untilDate || null }
+                               : { freq: "none", days: [], dur: "forever", until: null, every: 2, lunar: false, untilDate: null };
   document.getElementById("sheetTitle").textContent = ev ? "編輯行程" : "新增行程";
   document.getElementById("titleInput").value = ev ? ev.title : "";
   document.getElementById("startInput").value = ev ? ev.startDate : selectedDate;
@@ -1292,7 +1377,10 @@ function saveEvent() {
   let repeat = null;
   if (formRepeat.freq !== "none") {
     const days = formRepeat.freq === "weekly" ? (formRepeat.days.length ? formRepeat.days : [parseKey(startDate).getDay()]) : [];
-    repeat = { freq: formRepeat.freq, days, dur: formRepeat.dur, until: computeUntil(startDate, formRepeat) };
+    if (formRepeat.dur === "date" && (!formRepeat.untilDate || formRepeat.untilDate <= startDate)) { alert("停止重複嘅日期要遲過開始日期"); return; }
+    repeat = { freq: formRepeat.freq, days, dur: formRepeat.dur, until: computeUntil(startDate, formRepeat),
+      every: formRepeat.freq === "interval" ? formRepeat.every : undefined, lunar: formRepeat.lunar || undefined,
+      untilDate: formRepeat.dur === "date" ? formRepeat.untilDate : undefined };
   }
   bumpIconUsage(formIcon);
   const wantShared = !!shareCfg.on && document.getElementById("sharedInput").checked;
@@ -1631,6 +1719,28 @@ document.querySelectorAll("#themeSeg button").forEach(b => b.onclick = () => {
   render();
 });
 applyTheme(currentTheme);
+
+// 行程名太長:只顯示放得落嘅完整字(唔用「…」,亦唔會切開半隻字)
+function fitBarText() {
+  document.querySelectorAll(".bar span").forEach(sp => {
+    const full = sp.dataset.full || sp.textContent;
+    sp.dataset.full = full;
+    sp.textContent = full;
+    if (sp.scrollWidth <= sp.clientWidth + 0.5) return;
+    const chars = Array.from(full);
+    let lo = 0, hi = chars.length;
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      sp.textContent = chars.slice(0, mid).join("");
+      if (sp.scrollWidth <= sp.clientWidth + 0.5) lo = mid; else hi = mid - 1;
+    }
+    sp.textContent = chars.slice(0, lo).join("");
+  });
+}
+const _renderNoFit = render;
+render = function () { _renderNoFit(); fitBarText(); };
+window.addEventListener("resize", () => fitBarText());
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBarText);
 
 render();
 refreshOfficialHolidays();
