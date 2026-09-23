@@ -392,7 +392,7 @@
     <div class="set-divider"></div>
     <div class="set-title">背景主題</div>
     <div class="seg theme-seg" id="themeSeg"><button data-v="light">☃︎ 白雪</button><button data-v="dark">☾ 黑夜</button></div>
-    <p class="version">版本 2026.09.22-e</p>
+    <p class="version">版本 2026.09.22-f</p>
     <p class="credit">Developed by Bill Chiu</p>
   </div>
 </div>
@@ -472,7 +472,11 @@ const SH_KEY = "hk-calendar-share-v1", SHQ_KEY = "hk-calendar-share-queue-v1";
 let shareCfg = (() => { try { return JSON.parse(localStorage.getItem(SH_KEY)) || {}; } catch (e) { return {}; } })();
 let shareQueue = (() => { try { return JSON.parse(localStorage.getItem(SHQ_KEY)) || {}; } catch (e) { return {}; } })();
 if (!shareCfg.uid) { shareCfg.uid = "u-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); try { localStorage.setItem(SH_KEY, JSON.stringify(shareCfg)); } catch (e) {} }
-function isMine(ev) { return ev.byId ? ev.byId === shareCfg.uid : (ev.by || "") === (shareCfg.name || ""); }
+function isMine(ev) {
+  const me = (shareCfg.name || "").trim(), by = (ev.by || "").trim();
+  if (me && by) return by === me;            // 同名 = 同一個人(唔理用邊部機)
+  return ev.byId ? ev.byId === shareCfg.uid : by === me;
+}
 const newId = () => "ev-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
 
 /* 原創日系可愛圖案 (24x24 SVG) */
@@ -1583,14 +1587,20 @@ function scheduleGsBackup() {
   clearTimeout(gsTimer);
   gsTimer = setTimeout(() => gsBackup(true), 2000);
 }
+function eventsSignature() {
+  return JSON.stringify(events.map(e => [e.id, e.title, e.startDate, e.endDate, e.allDay, e.time, e.endTime,
+    e.color, e.icon, e.repeat ? JSON.stringify(e.repeat) : "", (e.exdates || []).join(","), e.shared ? 1 : 0]));
+}
 async function gsBackup(silent) {
   if (!gs.url) { if (!silent) alert("請先填寫 Web App 網址"); return; }
+  const sig = eventsSignature();
+  if (silent && gs.sig === sig) return;      // 冇改動就唔使再備份
   setGsStatus("備份中…");
   try {
     const res = await fetch(gs.url, { method: "POST", body: JSON.stringify({ token: gs.token || "", events }) });
     const j = await res.json();
     if (!j.ok) throw new Error(j.error === "token" ? "密碼唔啱" : (j.error || "未知錯誤"));
-    gs.last = new Date().toISOString(); saveGs(); setGsStatus();
+    gs.last = new Date().toISOString(); gs.sig = sig; saveGs(); setGsStatus();
   } catch (e) {
     setGsStatus("備份失敗:" + (e.message || "網絡錯誤"));
   }
