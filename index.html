@@ -45,8 +45,8 @@
   .act-btn.danger { color: var(--red); }
   .rep-mark { font-size: 11px; color: #aaa; margin-left: 4px; }
   .share-mark { font-size: 11px; color: #E4507A; margin-left: 4px; }
-  .bar.shared { border: 1.5px dashed var(--c); border-left: 3px solid var(--c); padding-left: 2px; }
-  .bar.shared.cont-l { border-left: 1.5px dashed var(--c); }
+  .bar.shared { border: 1.5px dashed var(--dash); padding-left: 1px; }
+  .bar.shared.cont-l { border-left: 0; }
   .event-card.shared { outline: 1.5px dashed var(--c); outline-offset: -1.5px; }
   .version { text-align: center; font-size: 11px; color: #bbb; margin: 18px 0 0; }
   .gear-btn { width: 32px; height: 32px; border-radius: 999px; border: none; background: #F5F5F3; color: #666; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -64,17 +64,20 @@
   html, body { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif; background: var(--bg); color: var(--ink); }
   .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; }
   .topbar { background: #fff; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-  .topbar-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 8px; }
-  .brand { display: flex; align-items: center; gap: 6px; }
+  .topbar-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 4px; padding: 8px 10px 6px; }
+  .top-actions { display: flex; gap: 6px; align-items: center; justify-self: end; }
+  .brand { justify-self: start; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .brand { display: flex; align-items: center; gap: 6px; min-width: 0; }
   .logo { width: 28px; height: 28px; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
   .logo svg { display: block; }
   h1 { font-size: 17px; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
-  .today-btn { font-size: 13px; font-weight: 500; color: var(--red); padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(228,0,43,0.3); background: none; }
+  .today-btn { font-size: 13px; font-weight: 500; color: var(--red); padding: 5px 11px; border-radius: 999px; border: 1px solid rgba(228,0,43,0.3); background: none; }
   .today-btn:active { background: rgba(228,0,43,0.1); }
-  .nav { display: flex; align-items: center; justify-content: center; gap: 20px; padding-bottom: 12px; }
+  .nav { display: flex; align-items: center; justify-content: center; gap: 0; padding: 0; }
   .nav button.arrow { width: 32px; height: 32px; border-radius: 999px; border: none; background: none; display: flex; align-items: center; justify-content: center; color: #555; font-size: 18px; cursor: pointer; }
   .nav button.arrow:active { background: rgba(0,0,0,0.05); }
-  .month-label { font-size: 16px; font-weight: 700; min-width: 120px; text-align: center; font-variant-numeric: tabular-nums; background: none; border: none; color: var(--ink); cursor: pointer; padding: 4px 10px; border-radius: 8px; display: flex; align-items: center; gap: 4px; justify-content: center; }
+  .month-label { font-size: 16px; font-weight: 700; min-width: 104px; text-align: center; font-variant-numeric: tabular-nums; background: none; border: none; color: var(--ink); cursor: pointer; padding: 4px 6px; border-radius: 8px; display: flex; align-items: center; gap: 4px; justify-content: center; }
   .month-label:active { background: rgba(0,0,0,0.05); }
   .month-label .caret { font-size: 10px; color: #aaa; }
   .weekdays { display: grid; grid-template-columns: repeat(7,1fr); border-top: 1px solid var(--line); }
@@ -85,10 +88,10 @@
   .week-row { position: relative; border-bottom: 1px solid var(--line); }
   .week-days { display: grid; grid-template-columns: repeat(7,1fr); position: relative; z-index: 1; }
   .cute { font-family: 'Hachi Maru Pop', 'Hiragino Maru Gothic ProN', 'Yuanti TC', 'Arial Rounded MT Bold', sans-serif; font-weight: 400; }
-  .day-cell { color: #262626;  height: 30px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 3px 3px 0 3px; background: none; border: none; min-width: 0; }
+  .day-cell { color: #262626;  height: 26px; display: flex; align-items: flex-start; justify-content: space-between; gap: 2px; padding: 2px 3px 0 3px; background: none; border: none; min-width: 0; }
   .hol-label { font-size: 8.5px; line-height: 1.1; color: var(--red); font-weight: 600; padding-top: 1px; text-align: right; word-break: break-all; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-width: 0; max-width: 2.3em; }
   .day-cell.selected { background: var(--red-light); }
-  .daynum { color: #262626; min-width: 20px; height: 18px; padding: 0 3px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .daynum { color: #262626; min-width: 20px; height: 16px; padding: 0 3px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
   .daynum.today { background: var(--red); color: #fff; font-weight: 700; }
   .daynum.outmonth { color: #ccc; }
   .daynum.hol { color: var(--red); }
@@ -96,12 +99,12 @@
   .daynum.sat { color: var(--blue); }
   .daynum.selected-ring { outline: 1.5px solid rgba(228,0,43,0.45); outline-offset: 0; }
   .week-select-bg { position: absolute; top: 0; bottom: 0; width: calc(100%/7); background: var(--red-light); z-index: 0; pointer-events: none; }
-  .events-area { position: relative; display: grid; grid-template-columns: repeat(7,1fr); grid-template-rows: repeat(3, 19px); gap: 2px 0; padding: 1px 0 4px; height: 68px; overflow: hidden; z-index: 2; pointer-events: none; }
+  .events-area { position: relative; display: grid; grid-template-columns: repeat(7,1fr); grid-template-rows: repeat(3, 18px); gap: 2px 0; padding: 1px 0 3px; height: 62px; overflow: hidden; z-index: 2; pointer-events: none; }
   .week-hit { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7,1fr); z-index: 0; }
   .week-hit button { background: none; border: none; border-right: 1px solid #EDEDEA; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .week-hit button:last-child { border-right: none; }
   .week-hit button:active { background: rgba(0,0,0,0.03); }
-  .bar { line-height: 1; font-size: 10px; color: #333; font-weight: 700; border-radius: 4px; padding: 0 3px; display: flex; align-items: center; gap: 2px; white-space: nowrap; overflow: hidden; margin: 0 1px; cursor: pointer; border-left: 3px solid transparent; }
+  .bar { line-height: 1; font-size: 10px; color: #333; font-weight: 700; border-radius: 3px; padding: 0 3px 0 2px; display: flex; align-items: center; gap: 2px; white-space: nowrap; overflow: hidden; margin: 0 1px; cursor: pointer; border-left: 0; }
   .bar span { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: clip; }
   .bar svg { width: 16px; height: 16px; flex-shrink: 0; display: block; }
   .bar.cont-l { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: 0; border-left-width: 0; }
@@ -217,7 +220,7 @@
   html[data-theme="dark"] .daynum.sat, html[data-theme="dark"] .weekdays span.sat { color: #6AA8F0; }
   html[data-theme="dark"] .daynum.sun, html[data-theme="dark"] .daynum.hol { color: #FF5C7A; }
   html[data-theme="dark"] .week-select-bg, html[data-theme="dark"] .day-cell.selected { background: #3B1820; }
-  html[data-theme="dark"] .bar { color: #F2F2F2; }
+
   html[data-theme="dark"] .nav button.arrow, html[data-theme="dark"] .close-btn, html[data-theme="dark"] .month-label .caret { color: #BBBBBB; }
   html[data-theme="dark"] label.field input[type=text], html[data-theme="dark"] label.field input[type=time], html[data-theme="dark"] label.field input[type=date], html[data-theme="dark"] .pick, html[data-theme="dark"] .allday-row, html[data-theme="dark"] .seg, html[data-theme="dark"] .icon-btn, html[data-theme="dark"] .wd-pick button, html[data-theme="dark"] .gear-btn, html[data-theme="dark"] .act-btn, html[data-theme="dark"] .delete-btn, html[data-theme="dark"] .swatch.add { background: #2A2A2F !important; color: #DDDDDD; }
   html[data-theme="dark"] .swatch.add { border-color: #555; }
@@ -240,7 +243,7 @@
   html[data-theme="dark"] .today-btn { border-color: rgba(255,92,122,.45); color: #FF5C7A; }
   .theme-seg { margin-bottom: 20px; }
   .dn-wrap { display: flex; flex-direction: column; align-items: center; min-width: 20px; flex-shrink: 0; }
-  .lunar { font-size: 8px; line-height: 1; color: #9A9A9A; margin-top: 1px; white-space: nowrap; font-weight: 500; }
+  .lunar { font-size: 8px; line-height: 1; color: #9A9A9A; margin-top: 0; white-space: nowrap; font-weight: 500; }
   .lunar.lm { color: #D0506E; font-weight: 700; }
   html[data-theme="dark"] .lunar { color: #7A7A80; }
   html[data-theme="dark"] .lunar.lm { color: #FF7A96; }
@@ -255,19 +258,60 @@
   html[data-theme="dark"] #dayList .event-card { background: #2A2A2F; }
   #dayList .empty { padding: 24px 0; }
   .credit { text-align: center; font-size: 11px; color: #bbb; margin: 4px 0 0; letter-spacing: .3px; }
+  /* ---------- 記憶行程 ---------- */
+  .mem-btn { position: fixed; bottom: calc(max(24px, env(safe-area-inset-bottom, 0px)) + 4px); right: 88px; width: 48px; height: 48px; border-radius: 999px; background: #fff; border: 1.5px solid rgba(228,0,43,.35); box-shadow: 0 4px 12px rgba(0,0,0,.12); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; cursor: pointer; z-index: 25; padding: 0; font-family: inherit; }
+  .mem-btn svg { width: 22px; height: 22px; display: block; }
+  .mem-btn span { font-size: 9px; font-weight: 700; color: var(--red); line-height: 1; margin-top: 1px; }
+  .mem-btn:active { transform: scale(.95); }
+  body.mem-open .fab, body.mem-open .mem-btn { display: none; }
+  body.mem-open .agenda { padding-bottom: 210px; }
+  .mem-panel { position: fixed; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 480px; background: #fff; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 20px rgba(0,0,0,.15); z-index: 26; transform: translateY(110%); transition: transform .2s ease-out; padding: 10px 0 calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .mem-panel.show { transform: none; }
+  .mem-head { display: flex; align-items: center; gap: 8px; padding: 0 10px 0 16px; }
+  .mem-title { font-size: 14px; font-weight: 700; color: var(--ink); flex-shrink: 0; }
+  .mem-hint { flex: 1; min-width: 0; font-size: 11px; color: #999; line-height: 1.3; }
+  .mem-hint b { color: var(--red); }
+  .mem-list { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .mem-list::-webkit-scrollbar { display: none; }
+  .mem-chip { flex: 0 0 auto; min-width: 80px; max-width: 150px; border: none; border-radius: 8px; padding: 6px 10px 6px 7px; display: flex; flex-direction: column; gap: 2px; text-align: left; touch-action: pan-x; font-family: inherit; cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .mem-chip .t { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; }
+  .mem-chip .t span { overflow: hidden; }
+  .mem-chip svg { width: 18px; height: 18px; flex-shrink: 0; display: block; }
+  .mem-chip .s { font-size: 10.5px; opacity: .75; white-space: nowrap; padding-left: 1px; }
+  .mem-chip.on { outline: 2.5px solid var(--red); outline-offset: 2px; }
+  .mem-empty { color: #aaa; font-size: 12px; padding: 16px 0; }
+  .week-hit button.drop-target { background: rgba(228,0,43,.14) !important; box-shadow: inset 0 0 0 2px rgba(228,0,43,.55); }
+  body.mem-pick .week-hit button:active { background: rgba(228,0,43,.14); }
+  .mem-ghost { position: fixed; z-index: 60; pointer-events: none; display: none; align-items: center; gap: 3px; height: 24px; padding: 0 8px 0 4px; border-radius: 5px; font-size: 12px; font-weight: 700; white-space: nowrap; box-shadow: 0 6px 16px rgba(0,0,0,.28); transform: translate(-50%, -140%) scale(1.05); }
+  .mem-ghost svg { width: 18px; height: 18px; display: block; }
+  .mem-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(170px + env(safe-area-inset-bottom, 0px)); background: rgba(30,30,30,.92); color: #fff; font-size: 13px; padding: 8px 8px 8px 14px; border-radius: 999px; z-index: 61; display: none; align-items: center; gap: 6px; white-space: nowrap; max-width: 92vw; }
+  .mem-toast.show { display: flex; }
+  .mem-toast span { overflow: hidden; text-overflow: ellipsis; }
+  .mem-toast button { background: none; border: none; color: #FF8FA3; font-weight: 700; font-size: 13px; padding: 2px 8px; font-family: inherit; flex-shrink: 0; }
+  html[data-theme="dark"] .mem-btn { background: #2A2A2F; border-color: rgba(255,92,122,.45); }
+  html[data-theme="dark"] .mem-panel { background: #1E1E22; box-shadow: 0 -6px 20px rgba(0,0,0,.5); }
+  html[data-theme="dark"] .mem-hint { color: #8A8A90; }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <filter id="icon-ol" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="0.75" result="d"/>
+    <feFlood flood-color="#2A2A2A"/>
+    <feComposite in2="d" operator="in" result="o"/>
+    <feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs></svg>
 <div class="app">
   <div class="topbar">
     <div class="topbar-row">
-      <div class="brand"><div class="logo"><svg width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><rect width="1024" height="1024" rx="220" fill="#E4002B"/><rect x="204" y="252" width="644" height="620" rx="70" fill="#AA001E"/><rect x="190" y="230" width="644" height="620" rx="70" fill="#fff"/><rect x="190" y="230" width="644" height="170" rx="70" fill="#FFD6DE"/><rect x="190" y="330" width="644" height="70" fill="#FFD6DE"/><rect x="332" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="344" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="636" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="648" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="262" y="470" width="110" height="110" rx="26" fill="#FFB300"/><rect x="398" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><circle cx="589" cy="661" r="61" fill="#E4002B"/><path d="M589 693L560 655A16 16 0 0 1 589 641A16 16 0 0 1 618 655Z" fill="#fff"/><rect x="670" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/></svg></div><h1>日曆</h1></div>
-      <div style="display:flex;gap:8px;align-items:center;"><button class="today-btn" id="todayBtn">今日</button><button class="gear-btn" id="gearBtn" aria-label="設定">⚙︎</button></div>
-    </div>
-    <div class="nav">
-      <button class="arrow" id="prevBtn">&#8249;</button>
-      <button class="month-label" id="monthLabel"></button>
-      <button class="arrow" id="nextBtn">&#8250;</button>
+      <div class="brand"><div class="logo"><svg width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><rect width="1024" height="1024" rx="220" fill="#E4002B"/><rect x="204" y="252" width="644" height="620" rx="70" fill="#AA001E"/><rect x="190" y="230" width="644" height="620" rx="70" fill="#fff"/><rect x="190" y="230" width="644" height="170" rx="70" fill="#FFD6DE"/><rect x="190" y="330" width="644" height="70" fill="#FFD6DE"/><rect x="332" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="344" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="636" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="648" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="262" y="470" width="110" height="110" rx="26" fill="#FFB300"/><rect x="398" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><circle cx="589" cy="661" r="61" fill="#E4002B"/><path d="M589 693L560 655A16 16 0 0 1 589 641A16 16 0 0 1 618 655Z" fill="#fff"/><rect x="670" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/></svg></div><h1 class="sr-only">日曆</h1></div>
+      <div class="nav">
+        <button class="arrow" id="prevBtn" aria-label="上個月">&#8249;</button>
+        <button class="month-label" id="monthLabel"></button>
+        <button class="arrow" id="nextBtn" aria-label="下個月">&#8250;</button>
+      </div>
+      <div class="top-actions"><button class="today-btn" id="todayBtn">今日</button><button class="gear-btn" id="gearBtn" aria-label="設定">⚙︎</button></div>
     </div>
     <div class="weekdays">
       <span class="sun">日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span class="sat">六</span>
@@ -279,7 +323,19 @@
     <div id="agendaList"></div>
   </div>
   <button class="fab" id="fabBtn">+</button>
+  <button class="mem-btn" id="memBtn" aria-label="記憶行程"><svg viewBox="0 0 24 24"><rect x="7.5" y="3" width="13" height="13" rx="3" fill="none" stroke="#E4002B" stroke-width="1.8"/><rect x="3.5" y="7.5" width="13" height="13" rx="3" fill="#FFE3E8" stroke="#E4002B" stroke-width="1.8"/><path d="M7.2 14h5.6M10 11.2v5.6" stroke="#E4002B" stroke-width="1.8" stroke-linecap="round"/></svg><span>記憶</span></button>
 </div>
+
+<div class="mem-panel" id="memPanel" aria-hidden="true">
+  <div class="mem-head">
+    <span class="mem-title">記憶行程</span>
+    <span class="mem-hint" id="memHint"></span>
+    <button class="close-btn" id="memCloseBtn" aria-label="關閉">&times;</button>
+  </div>
+  <div class="mem-list" id="memList"></div>
+</div>
+<div class="mem-ghost" id="memGhost"></div>
+<div class="mem-toast" id="memToast"><span id="memToastText"></span><button id="memUndoBtn">復原</button></div>
 
 <div class="overlay" id="dayOverlay">
   <div class="sheet">
@@ -392,7 +448,7 @@
     <div class="set-divider"></div>
     <div class="set-title">背景主題</div>
     <div class="seg theme-seg" id="themeSeg"><button data-v="light">☃︎ 白雪</button><button data-v="dark">☾ 黑夜</button></div>
-    <p class="version">版本 2026.09.22-f</p>
+    <p class="version">版本 2026.09.26-b</p>
     <p class="credit">Developed by Bill Chiu</p>
   </div>
 </div>
@@ -433,7 +489,11 @@
 
 <script>
 const WEEKDAYS_JP = ["日","一","二","三","四","五","六"];
-const COLORS = ["#E4002B","#FF8C00","#2E7CD6","#3AA76D","#8B5FBF"];
+const COLORS = ["#F7B9B9","#FADAAD","#BCDAF6","#BEEBD8","#E3D5F7"];
+// 舊版預設色 → 新淺色(舊行程同對方未更新嘅 App 都會顯示新色)
+const OLD_DEFAULT = { "#E4002B":"#F7B9B9", "#FF8C00":"#FADAAD", "#2E7CD6":"#BCDAF6", "#3AA76D":"#BEEBD8", "#8B5FBF":"#E3D5F7",
+  "#F29B9B":"#F7B9B9", "#F6C98C":"#FADAAD", "#9CC8F2":"#BCDAF6", "#A3E4C9":"#BEEBD8", "#D6C2F2":"#E3D5F7" };
+const colorOf = c => OLD_DEFAULT[(c || "").toUpperCase()] || c || COLORS[0];
 const ITEM_H = 44;
 const pad = n => String(n).padStart(2,"0");
 const dateKey = (y,m,d) => `${y}-${pad(m+1)}-${pad(d)}`;
@@ -550,7 +610,15 @@ const ICON_ORDER = ["chacha","work","school","morning","night","meeting","cake",
   "hospital","tooth","hair","book","exam","music","camera","party","gift","sun","sakura","cat","dog","cook","home","bed","money"];
 ICONS.sort((a, b) => (ICON_ORDER.indexOf(a.id) + 1 || 999) - (ICON_ORDER.indexOf(b.id) + 1 || 999));
 const ICON_MAP = Object.fromEntries(ICONS.map(i => [i.id, i]));
-const iconSvg = (id) => ICON_MAP[id] ? `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">${ICON_MAP[id].svg}</svg>` : "";
+const _iconCache = {};
+const iconSvg = (id) => {
+  if (!ICON_MAP[id]) return "";
+  if (_iconCache[id]) return _iconCache[id];
+  const raw = ICON_MAP[id].svg, TXT = /<text[\s\S]*?<\/text>/g;
+  const texts = (raw.match(TXT) || []).join(""), shapes = raw.replace(TXT, "");
+  // 圖形加幼黑框,文字唔加
+  return (_iconCache[id] = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><g filter="url(#icon-ol)">${shapes}</g>${texts}</svg>`);
+};
 let editingId = null;
 let formColor = COLORS[0];
 let formIcon = "";
@@ -901,6 +969,13 @@ function repeatText(ev) {
   return bl ? `每年(農曆${LUNAR_MONTH[bl.month - 1]}月${LUNAR_DAY[bl.day - 1]})` : "每年";
 }
 
+function isDarkColor(hex) {
+  const m = /^#?([0-9a-f]{6})/i.exec(hex || ""); if (!m) return false;
+  const n = parseInt(m[1], 16), lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const L = 0.2126 * lin(n >> 16 & 255) + 0.7152 * lin(n >> 8 & 255) + 0.0722 * lin(n & 255);
+  return (1.05) / (L + 0.05) > (L + 0.05) / 0.05 * 0.75;   // 白字對比夠就用白字
+}
+
 function layoutWeek(week) {
   const weekStart = week[0].key, weekEnd = week[6].key;
   const overlapping = instancesBetween(weekStart, weekEnd);
@@ -950,6 +1025,7 @@ function render() {
       const isSelected = cell.key === selectedDate;
       const btn = document.createElement("button");
       btn.className = "day-cell" + (isSelected ? " selected" : "");
+      btn.dataset.key = cell.key;
       btn.onclick = () => { selectDay(cell.key); };
       let numClass = "daynum";
       if (isToday) numClass += " today";
@@ -974,10 +1050,13 @@ function render() {
       bar.className = "bar" + (p.contL ? " cont-l" : "") + (p.contR ? " cont-r" : "");
       bar.style.gridColumn = `${p.segStart+1} / ${p.segEnd+2}`;
       bar.style.gridRow = `${p.track+1}`;
-      bar.style.background = p.ev.color + (document.documentElement.getAttribute("data-theme") === "dark" ? "55" : "26");
-      bar.style.borderLeftColor = p.ev.color;
+      const evColor = colorOf(p.ev.color);
+      bar.style.background = evColor;
+      const darkBg = isDarkColor(evColor);
+      bar.style.color = darkBg ? "#FFFFFF" : "#1A1A1A";
+      bar.style.setProperty("--dash", darkBg ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.55)");
       const text = p.ev.title;
-      if (p.ev.shared && !isMine(p.ev)) { bar.classList.add("shared"); bar.style.setProperty("--c", p.ev.color); }
+      if (p.ev.shared && !isMine(p.ev)) { bar.classList.add("shared"); bar.style.setProperty("--c", evColor); }
       bar.innerHTML = iconSvg(p.ev.icon) + `<span>${escapeHtml(text)}${p.contR ? " ▸" : ""}</span>`;
       evArea.appendChild(bar);
     });
@@ -987,6 +1066,7 @@ function render() {
     week.forEach(cell => {
       const b = document.createElement("button");
       b.setAttribute("aria-label", cell.key);
+      b.dataset.key = cell.key;
       b.onclick = () => { selectDay(cell.key); };
       hit.appendChild(b);
     });
@@ -1025,9 +1105,9 @@ function fillEventList(list, key, emptyHint) {
         const [ , m2, d2] = ev.endDate.split("-").map(Number);
         timeText += (timeText ? " ・ " : "") + `${m1}/${d1} 至 ${m2}/${d2}`;
       }
-      const iconHtml = ev.icon ? `<span class="ev-icon" style="background:${ev.color}1F">${iconSvg(ev.icon)}</span>` : "";
-      if (ev.shared && !isMine(ev)) { card.classList.add("shared"); card.style.setProperty("--c", ev.color); }
-      card.innerHTML = `<span class="event-bar-side" style="background:${ev.color}"></span>${iconHtml}
+      const iconHtml = ev.icon ? `<span class="ev-icon" style="background:${colorOf(ev.color)}33">${iconSvg(ev.icon)}</span>` : "";
+      if (ev.shared && !isMine(ev)) { card.classList.add("shared"); card.style.setProperty("--c", colorOf(ev.color)); }
+      card.innerHTML = `<span class="event-bar-side" style="background:${colorOf(ev.color)}"></span>${iconHtml}
         <div style="flex:1;min-width:0;">
           <p class="event-title">${escapeHtml(ev.title)}</p>
           <span class="event-time">${timeText}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}${ev.shared ? `<span class="share-mark">${isMine(ev) ? "已共享" : "共享 · " + escapeHtml(ev.by || "對方")}</span>` : ""}</span>
@@ -1330,7 +1410,7 @@ function openModal(inst) {
   document.getElementById("endTimeInput").value = ev && ev.endTime ? ev.endTime : addHour(st);
   updateTimeFieldVisibility();
   syncPickers();
-  formColor = ev ? ev.color : COLORS[0];
+  formColor = ev ? colorOf(ev.color) : COLORS[0];
   formIcon = ev ? (ev.icon || "") : "";
   renderColors();
   renderIcons();
@@ -1587,20 +1667,14 @@ function scheduleGsBackup() {
   clearTimeout(gsTimer);
   gsTimer = setTimeout(() => gsBackup(true), 2000);
 }
-function eventsSignature() {
-  return JSON.stringify(events.map(e => [e.id, e.title, e.startDate, e.endDate, e.allDay, e.time, e.endTime,
-    e.color, e.icon, e.repeat ? JSON.stringify(e.repeat) : "", (e.exdates || []).join(","), e.shared ? 1 : 0]));
-}
 async function gsBackup(silent) {
   if (!gs.url) { if (!silent) alert("請先填寫 Web App 網址"); return; }
-  const sig = eventsSignature();
-  if (silent && gs.sig === sig) return;      // 冇改動就唔使再備份
   setGsStatus("備份中…");
   try {
     const res = await fetch(gs.url, { method: "POST", body: JSON.stringify({ token: gs.token || "", events }) });
     const j = await res.json();
     if (!j.ok) throw new Error(j.error === "token" ? "密碼唔啱" : (j.error || "未知錯誤"));
-    gs.last = new Date().toISOString(); gs.sig = sig; saveGs(); setGsStatus();
+    gs.last = new Date().toISOString(); saveGs(); setGsStatus();
   } catch (e) {
     setGsStatus("備份失敗:" + (e.message || "網絡錯誤"));
   }
@@ -1751,6 +1825,154 @@ const _renderNoFit = render;
 render = function () { _renderNoFit(); fitBarText(); };
 window.addEventListener("resize", () => fitBarText());
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBarText);
+
+/* ---------- 記憶行程:揀舊行程,撳或者拖去日期格套用 ---------- */
+let memOpen = false, memSel = null, memLastAdded = null, memToastTimer = null, memSuppressClick = false;
+const evDays = ev => Math.max(0, Math.round((parseKey(ev.endDate || ev.startDate) - parseKey(ev.startDate)) / 86400000));
+function memTemplates() {
+  const map = new Map();
+  events.forEach(ev => {
+    if (!ev || !ev.title || (ev.shared && !shareCfg.on)) return;
+    const k = [ev.title, ev.icon || "", colorOf(ev.color), ev.allDay ? 1 : 0, ev.allDay ? "" : (ev.time || ""), ev.allDay ? "" : (ev.endTime || ""), evDays(ev)].join("|");
+    const t = ev.updatedAt || 0, cur = map.get(k);
+    if (!cur) map.set(k, { ev, t, k }); else if (t > cur.t) { cur.t = t; cur.ev = ev; }
+  });
+  return [...map.values()].sort((a, b) => b.t - a.t).slice(0, 60);
+}
+function memTimeText(ev) {
+  const d = evDays(ev);
+  const t = ev.allDay ? "全天" : (ev.time ? `${ev.time}–${ev.endTime || addHour(ev.time)}` : "");
+  return t + (d ? ` ・ ${d + 1}日` : "");
+}
+function fmtMD(k) { const [, m, d] = k.split("-").map(Number); return `${m}月${d}日`; }
+function memChipStyle(el, ev) {
+  const c = colorOf(ev.color);
+  el.style.background = c;
+  el.style.color = isDarkColor(c) ? "#FFFFFF" : "#1A1A1A";
+}
+function renderMemHint() {
+  const h = document.getElementById("memHint");
+  h.innerHTML = memSel ? `撳日期格就會加入<b>「${escapeHtml(memSel.ev.title)}」</b>,可以連續加` : "撳一個行程再撳日期,或者向上拖去日期格";
+}
+function renderMem() {
+  const list = document.getElementById("memList");
+  list.innerHTML = "";
+  const tpls = memTemplates();
+  if (memSel && !tpls.some(x => x.k === memSel.k)) memSel = null;
+  if (!tpls.length) list.innerHTML = `<div class="mem-empty">日曆入面未有行程,新增咗之後就會出現喺度</div>`;
+  tpls.forEach(tp => {
+    const chip = document.createElement("button");
+    chip.className = "mem-chip" + (memSel && memSel.k === tp.k ? " on" : "");
+    memChipStyle(chip, tp.ev);
+    chip.innerHTML = `<span class="t">${iconSvg(tp.ev.icon)}<span>${escapeHtml(tp.ev.title)}</span></span><span class="s">${memTimeText(tp.ev)}</span>`;
+    chip.onclick = () => {
+      if (memSuppressClick) return;
+      memSel = memSel && memSel.k === tp.k ? null : tp;
+      document.body.classList.toggle("mem-pick", !!memSel);
+      renderMem();
+    };
+    attachMemDrag(chip, tp);
+    list.appendChild(chip);
+  });
+  document.body.classList.toggle("mem-pick", !!memSel);
+  renderMemHint();
+}
+function openMem() {
+  memOpen = true; memSel = null;
+  renderMem();
+  document.getElementById("memList").scrollLeft = 0;
+  document.body.classList.add("mem-open");
+  document.getElementById("memPanel").classList.add("show");
+  document.getElementById("memPanel").setAttribute("aria-hidden", "false");
+}
+function closeMem() {
+  memOpen = false; memSel = null;
+  document.body.classList.remove("mem-open", "mem-pick");
+  document.getElementById("memPanel").classList.remove("show");
+  document.getElementById("memPanel").setAttribute("aria-hidden", "true");
+}
+function applyMemory(src, key) {
+  const ev = { id: newId(), title: src.title, startDate: key, endDate: addDaysKey(key, evDays(src)),
+    allDay: !!src.allDay, time: src.allDay ? "" : (src.time || ""), endTime: src.allDay ? "" : (src.endTime || ""),
+    color: colorOf(src.color), icon: src.icon || "", repeat: null, exdates: [], updatedAt: Date.now() };
+  if (shareCfg.on && src.shared) { ev.shared = true; ev.by = shareCfg.name || ""; ev.byId = shareCfg.uid; queueShare(ev); }
+  events.push(ev);
+  bumpIconUsage(ev.icon);
+  saveEvents();
+  selectedDate = key;
+  const [y, m] = key.split("-").map(Number);
+  if (y !== viewYear || m - 1 !== viewMonth) { /* 拖去隔籬月份嘅灰色格都照加,唔轉月 */ }
+  render();
+  if (memOpen) renderMem();
+  memLastAdded = ev.id;
+  document.getElementById("memToastText").textContent = `已加入「${ev.title}」到 ${fmtMD(key)}`;
+  const toast = document.getElementById("memToast");
+  toast.classList.add("show");
+  clearTimeout(memToastTimer);
+  memToastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
+}
+document.getElementById("memUndoBtn").onclick = () => {
+  const i = events.findIndex(e => e.id === memLastAdded);
+  if (i >= 0) {
+    const ev = events[i];
+    if (ev.shared) queueShare({ ...ev, updatedAt: Date.now() }, true);
+    events.splice(i, 1); saveEvents(); render(); if (memOpen) renderMem();
+  }
+  memLastAdded = null;
+  document.getElementById("memToast").classList.remove("show");
+};
+// 揀咗記憶行程之後,撳日期格 = 加入
+const _selectDayPlain = selectDay;
+selectDay = function (key) {
+  if (memOpen && memSel) { applyMemory(memSel.ev, key); return; }
+  _selectDayPlain(key);
+};
+// 拖放:向上拖就開始拖,左右掃就係捲動清單
+function dropKeyAt(x, y) {
+  const el = document.elementFromPoint(x, y);
+  if (!el || el.closest("#memPanel")) return null;
+  const k = el.closest("[data-key]");
+  return k ? k.dataset.key : null;
+}
+function setDropTarget(key) {
+  document.querySelectorAll(".week-hit button.drop-target").forEach(b => b.classList.remove("drop-target"));
+  if (key) { const b = document.querySelector(`.week-hit button[data-key="${key}"]`); if (b) b.classList.add("drop-target"); }
+}
+function attachMemDrag(chip, tp) {
+  let sx = 0, sy = 0, pid = null, dragging = false, target = null;
+  const ghost = document.getElementById("memGhost");
+  const end = () => {
+    pid = null; dragging = false; ghost.style.display = "none"; setDropTarget(null);
+    setTimeout(() => { memSuppressClick = false; }, 60);
+  };
+  chip.addEventListener("pointerdown", e => { if (e.button > 0) return; pid = e.pointerId; sx = e.clientX; sy = e.clientY; dragging = false; target = null; });
+  chip.addEventListener("pointermove", e => {
+    if (e.pointerId !== pid) return;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (!dragging) {
+      if (dy < -8 && Math.abs(dy) > Math.abs(dx)) {
+        dragging = true; memSuppressClick = true;
+        try { chip.setPointerCapture(pid); } catch (err) {}
+        memChipStyle(ghost, tp.ev);
+        ghost.innerHTML = `${iconSvg(tp.ev.icon)}<span>${escapeHtml(tp.ev.title)}</span>`;
+        ghost.style.display = "flex";
+      } else return;
+    }
+    ghost.style.left = e.clientX + "px"; ghost.style.top = e.clientY + "px";
+    target = dropKeyAt(e.clientX, e.clientY - 18);
+    setDropTarget(target);
+  });
+  chip.addEventListener("pointerup", e => {
+    if (e.pointerId !== pid) return;
+    const was = dragging, key = target;
+    end();
+    if (was && key) applyMemory(tp.ev, key);
+  });
+  chip.addEventListener("pointercancel", end);
+  chip.addEventListener("touchmove", e => { if (dragging && e.cancelable) e.preventDefault(); }, { passive: false });
+}
+document.getElementById("memBtn").onclick = () => (memOpen ? closeMem() : openMem());
+document.getElementById("memCloseBtn").onclick = closeMem;
 
 render();
 refreshOfficialHolidays();
