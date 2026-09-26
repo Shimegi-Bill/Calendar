@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap&text=%E7%95%AA%E6%97%A9%E5%A4%9C%21">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap&text=%E7%95%AA%E6%97%A9%E5%A4%9C%21%E4%BC%91%E5%81%87ALSC">
 <script>try{if(localStorage.getItem("hk-calendar-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
 <title>日曆</title>
 <style>
@@ -264,14 +264,17 @@
   .mem-btn span { font-size: 9px; font-weight: 700; color: var(--red); line-height: 1; margin-top: 1px; }
   .mem-btn:active { transform: scale(.95); }
   body.mem-open .fab, body.mem-open .mem-btn { display: none; }
-  body.mem-open .agenda { padding-bottom: 210px; }
+  body.mem-open .agenda { padding-bottom: 290px; }
   .mem-panel { position: fixed; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 480px; background: #fff; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 20px rgba(0,0,0,.15); z-index: 26; transform: translateY(110%); transition: transform .2s ease-out; padding: 10px 0 calc(12px + env(safe-area-inset-bottom, 0px)); }
   .mem-panel.show { transform: none; }
   .mem-head { display: flex; align-items: center; gap: 8px; padding: 0 10px 0 16px; }
   .mem-title { font-size: 14px; font-weight: 700; color: var(--ink); flex-shrink: 0; }
-  .mem-hint { flex: 1; min-width: 0; font-size: 11px; color: #999; line-height: 1.3; }
+  .mem-hint { padding: 0 16px; font-size: 11px; color: #999; line-height: 1.3; }
   .mem-hint b { color: var(--red); }
-  .mem-list { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  #memSearch { flex: 1; min-width: 0; height: 34px; border: none; border-radius: 10px; background: #F5F5F3; padding: 0 12px; font-family: inherit; color: var(--ink); outline: none; -webkit-appearance: none; appearance: none; }
+  #memSearch:focus { box-shadow: 0 0 0 2px rgba(228,0,43,.3); }
+  html[data-theme="dark"] #memSearch { background: #2A2A2F; }
+  .mem-list { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, auto); grid-auto-columns: max-content; align-items: stretch; gap: 8px; overflow-x: auto; padding: 8px 16px 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .mem-list::-webkit-scrollbar { display: none; }
   .mem-chip { flex: 0 0 auto; min-width: 80px; max-width: 150px; border: none; border-radius: 8px; padding: 6px 10px 6px 7px; display: flex; flex-direction: column; gap: 2px; text-align: left; touch-action: pan-x; font-family: inherit; cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .mem-chip .t { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; }
@@ -279,18 +282,49 @@
   .mem-chip svg { width: 18px; height: 18px; flex-shrink: 0; display: block; }
   .mem-chip .s { font-size: 10.5px; opacity: .75; white-space: nowrap; padding-left: 1px; }
   .mem-chip.on { outline: 2.5px solid var(--red); outline-offset: 2px; }
-  .mem-empty { color: #aaa; font-size: 12px; padding: 16px 0; }
+  .mem-empty { grid-row: 1 / -1; color: #aaa; font-size: 12px; padding: 16px 0; }
   .week-hit button.drop-target { background: rgba(228,0,43,.14) !important; box-shadow: inset 0 0 0 2px rgba(228,0,43,.55); }
   body.mem-pick .week-hit button:active { background: rgba(228,0,43,.14); }
   .mem-ghost { position: fixed; z-index: 60; pointer-events: none; display: none; align-items: center; gap: 3px; height: 24px; padding: 0 8px 0 4px; border-radius: 5px; font-size: 12px; font-weight: 700; white-space: nowrap; box-shadow: 0 6px 16px rgba(0,0,0,.28); transform: translate(-50%, -140%) scale(1.05); }
   .mem-ghost svg { width: 18px; height: 18px; display: block; }
-  .mem-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(170px + env(safe-area-inset-bottom, 0px)); background: rgba(30,30,30,.92); color: #fff; font-size: 13px; padding: 8px 8px 8px 14px; border-radius: 999px; z-index: 61; display: none; align-items: center; gap: 6px; white-space: nowrap; max-width: 92vw; }
+  .mem-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(250px + env(safe-area-inset-bottom, 0px)); background: rgba(30,30,30,.92); color: #fff; font-size: 13px; padding: 8px 8px 8px 14px; border-radius: 999px; z-index: 61; display: none; align-items: center; gap: 6px; white-space: nowrap; max-width: 92vw; }
   .mem-toast.show { display: flex; }
   .mem-toast span { overflow: hidden; text-overflow: ellipsis; }
   .mem-toast button { background: none; border: none; color: #FF8FA3; font-weight: 700; font-size: 13px; padding: 2px 8px; font-family: inherit; flex-shrink: 0; }
   html[data-theme="dark"] .mem-btn { background: #2A2A2F; border-color: rgba(255,92,122,.45); }
   html[data-theme="dark"] .mem-panel { background: #1E1E22; box-shadow: 0 -6px 20px rgba(0,0,0,.5); }
   html[data-theme="dark"] .mem-hint { color: #8A8A90; }
+  /* ---------- 列表模式 ---------- */
+  .view-toggle { position: relative; background: none; border: none; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .view-badge { position: absolute; right: -5px; bottom: -5px; width: 17px; height: 17px; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); display: flex; align-items: center; justify-content: center; z-index: 1; }
+  .view-badge svg { width: 11px; height: 11px; display: block; }
+  html[data-theme="dark"] .view-badge { background: #2A2A2F; }
+  .list-view { display: none; padding: 6px 12px 120px; }
+  body.list-mode .list-view { display: block; }
+  body.list-mode #grid, body.list-mode .weekdays, body.list-mode .agenda { display: none; }
+  body.list-mode.mem-open .list-view { padding-bottom: 300px; }
+  .lv-day { margin-bottom: 10px; padding: 2px 4px 2px; border-radius: 12px; scroll-margin-top: 64px; transition: background .15s; }
+  .lv-head { display: flex; align-items: baseline; gap: 6px; padding: 8px 4px 6px; cursor: pointer; }
+  .lv-date { font-size: 17px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .lv-wd { font-size: 13px; font-weight: 600; color: #888; }
+  .lv-lunar { font-size: 11px; color: #aaa; }
+  .lv-day.sun .lv-date, .lv-day.sun .lv-wd, .lv-day.hol .lv-date, .lv-day.hol .lv-wd { color: var(--red); }
+  .lv-day.sat .lv-date, .lv-day.sat .lv-wd { color: var(--blue); }
+  .lv-day.today .lv-head .lv-date { background: var(--red); color: #fff; border-radius: 6px; padding: 0 6px; }
+  .lv-day.sel { background: var(--red-light); }
+  .lv-day.drop-target { background: rgba(228,0,43,.12); box-shadow: inset 0 0 0 2px rgba(228,0,43,.5); }
+  .lv-day .event-card { margin-bottom: 6px; }
+  .lv-empty { text-align: center; color: #aaa; font-size: 13px; padding: 60px 0; }
+  html[data-theme="dark"] .lv-day.sat .lv-date, html[data-theme="dark"] .lv-day.sat .lv-wd { color: #6AA8F0; }
+  .title-sugg { display: none; flex-wrap: wrap; gap: 6px; margin: -6px 0 14px; }
+  .title-sugg.show { display: flex; }
+  .title-sugg .sg-lbl { width: 100%; font-size: 11px; color: #999; }
+  .title-sugg button { border: none; border-radius: 7px; padding: 5px 9px 5px 6px; display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; max-width: 100%; }
+  .title-sugg button svg { width: 16px; height: 16px; flex-shrink: 0; display: block; }
+  .title-sugg button small { font-weight: 500; opacity: .7; font-size: 10.5px; margin-left: 2px; }
+  .event-card.ended { opacity: .45; filter: grayscale(1); }
+  .lv-month { font-size: 13px; font-weight: 800; color: var(--red); letter-spacing: .5px; padding: 14px 6px 2px; border-bottom: 1px solid var(--line); margin: 0 4px 6px; scroll-margin-top: 60px; }
+  .lv-more { display: block; margin: 10px auto 0; border: 1.5px solid rgba(228,0,43,.35); background: none; color: var(--red); border-radius: 999px; padding: 8px 18px; font-size: 13px; font-weight: 700; font-family: inherit; }
 </style>
 </head>
 <body>
@@ -305,7 +339,7 @@
 <div class="app">
   <div class="topbar">
     <div class="topbar-row">
-      <div class="brand"><div class="logo"><svg width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><rect width="1024" height="1024" rx="220" fill="#E4002B"/><rect x="204" y="252" width="644" height="620" rx="70" fill="#AA001E"/><rect x="190" y="230" width="644" height="620" rx="70" fill="#fff"/><rect x="190" y="230" width="644" height="170" rx="70" fill="#FFD6DE"/><rect x="190" y="330" width="644" height="70" fill="#FFD6DE"/><rect x="332" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="344" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="636" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="648" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="262" y="470" width="110" height="110" rx="26" fill="#FFB300"/><rect x="398" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><circle cx="589" cy="661" r="61" fill="#E4002B"/><path d="M589 693L560 655A16 16 0 0 1 589 641A16 16 0 0 1 618 655Z" fill="#fff"/><rect x="670" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/></svg></div><h1 class="sr-only">日曆</h1></div>
+      <button class="brand view-toggle" id="viewBtn" aria-label="切換月曆/列表"><span class="view-badge" id="viewBadge"></span><div class="logo"><svg width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><rect width="1024" height="1024" rx="220" fill="#E4002B"/><rect x="204" y="252" width="644" height="620" rx="70" fill="#AA001E"/><rect x="190" y="230" width="644" height="620" rx="70" fill="#fff"/><rect x="190" y="230" width="644" height="170" rx="70" fill="#FFD6DE"/><rect x="190" y="330" width="644" height="70" fill="#FFD6DE"/><rect x="332" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="344" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="636" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="648" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="262" y="470" width="110" height="110" rx="26" fill="#FFB300"/><rect x="398" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><circle cx="589" cy="661" r="61" fill="#E4002B"/><path d="M589 693L560 655A16 16 0 0 1 589 641A16 16 0 0 1 618 655Z" fill="#fff"/><rect x="670" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/></svg></div><h1 class="sr-only">日曆</h1></button>
       <div class="nav">
         <button class="arrow" id="prevBtn" aria-label="上個月">&#8249;</button>
         <button class="month-label" id="monthLabel"></button>
@@ -318,6 +352,7 @@
     </div>
   </div>
   <div class="grid" id="grid"></div>
+  <div class="list-view" id="listView"></div>
   <div class="agenda">
     <div class="agenda-header" id="agendaHeader"></div>
     <div id="agendaList"></div>
@@ -329,10 +364,11 @@
 <div class="mem-panel" id="memPanel" aria-hidden="true">
   <div class="mem-head">
     <span class="mem-title">記憶行程</span>
-    <span class="mem-hint" id="memHint"></span>
+    <input type="search" id="memSearch" placeholder="🔍 搜尋名稱或圖案" autocomplete="off" enterkeyhint="search">
     <button class="close-btn" id="memCloseBtn" aria-label="關閉">&times;</button>
   </div>
   <div class="mem-list" id="memList"></div>
+  <div class="mem-hint" id="memHint"></div>
 </div>
 <div class="mem-ghost" id="memGhost"></div>
 <div class="mem-toast" id="memToast"><span id="memToastText"></span><button id="memUndoBtn">復原</button></div>
@@ -356,8 +392,9 @@
     </div>
     <label class="field">
       <span>標題</span>
-      <input type="text" id="titleInput" placeholder="輸入行程名稱">
+      <input type="text" id="titleInput" placeholder="輸入行程名稱" autocomplete="off">
     </label>
+    <div class="title-sugg" id="titleSugg"></div>
     <div class="date-row">
       <div class="field-half"><span>開始日期</span><div class="pick"><div class="pick-text" data-for="startInput"></div><input type="date" id="startInput" min="1990-01-01" max="2110-12-31"></div></div>
       <div class="date-sep">至</div>
@@ -461,7 +498,7 @@
     <div class="set-divider"></div>
     <div class="set-title">背景主題</div>
     <div class="seg theme-seg" id="themeSeg"><button data-v="light">☃︎ 白雪</button><button data-v="dark">☾ 黑夜</button></div>
-    <p class="version">版本 2026.09.26-c</p>
+    <p class="version">版本 2026.09.26-h</p>
     <p class="credit">Developed by Bill Chiu</p>
   </div>
 </div>
@@ -619,9 +656,21 @@ const MORE2 = [
 ];
 const MORE3 = [
   { id:"veg", label:"素食", svg:'<path d="M10.6 21.2c.3-2.6.3-5 0-7.4h2.8c-.3 2.4-.3 4.8 0 7.4z" fill="#8BC34A"/><path d="M11.4 15.5l-2.2-2M12.7 16.2l2.3-2.1" stroke="#7CB342" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="10.6" r="3.4" fill="#43A047"/><circle cx="16" cy="10.6" r="3.4" fill="#43A047"/><circle cx="12" cy="7.2" r="4" fill="#4CAF50"/><circle cx="12" cy="12" r="3" fill="#388E3C"/><g fill="#81C784"><circle cx="10.6" cy="5.8" r=".9"/><circle cx="7" cy="9.6" r=".8"/><circle cx="15.2" cy="9.4" r=".8"/></g><path d="M16.8 21c1.8-.4 3.4-1.9 3.8-4.4-2.4.2-3.8 1.6-3.8 4.4z" fill="#AED581"/><path d="M16.9 20.9l2.6-3.4" stroke="#7CB342" stroke-width=".7" stroke-linecap="round"/>' },
-  { id:"bbq", label:"BBQ", svg:'<path d="M8.4 17.6c-1.2-2 .8-3 0-5 2.2.8 2.8 2.8 1.9 5zM13.8 18.2c-1.3-2.3.9-3.4 0-5.6 2.5.9 3.1 3.2 2.1 5.6z" fill="#FF7043"/><path d="M8.8 17.1c-.4-.8.1-1.2 0-1.9.6.4.8 1.1.6 1.9zM14.3 17.7c-.4-.9.2-1.4 0-2.2.8.4 1 1.3.7 2.2z" fill="#FFD166"/><path d="M3 20.5h18" stroke="#8D6E63" stroke-width="1.6" stroke-linecap="round"/><path d="M2.6 11.6L21.4 4.4" stroke="#BCAAA4" stroke-width="1.2" stroke-linecap="round"/><g transform="rotate(-21 12 8)"><rect x="4.2" y="6" width="3.6" height="4" rx="1.1" fill="#A1582E"/><rect x="8.4" y="6.1" width="2.8" height="3.8" rx="1" fill="#66BB6A"/><rect x="11.8" y="6" width="3.6" height="4" rx="1.1" fill="#A1582E"/><rect x="16" y="6.1" width="2.8" height="3.8" rx="1" fill="#EF5350"/><path d="M4.8 7.3h2.4M12.4 7.3h2.4" stroke="#D08A5C" stroke-width=".7" stroke-linecap="round"/></g>' }
+  { id:"bbq", label:"BBQ", svg:'<path d="M16.2 17.8c-1.3-2 .7-3.2 0-5.4 2.4 1 3 3.2 2 5.4zM19.6 18.4c-.9-1.5.5-2.4 0-4 1.8.8 2.2 2.4 1.5 4z" fill="#FF7043"/><path d="M16.7 17.3c-.4-.8.1-1.3 0-2 .6.4.8 1.2.6 2z" fill="#FFD166"/><path d="M14.2 19.2h7.2" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/><path d="M2.6 21.4L15.2 8.8" stroke="#8D5B3E" stroke-width="1.6" stroke-linecap="round"/><path d="M6.4 17.6l-2.6-.3M9.2 14.8l.2-2.3" stroke="#8D5B3E" stroke-width="1.1" stroke-linecap="round"/><circle cx="3.9" cy="17.3" r=".8" fill="#7CB342"/><g transform="translate(13.4 9.8) rotate(-45)"><rect x="-1.2" y="-2.7" width="5.2" height="5.4" rx="2" fill="#FFF8EC" stroke="#E6CFA6" stroke-width=".6"/><rect x="2.6" y="-2.7" width="1.8" height="5.4" rx=".9" fill="#E0A45C"/><rect x="4.9" y="-2.7" width="5.2" height="5.4" rx="2" fill="#FFF0F4" stroke="#EBC3CF" stroke-width=".6"/><rect x="8.5" y="-2.7" width="1.8" height="5.4" rx=".9" fill="#C98545"/></g>' }
 ];
-ICONS.push(...NEW_ICONS, FROG, ...MORE_ICONS, ...MORE2, ...MORE3);
+const LEAVE_ICONS = [
+  { id:"holiday", label:"休假", svg:'<text x="12" y="10.2" class="cute" font-size="9.6" text-anchor="middle" fill="#fff" stroke="#fff" stroke-width="1.9" stroke-linejoin="round">休假</text><text x="12" y="10.2" class="cute" font-size="9.6" text-anchor="middle" fill="#C2185B" stroke="#C2185B" stroke-width=".7" stroke-linejoin="round">休假</text><circle cx="18.6" cy="15.4" r="1.7" fill="#FFC23D"/><path d="M10.6 17.6v3.6" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/><path d="M5.6 17.9a5 3.8 0 0 1 10 0z" fill="#FF7B8F"/><path d="M8.9 17.9a1.7 3.8 0 0 1 3.4 0z" fill="#FFE3E8"/><path d="M3.5 21.4h17" stroke="#F3C969" stroke-width="1.5" stroke-linecap="round"/>' },
+  { id:"al", label:"AL", svg:'<text x="12" y="10.6" class="cute" font-size="10.6" text-anchor="middle" fill="#fff" stroke="#fff" stroke-width="1.9" stroke-linejoin="round">AL</text><text x="12" y="10.6" class="cute" font-size="10.6" text-anchor="middle" fill="#1E6FB8" stroke="#1E6FB8" stroke-width=".6" stroke-linejoin="round">AL</text><g transform="translate(6.6 12.4) scale(.45)"><path d="M21.5 12c0-.9-.7-1.6-1.6-1.6h-5.6L9.8 3H7.6l2.4 7.4H5.1L3.3 8H2l1.3 4L2 16h1.3l1.8-2.4H10L7.6 21h2.2l4.5-7.4h5.6c.9 0 1.6-.7 1.6-1.6z" fill="#4FB3E8"/></g><path d="M3.8 15.2h2M3 17.6h2.6M3.8 20h2" stroke="#B3DDF5" stroke-width="1" stroke-linecap="round"/>' },
+  { id:"sl", label:"SL", svg:'<text x="12" y="10.6" class="cute" font-size="10.6" text-anchor="middle" fill="#fff" stroke="#fff" stroke-width="1.9" stroke-linejoin="round">SL</text><text x="12" y="10.6" class="cute" font-size="10.6" text-anchor="middle" fill="#D84343" stroke="#D84343" stroke-width=".6" stroke-linejoin="round">SL</text><rect x="4.6" y="16.1" width="11.6" height="2.8" rx="1.4" fill="#fff" stroke="#E57373" stroke-width=".9"/><rect x="6.2" y="16.95" width="7.2" height="1.1" rx=".55" fill="#E53935"/><circle cx="17.4" cy="17.5" r="2.3" fill="#E53935"/><circle cx="16.8" cy="16.9" r=".6" fill="#FF9A9A"/><path d="M8 13.4v.8M10 13.4v.8M12 13.4v.8" stroke="#E57373" stroke-width=".7" stroke-linecap="round"/>' },
+  { id:"cl", label:"CL", svg:'<text x="12" y="10.6" class="cute" font-size="10.6" text-anchor="middle" fill="#fff" stroke="#fff" stroke-width="1.9" stroke-linejoin="round">CL</text><text x="12" y="10.6" class="cute" font-size="10.6" text-anchor="middle" fill="#6A4FB5" stroke="#6A4FB5" stroke-width=".6" stroke-linejoin="round">CL</text><rect x="7.2" y="13.4" width="9.6" height="8.4" rx="1.7" fill="#fff" stroke="#8B7BD8" stroke-width="1"/><path d="M7.2 15.1a1.7 1.7 0 0 1 1.7-1.7h6.2a1.7 1.7 0 0 1 1.7 1.7v1H7.2z" fill="#8B7BD8"/><path d="M9.6 12.6v1.8M14.4 12.6v1.8" stroke="#6A5AC0" stroke-width="1" stroke-linecap="round"/><path d="M9.6 18.6l1.6 1.5 3.1-3.1" stroke="#3AA76D" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' }
+];
+const ANIMALS2 = [
+  { id:"elephant", label:"大象", svg:'<rect x="7.4" y="15.2" width="2.8" height="5.6" rx="1.3" fill="#8FA7BF"/><rect x="11.6" y="15.2" width="2.8" height="5.6" rx="1.3" fill="#8FA7BF"/><path d="M3.4 17.2c-.9-.1-1.5-.9-1.2-1.8" stroke="#8FA7BF" stroke-width="1" fill="none" stroke-linecap="round"/><ellipse cx="9.6" cy="13.8" rx="6.4" ry="4.8" fill="#A9BFD6"/><path d="M17.6 12.4c2.9.2 3.9 2.8 3.5 5.2-.2 1.4-1.6 2-2.5 1.2" stroke="#B7CCE0" stroke-width="2.8" fill="none" stroke-linecap="round"/><circle cx="15.8" cy="9.6" r="5.2" fill="#B7CCE0"/><ellipse cx="12" cy="9.8" rx="3.6" ry="4.2" fill="#A9BFD6"/><ellipse cx="12.2" cy="10" rx="2.3" ry="2.9" fill="#F4B6C2"/><circle cx="17.4" cy="8.6" r=".95" fill="#2E2E2E"/><circle cx="17.7" cy="8.3" r=".3" fill="#fff"/><circle cx="17" cy="11.6" r="1" fill="#FF9EAA" opacity=".7"/>' },
+  { id:"fawn", label:"鹿仔", svg:'<ellipse cx="4.9" cy="8.6" rx="3.4" ry="1.9" transform="rotate(-25 4.9 8.6)" fill="#C98B5E"/><ellipse cx="19.1" cy="8.6" rx="3.4" ry="1.9" transform="rotate(25 19.1 8.6)" fill="#C98B5E"/><ellipse cx="5.2" cy="8.7" rx="2" ry=".9" transform="rotate(-25 5.2 8.7)" fill="#F5C9A8"/><ellipse cx="18.8" cy="8.7" rx="2" ry=".9" transform="rotate(25 18.8 8.7)" fill="#F5C9A8"/><path d="M12 4c4 0 6.4 3.1 6.4 7.4 0 4.8-3 9-6.4 9s-6.4-4.2-6.4-9C5.6 7.1 8 4 12 4z" fill="#D2915C"/><ellipse cx="12" cy="16.9" rx="3.5" ry="2.8" fill="#FFF1E0"/><ellipse cx="12" cy="15.6" rx="1.3" ry=".85" fill="#4E342E"/><circle cx="9.3" cy="11.8" r="1.15" fill="#3E2723"/><circle cx="14.7" cy="11.8" r="1.15" fill="#3E2723"/><circle cx="9.7" cy="11.4" r=".38" fill="#fff"/><circle cx="15.1" cy="11.4" r=".38" fill="#fff"/><g fill="#FFF6EC"><circle cx="12" cy="7.2" r=".8"/><circle cx="10.2" cy="8.4" r=".55"/><circle cx="13.8" cy="8.4" r=".55"/></g><circle cx="8.2" cy="14.3" r=".9" fill="#FF9EAA" opacity=".6"/><circle cx="15.8" cy="14.3" r=".9" fill="#FF9EAA" opacity=".6"/>' },
+  { id:"capybara", label:"卡B吧啦", svg:'<rect x="5" y="17" width="2.6" height="3.8" rx="1.1" fill="#8D5E3A"/><rect x="9.6" y="17" width="2.6" height="3.8" rx="1.1" fill="#8D5E3A"/><rect x="2.4" y="10.4" width="15" height="9" rx="4.5" fill="#B07A4F"/><rect x="11.4" y="7.2" width="10.4" height="9" rx="3.8" fill="#BE8A5C"/><rect x="17.2" y="9.8" width="4.6" height="6.4" rx="2.3" fill="#A06B42"/><circle cx="13.4" cy="7.6" r="1.2" fill="#8D5E3A"/><path d="M15.2 10.7h1.6" stroke="#3E2723" stroke-width="1.1" stroke-linecap="round"/><path d="M20.4 11.8v.9" stroke="#3E2723" stroke-width=".8" stroke-linecap="round"/><circle cx="16.6" cy="4.6" r="2.4" fill="#FFB300"/><circle cx="16" cy="4" r=".6" fill="#FFE082"/><path d="M16.8 2.3c.6-.9 1.6-1.1 2.3-.8-.4.9-1.4 1.2-2.3.8z" fill="#7CB342"/>' },
+  { id:"otter", label:"水瀨", svg:'<circle cx="6" cy="6.6" r="1.8" fill="#8D6E63"/><circle cx="18" cy="6.6" r="1.8" fill="#8D6E63"/><circle cx="6" cy="6.6" r=".9" fill="#5D4037"/><circle cx="18" cy="6.6" r=".9" fill="#5D4037"/><circle cx="12" cy="12" r="7.8" fill="#9C7A62"/><ellipse cx="12" cy="14.6" rx="4.6" ry="3.4" fill="#F2DDC4"/><ellipse cx="12" cy="13.2" rx="1.5" ry="1" fill="#3E2723"/><path d="M11 15.4q1 .7 2 0" stroke="#3E2723" stroke-width=".7" fill="none" stroke-linecap="round"/><path d="M8.6 14.4L5.8 13.9M8.6 15.4l-2.7.5M15.4 14.4l2.8-.5M15.4 15.4l2.7.5" stroke="#6D4C41" stroke-width=".5" stroke-linecap="round"/><circle cx="9.2" cy="10.4" r="1.05" fill="#2E2E2E"/><circle cx="14.8" cy="10.4" r="1.05" fill="#2E2E2E"/><circle cx="9.5" cy="10.1" r=".35" fill="#fff"/><circle cx="15.1" cy="10.1" r=".35" fill="#fff"/><path d="M9 21.6c0-2 1.3-3.4 3-3.4s3 1.4 3 3.4z" fill="#FF9EAA"/><path d="M12 18.4v3.2M10.4 19.1l.7 2.5M13.6 19.1l-.7 2.5" stroke="#E57A8C" stroke-width=".5"/><ellipse cx="8.8" cy="19.6" rx="1.5" ry="1.1" fill="#7A5A45"/><ellipse cx="15.2" cy="19.6" rx="1.5" ry="1.1" fill="#7A5A45"/>' }
+];
+ICONS.push(...NEW_ICONS, FROG, ...MORE_ICONS, ...MORE2, ...MORE3, ...LEAVE_ICONS, ...ANIMALS2);
 const ICON_ORDER = ["chacha","work","school","morning","night","meeting","cake","ramen","dimsum","coffee","beer","heart","ring",
   "park","game","movie","mic","shop","plane","train","car","hike","beach","swim","ball","basket","gym",
   "hospital","tooth","hair","book","exam","music","camera","party","gift","sun","sakura","cat","dog","cook","home","bed","money"];
@@ -631,8 +680,9 @@ const _iconCache = {};
 const iconSvg = (id) => {
   if (!ICON_MAP[id]) return "";
   if (_iconCache[id]) return _iconCache[id];
-  const raw = ICON_MAP[id].svg, TXT = /<text[\s\S]*?<\/text>/g;
-  const texts = (raw.match(TXT) || []).join(""), shapes = raw.replace(TXT, "");
+  const raw = ICON_MAP[id].svg, TXT = /<text[\s\S]*?<\/text>|<path class="txt"[^>]*\/>/g;
+  const keep = false;
+  const texts = keep ? "" : (raw.match(TXT) || []).join(""), shapes = keep ? raw : raw.replace(TXT, "");
   // 圖形加幼黑框,文字唔加
   return (_iconCache[id] = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><g filter="url(#icon-ol)">${shapes}</g>${texts}</svg>`);
 };
@@ -1018,7 +1068,7 @@ function layoutWeek(week) {
 }
 
 function render() {
-  document.getElementById("monthLabel").innerHTML = `${viewYear}年 ${viewMonth+1}月 <span class="caret">▾</span>`;
+  document.getElementById("monthLabel").innerHTML = `${viewYear}年 ${viewMonth+1}月`;
   const gridEl = document.getElementById("grid");
   gridEl.innerHTML = "";
   const weeks = buildWeeks(viewYear, viewMonth);
@@ -1101,7 +1151,12 @@ function render() {
   if (document.getElementById("dayOverlay").classList.contains("show")) renderDaySheet();
 }
 
-function fillEventList(list, key, emptyHint) {
+function isEnded(ev) {
+  const end = ev.allDay || !ev.time ? parseKey(addDaysKey(ev.endDate, 1)).getTime()
+    : new Date(`${ev.endDate}T${ev.endTime || addHour(ev.time)}:00`).getTime();
+  return end <= Date.now();
+}
+function fillEventList(list, key, emptyHint, markEnded) {
   const dayEvents = instancesBetween(key, key)
     .slice().sort((a,b) => {
       if (a.allDay !== b.allDay) return a.allDay ? -1 : 1;
@@ -1113,7 +1168,7 @@ function fillEventList(list, key, emptyHint) {
   } else {
     dayEvents.forEach(ev => {
       const card = document.createElement("button");
-      card.className = "event-card";
+      card.className = "event-card" + (markEnded && isEnded(ev) ? " ended" : "");
       card.onclick = () => openModal(ev);
       const isMulti = ev.startDate !== ev.endDate;
       let timeText = ev.allDay ? "全天" : (ev.time ? `${ev.time} – ${ev.endTime || addHour(ev.time)}` : "");
@@ -1251,7 +1306,7 @@ document.getElementById("cpOverlay").onclick = e => { if (e.target.id === "cpOve
 
 const ICON_CATS = [
   ["時間", ["morning","sunset","night"]],
-  ["班次・提示", ["early","nshift","alert"]],
+  ["班次・提示", ["early","nshift","holiday","al","sl","cl","alert"]],
   ["工作・學習", ["work","meeting","train","school","book","exam"]],
   ["飲食", ["ramen","sushi","kbbq","bbq","dimsum","veg","dessert","coffee","beer","cook"]],
   ["節日・紀念", ["cake","ring","heart","gift","party"]],
@@ -1259,7 +1314,7 @@ const ICON_CATS = [
   ["出行", ["plane","car","hike","beach","sakura"]],
   ["運動", ["run","ball","basket","gym","swim"]],
   ["健康・生活", ["hospital","tooth","hair","bed","home","money","sun"]],
-  ["動物", ["chacha","cat","dog","cricket","butterfly","gecko","chameleon"]]
+  ["動物", ["chacha","cat","dog","elephant","fawn","capybara","otter","cricket","butterfly","gecko","chameleon"]]
 ];
 const USAGE_KEY = "hk-calendar-icon-usage";
 let iconUsage = (() => { try { return JSON.parse(localStorage.getItem(USAGE_KEY)) || null; } catch (e) { return null; } })();
@@ -1561,6 +1616,7 @@ function saveEvent(mode) {
 }
 
 function changeMonth(dir) {
+  if (listMode) { listJump(dir); return; }
   if (dir > 0 && viewYear === 2110 && viewMonth === 11) return;
   if (dir < 0 && viewYear === 1990 && viewMonth === 0) return;
   if (dir > 0) { if (viewMonth===11){viewMonth=0;viewYear++;} else viewMonth++; }
@@ -1885,6 +1941,119 @@ function fitBarText() {
     sp.textContent = chars.slice(0, lo).join("");
   });
 }
+/* ---------- 列表模式 ---------- */
+const VIEW_KEY = "hk-calendar-view";
+let listMode = (() => { try { return localStorage.getItem(VIEW_KEY) === "list"; } catch (e) { return false; } })();
+let lvScrollToToday = false;
+const BADGE_LIST = '<svg viewBox="0 0 12 12"><path d="M2 3h8M2 6h8M2 9h8" stroke="#E4002B" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const BADGE_CAL = '<svg viewBox="0 0 12 12"><rect x="1.5" y="1.5" width="9" height="9" rx="2" fill="none" stroke="#E4002B" stroke-width="1.4"/><path d="M1.5 4.5h9M6 4.5v6M1.5 7.5h9" stroke="#E4002B" stroke-width="1"/></svg>';
+let lvYears = 1;
+function lvEndKey(fromKey) {
+  const [y, m, d] = fromKey.split("-").map(Number);
+  const last = new Date(y + lvYears, m, 0).getDate();   // 2月29號 → 下年2月28號
+  return dateKey(y + lvYears, m - 1, Math.min(d, last));
+}
+function renderList() {
+  const box = document.getElementById("listView");
+  box.innerHTML = "";
+  const nowKey = dateKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+  const endKey = lvEndKey(nowKey);
+  const days = new Set();
+  instancesBetween(nowKey, endKey).forEach(ev => {
+    let k = ev.startDate < nowKey ? nowKey : ev.startDate;
+    const last = ev.endDate > endKey ? endKey : ev.endDate;
+    for (let n = 0; k <= last && n < 400; n++, k = addDaysKey(k, 1)) days.add(k);
+  });
+  const keys = [...days].sort();
+  let lastYm = "";
+  keys.forEach(key => {
+    const [y, m, d] = key.split("-").map(Number);
+    const ym = key.slice(0, 7);
+    if (ym !== lastYm) {
+      lastYm = ym;
+      const h = document.createElement("div"); h.className = "lv-month"; h.dataset.ym = ym; h.textContent = `${y}年${m}月`;
+      box.appendChild(h);
+    }
+    const wd = new Date(y, m - 1, d).getDay(), hol = holidayOf(key), lo = lunarOfKey(key);
+    const sec = document.createElement("section");
+    sec.className = "lv-day" + (key === nowKey ? " today" : "") + (key === selectedDate ? " sel" : "") + (hol ? " hol" : wd === 0 ? " sun" : wd === 6 ? " sat" : "");
+    sec.dataset.key = key; sec.dataset.ym = ym;
+    sec.innerHTML = `<div class="lv-head"><span class="lv-date">${m}月${d}日</span><span class="lv-wd">星期${WEEKDAYS_JP[wd]}</span>` +
+      `<span class="lv-lunar">${lo ? "農曆" + (lo.day === 1 ? (lo.leap ? "閏" : "") + LUNAR_MONTH[lo.month - 1] + "月" : LUNAR_DAY[lo.day - 1]) : ""}</span>` +
+      (hol ? `<span class="agenda-today-badge">${hol}</span>` : "") + (key === nowKey ? `<span class="agenda-today-badge">今日</span>` : "") + `</div>`;
+    sec.querySelector(".lv-head").onclick = () => selectDay(key);
+    const list = document.createElement("div");
+    sec.appendChild(list);
+    fillEventList(list, key, "", true);
+    box.appendChild(sec);
+  });
+  if (!keys.length) box.innerHTML = `<div class="lv-empty">由今日到 ${fmtKey(endKey)} 冇行程<br>撳右下角 + 新增</div>`;
+  const more = document.createElement("button");
+  more.className = "lv-more"; more.textContent = `顯示到 ${fmtKey(endKey)} 為止 ・ 撳呢度再睇多一年`;
+  more.onclick = () => { lvYears += 1; render(); };
+  box.appendChild(more);
+  if (lvScrollToToday) { lvScrollToToday = false; window.scrollTo(0, 0); }
+  if (lvPendingYm) { const t = lvPendingYm; lvPendingYm = null; requestAnimationFrame(() => lvScrollToYm(t, 0)); }
+  requestAnimationFrame(updateListMonthLabel);
+}
+let lvPendingYm = null;
+const ymNum = ym => { const [y, m] = ym.split("-").map(Number); return y * 12 + (m - 1); };
+function lvScrollToYm(target, dir) {
+  const heads = [...document.querySelectorAll("#listView .lv-month")];
+  let el = null;
+  if (dir < 0) { const prev = heads.filter(h => ymNum(h.dataset.ym) <= target); el = prev[prev.length - 1] || null; if (!el) { window.scrollTo({ top: 0, behavior: "smooth" }); return true; } }
+  else el = heads.find(h => ymNum(h.dataset.ym) >= target) || null;
+  if (!el) return false;
+  el.scrollIntoView({ block: "start", behavior: "smooth" });
+  return true;
+}
+function currentListYm() {
+  const top = document.querySelector(".topbar").getBoundingClientRect().bottom + 4;
+  const secs = [...document.querySelectorAll("#listView .lv-day")];
+  const first = secs.find(s => s.getBoundingClientRect().bottom > top) || secs[secs.length - 1];
+  return first ? first.dataset.ym : null;
+}
+function updateListMonthLabel() {
+  if (!listMode) return;
+  const ym = currentListYm();
+  if (!ym) return;
+  const [y, m] = ym.split("-").map(Number);
+  viewYear = y; viewMonth = m - 1;
+  document.getElementById("monthLabel").textContent = `${y}年 ${m}月`;
+}
+function listJump(dir) {
+  const cur = currentListYm(); if (!cur) return;
+  const c = ymNum(cur);
+  if (dir > 0 && !lvScrollToYm(c + 1, 1)) {
+    if (lvYears < 5) { lvYears += 1; lvPendingYm = c + 1; render(); }
+  } else if (dir < 0) lvScrollToYm(c - 1, -1);
+}
+let lvScrollRaf = null;
+window.addEventListener("scroll", () => { if (!listMode || lvScrollRaf) return; lvScrollRaf = requestAnimationFrame(() => { lvScrollRaf = null; updateListMonthLabel(); }); }, { passive: true });
+setInterval(() => { if (listMode && document.visibilityState === "visible" && !document.querySelector(".overlay.show")) render(); }, 60000);
+function applyViewMode() {
+  document.body.classList.toggle("list-mode", listMode);
+  document.getElementById("viewBadge").innerHTML = listMode ? BADGE_CAL : BADGE_LIST;
+  document.getElementById("viewBtn").setAttribute("aria-label", listMode ? "切換到月曆" : "切換到列表");
+}
+document.getElementById("viewBtn").onclick = () => {
+  listMode = !listMode;
+  try { localStorage.setItem(VIEW_KEY, listMode ? "list" : "month"); } catch (e) {}
+  applyViewMode();
+  if (memOpen) { memSel = null; renderMem(); }
+  if (listMode) lvScrollToToday = true;
+  window.scrollTo(0, 0);
+  render();
+};
+const _todayBtnPlain = document.getElementById("todayBtn").onclick;
+document.getElementById("todayBtn").onclick = () => { if (listMode) { lvScrollToToday = true; selectedDate = todayKey; render(); return; } _todayBtnPlain(); };
+{ const pc = document.getElementById("pickerConfirmBtn"), orig = pc.onclick;
+  pc.onclick = () => { orig(); if (listMode) { const t = viewYear * 12 + viewMonth; if (!lvScrollToYm(t, 1)) { lvPendingYm = t; lvYears = Math.max(lvYears, Math.ceil((t - (today.getFullYear() * 12 + today.getMonth()) + 1) / 12)); render(); } } };
+}
+const _renderBase = render;
+render = function () { _renderBase(); if (listMode) renderList(); };
+applyViewMode();
+
 const _renderNoFit = render;
 render = function () { _renderNoFit(); fitBarText(); };
 window.addEventListener("resize", () => fitBarText());
@@ -1914,16 +2083,61 @@ function memChipStyle(el, ev) {
   el.style.background = c;
   el.style.color = isDarkColor(c) ? "#FFFFFF" : "#1A1A1A";
 }
+function applyTemplateToForm(src) {
+  const start = document.getElementById("startInput").value || selectedDate;
+  document.getElementById("titleInput").value = src.title || "";
+  document.getElementById("endInput").value = addDaysKey(start, evDays(src));
+  document.getElementById("alldayInput").checked = !!src.allDay;
+  if (!src.allDay && src.time) { document.getElementById("timeInput").value = src.time; document.getElementById("endTimeInput").value = src.endTime || addHour(src.time); }
+  formColor = colorOf(src.color); formIcon = src.icon || "";
+  updateTimeFieldVisibility(); syncPickers(); renderColors(); renderIcons(); updateSaveState();
+}
+function renderTitleSugg() {
+  const box = document.getElementById("titleSugg"), inp = document.getElementById("titleInput");
+  const q = inp.value.trim().toLowerCase();
+  box.innerHTML = "";
+  if (!q || document.activeElement !== inp) { box.classList.remove("show"); return; }
+  const seen = new Set();
+  const list = memTemplates().map(t => t.ev).filter(ev => (ev.title || "").toLowerCase().includes(q))
+    .filter(ev => { const k = [ev.title, ev.icon || "", colorOf(ev.color)].join("|"); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 8);
+  if (!list.length || (list.length === 1 && list[0].title.toLowerCase() === q)) { box.classList.remove("show"); return; }
+  box.innerHTML = `<span class="sg-lbl">撳一下套用舊行程嘅名稱、圖案同顏色</span>`;
+  list.forEach(ev => {
+    const b = document.createElement("button"); b.type = "button";
+    const c = colorOf(ev.color); b.style.background = c; b.style.color = isDarkColor(c) ? "#fff" : "#1A1A1A";
+    b.innerHTML = `${iconSvg(ev.icon)}<span>${escapeHtml(ev.title)}</span>`;
+    b.addEventListener("pointerdown", e => e.preventDefault());   // 唔好令輸入欄失焦
+    b.onclick = () => {
+      inp.value = ev.title || ""; formColor = colorOf(ev.color); formIcon = ev.icon || "";
+      renderColors(); renderIcons(); updateSaveState();
+      box.classList.remove("show"); inp.blur();
+    };
+    box.appendChild(b);
+  });
+  box.classList.add("show");
+}
+document.getElementById("titleInput").addEventListener("input", renderTitleSugg);
+document.getElementById("titleInput").addEventListener("focus", renderTitleSugg);
+document.getElementById("titleInput").addEventListener("blur", () => setTimeout(renderTitleSugg, 120));
+function openModalFromTemplate(src) {
+  openModal(null);
+  applyTemplateToForm(src);
+  document.getElementById("sharedInput").checked = !!(shareCfg.on && src.shared);
+}
 function renderMemHint() {
   const h = document.getElementById("memHint");
+  if (listMode) { h.innerHTML = "撳行程會開新增表單(已套用設定),或者向上拖去有行程嘅日子"; return; }
   h.innerHTML = memSel ? `撳日期格就會加入<b>「${escapeHtml(memSel.ev.title)}」</b>,可以連續加` : "撳一個行程再撳日期,或者向上拖去日期格";
 }
 function renderMem() {
   const list = document.getElementById("memList");
   list.innerHTML = "";
-  const tpls = memTemplates();
-  if (memSel && !tpls.some(x => x.k === memSel.k)) memSel = null;
-  if (!tpls.length) list.innerHTML = `<div class="mem-empty">日曆入面未有行程,新增咗之後就會出現喺度</div>`;
+  const all = memTemplates();
+  if (memSel && !all.some(x => x.k === memSel.k)) memSel = null;
+  const q = (document.getElementById("memSearch").value || "").trim().toLowerCase();
+  const tpls = q ? all.filter(x => (x.ev.title || "").toLowerCase().includes(q) || ((ICON_MAP[x.ev.icon] || {}).label || "").toLowerCase().includes(q)) : all;
+  if (!all.length) list.innerHTML = `<div class="mem-empty">日曆入面未有行程,新增咗之後就會出現喺度</div>`;
+  else if (!tpls.length) list.innerHTML = `<div class="mem-empty">搵唔到「${escapeHtml(q)}」</div>`;
   tpls.forEach(tp => {
     const chip = document.createElement("button");
     chip.className = "mem-chip" + (memSel && memSel.k === tp.k ? " on" : "");
@@ -1931,6 +2145,7 @@ function renderMem() {
     chip.innerHTML = `<span class="t">${iconSvg(tp.ev.icon)}<span>${escapeHtml(tp.ev.title)}</span></span><span class="s">${memTimeText(tp.ev)}</span>`;
     chip.onclick = () => {
       if (memSuppressClick) return;
+      if (listMode) { openModalFromTemplate(tp.ev); return; }
       memSel = memSel && memSel.k === tp.k ? null : tp;
       document.body.classList.toggle("mem-pick", !!memSel);
       renderMem();
@@ -1943,6 +2158,7 @@ function renderMem() {
 }
 function openMem() {
   memOpen = true; memSel = null;
+  document.getElementById("memSearch").value = "";
   renderMem();
   document.getElementById("memList").scrollLeft = 0;
   document.body.classList.add("mem-open");
@@ -1999,8 +2215,8 @@ function dropKeyAt(x, y) {
   return k ? k.dataset.key : null;
 }
 function setDropTarget(key) {
-  document.querySelectorAll(".week-hit button.drop-target").forEach(b => b.classList.remove("drop-target"));
-  if (key) { const b = document.querySelector(`.week-hit button[data-key="${key}"]`); if (b) b.classList.add("drop-target"); }
+  document.querySelectorAll(".drop-target").forEach(b => b.classList.remove("drop-target"));
+  if (key) { const b = document.querySelector(`.week-hit button[data-key="${key}"], .lv-day[data-key="${key}"]`); if (b) b.classList.add("drop-target"); }
 }
 function attachMemDrag(chip, tp) {
   let sx = 0, sy = 0, pid = null, dragging = false, target = null;
@@ -2037,6 +2253,8 @@ function attachMemDrag(chip, tp) {
 }
 document.getElementById("memBtn").onclick = () => (memOpen ? closeMem() : openMem());
 document.getElementById("memCloseBtn").onclick = closeMem;
+document.getElementById("memSearch").addEventListener("input", () => { renderMem(); document.getElementById("memList").scrollLeft = 0; });
+document.getElementById("memSearch").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
 
 render();
 refreshOfficialHolidays();
