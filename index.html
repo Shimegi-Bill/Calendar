@@ -412,6 +412,19 @@
   </div>
 </div>
 
+<div class="overlay" id="editOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <h2>更新重複行程</h2>
+      <button class="close-btn" id="editCloseBtn">&times;</button>
+    </div>
+    <p class="set-note" id="editNote"></p>
+    <button class="act-btn" id="editOneBtn">只更新呢一次</button>
+    <button class="act-btn" id="editFutureBtn">更新呢日及之後嘅重複行程</button>
+    <button class="act-btn" id="editCancelBtn" style="color:#999">取消</button>
+  </div>
+</div>
+
 <div class="overlay" id="setOverlay">
   <div class="sheet">
     <div class="sheet-header">
@@ -448,7 +461,7 @@
     <div class="set-divider"></div>
     <div class="set-title">背景主題</div>
     <div class="seg theme-seg" id="themeSeg"><button data-v="light">☃︎ 白雪</button><button data-v="dark">☾ 黑夜</button></div>
-    <p class="version">版本 2026.09.26-b</p>
+    <p class="version">版本 2026.09.26-c</p>
     <p class="credit">Developed by Bill Chiu</p>
   </div>
 </div>
@@ -604,7 +617,11 @@ const MORE2 = [
   { id:"kbbq", label:"韓燒", svg:'<path d="M9 4.6c-.7 1 .7 1.6 0 2.6M12 3.8c-.7 1 .7 1.6 0 2.6M15 4.6c-.7 1 .7 1.6 0 2.6" stroke="#BDBDBD" stroke-width="1.1" fill="none" stroke-linecap="round"/><path d="M5.8 21.5l2.2-6M18.2 21.5l-2.2-6" stroke="#616161" stroke-width="1.5" stroke-linecap="round"/><path d="M8.9 20.2c-1-1.7.6-2.6 0-4.2 1.8.7 2.3 2.3 1.6 4.2zM11.9 20.6c-1.1-2 .7-3 0-4.8 2.1.8 2.6 2.7 1.8 4.8zM14.9 20.2c-1-1.7.6-2.6 0-4.2 1.8.7 2.3 2.3 1.6 4.2z" fill="#FF7043"/><path d="M9.3 19.8c-.3-.6.1-1 0-1.5.5.3.7.9.5 1.5zM12.3 20.2c-.4-.8.2-1.2 0-1.9.7.3.9 1.1.6 1.9zM15.3 19.8c-.3-.6.1-1 0-1.5.5.3.7.9.5 1.5z" fill="#FFD166"/><ellipse cx="12" cy="12" rx="9.5" ry="3.6" fill="#616161"/><ellipse cx="12" cy="11.5" rx="8.3" ry="2.8" fill="#3E3E3E"/><path d="M5 11.5h14M6.2 10.2h11.6M6.2 12.8h11.6" stroke="#6E6E6E" stroke-width=".5"/><g transform="rotate(-10 8.6 11)"><rect x="6.2" y="9.8" width="4.8" height="2.5" rx="1" fill="#E57373"/><path d="M6.8 11.1h3.6" stroke="#FFCDD2" stroke-width=".6"/></g><g transform="rotate(12 15 11.3)"><rect x="12.6" y="10" width="4.8" height="2.5" rx="1" fill="#C0605A"/><path d="M13.2 11.3h3.6" stroke="#F8BBD0" stroke-width=".6"/></g>' },
   { id:"chameleon", label:"變色龍", svg:'<path d="M2 20.5h20" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/><path d="M6 14.2c-2.6.9-3.3 4.1-1.4 5.2 1.7 1 3.5-.6 2.5-2-.7-1-2-.4-1.7.5" stroke="#66BB6A" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M9.2 15.6l-1 4.6M13.8 15.8l1 4.4" stroke="#43A047" stroke-width="1.7" stroke-linecap="round"/><path d="M4.8 13.2c.4-3.8 3.2-6 6.8-6 2.1 0 3.6.6 4.7 1.6L21 11.3l-4.3 2.6c-1.1 1.9-3 3-5.4 3-3.5 0-6.8-1.2-6.5-3.7z" fill="#66BB6A"/><path d="M8 7.9c1.2-1 2.8-1.6 4.5-1.4" stroke="#43A047" stroke-width="1" fill="none" stroke-linecap="round"/><g fill="#FFEB3B" opacity=".85"><circle cx="8.6" cy="11.4" r=".8"/><circle cx="11" cy="12.6" r=".8"/><circle cx="10" cy="9.6" r=".7"/></g><circle cx="16.9" cy="10.8" r="2" fill="#A5D6A7" stroke="#43A047" stroke-width=".7"/><circle cx="17.3" cy="10.8" r=".8" fill="#222"/><path d="M19.4 12.5q.8.2 1.3-.2" stroke="#2E7D32" stroke-width=".6" fill="none" stroke-linecap="round"/>' }
 ];
-ICONS.push(...NEW_ICONS, FROG, ...MORE_ICONS, ...MORE2);
+const MORE3 = [
+  { id:"veg", label:"素食", svg:'<path d="M10.6 21.2c.3-2.6.3-5 0-7.4h2.8c-.3 2.4-.3 4.8 0 7.4z" fill="#8BC34A"/><path d="M11.4 15.5l-2.2-2M12.7 16.2l2.3-2.1" stroke="#7CB342" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="10.6" r="3.4" fill="#43A047"/><circle cx="16" cy="10.6" r="3.4" fill="#43A047"/><circle cx="12" cy="7.2" r="4" fill="#4CAF50"/><circle cx="12" cy="12" r="3" fill="#388E3C"/><g fill="#81C784"><circle cx="10.6" cy="5.8" r=".9"/><circle cx="7" cy="9.6" r=".8"/><circle cx="15.2" cy="9.4" r=".8"/></g><path d="M16.8 21c1.8-.4 3.4-1.9 3.8-4.4-2.4.2-3.8 1.6-3.8 4.4z" fill="#AED581"/><path d="M16.9 20.9l2.6-3.4" stroke="#7CB342" stroke-width=".7" stroke-linecap="round"/>' },
+  { id:"bbq", label:"BBQ", svg:'<path d="M8.4 17.6c-1.2-2 .8-3 0-5 2.2.8 2.8 2.8 1.9 5zM13.8 18.2c-1.3-2.3.9-3.4 0-5.6 2.5.9 3.1 3.2 2.1 5.6z" fill="#FF7043"/><path d="M8.8 17.1c-.4-.8.1-1.2 0-1.9.6.4.8 1.1.6 1.9zM14.3 17.7c-.4-.9.2-1.4 0-2.2.8.4 1 1.3.7 2.2z" fill="#FFD166"/><path d="M3 20.5h18" stroke="#8D6E63" stroke-width="1.6" stroke-linecap="round"/><path d="M2.6 11.6L21.4 4.4" stroke="#BCAAA4" stroke-width="1.2" stroke-linecap="round"/><g transform="rotate(-21 12 8)"><rect x="4.2" y="6" width="3.6" height="4" rx="1.1" fill="#A1582E"/><rect x="8.4" y="6.1" width="2.8" height="3.8" rx="1" fill="#66BB6A"/><rect x="11.8" y="6" width="3.6" height="4" rx="1.1" fill="#A1582E"/><rect x="16" y="6.1" width="2.8" height="3.8" rx="1" fill="#EF5350"/><path d="M4.8 7.3h2.4M12.4 7.3h2.4" stroke="#D08A5C" stroke-width=".7" stroke-linecap="round"/></g>' }
+];
+ICONS.push(...NEW_ICONS, FROG, ...MORE_ICONS, ...MORE2, ...MORE3);
 const ICON_ORDER = ["chacha","work","school","morning","night","meeting","cake","ramen","dimsum","coffee","beer","heart","ring",
   "park","game","movie","mic","shop","plane","train","car","hike","beach","swim","ball","basket","gym",
   "hospital","tooth","hair","book","exam","music","camera","party","gift","sun","sakura","cat","dog","cook","home","bed","money"];
@@ -1236,7 +1253,7 @@ const ICON_CATS = [
   ["時間", ["morning","sunset","night"]],
   ["班次・提示", ["early","nshift","alert"]],
   ["工作・學習", ["work","meeting","train","school","book","exam"]],
-  ["飲食", ["ramen","sushi","kbbq","dimsum","dessert","coffee","beer","cook"]],
+  ["飲食", ["ramen","sushi","kbbq","bbq","dimsum","veg","dessert","coffee","beer","cook"]],
   ["節日・紀念", ["cake","ring","heart","gift","party"]],
   ["玩樂", ["park","game","movie","mic","music","camera","shop"]],
   ["出行", ["plane","car","hike","beach","sakura"]],
@@ -1391,6 +1408,19 @@ function openDeleteChoice(base, occ) {
   ov.classList.add("show");
 }
 
+function askEditScope(base, occ, cb) {
+  const [, m, d] = (occ || base.startDate).split("-").map(Number);
+  document.getElementById("editNote").textContent = `「${base.title}」係重複行程。你想只更新 ${m}月${d}日 呢一次,定係連之後嘅重複都一齊更新?之前嘅日子唔會受影響。`;
+  const ov = document.getElementById("editOverlay");
+  const close = () => ov.classList.remove("show");
+  document.getElementById("editOneBtn").onclick = () => { close(); cb("one"); };
+  document.getElementById("editFutureBtn").onclick = () => { close(); cb("future"); };
+  document.getElementById("editCancelBtn").onclick = close;
+  document.getElementById("editCloseBtn").onclick = close;
+  ov.onclick = e => { if (e.target.id === "editOverlay") close(); };
+  ov.classList.add("show");
+}
+
 function openModal(inst) {
   const ev = inst ? (inst._base || inst) : null;
   currentOcc = inst ? (inst._occ || inst.startDate) : null;
@@ -1402,8 +1432,8 @@ function openModal(inst) {
                                : { freq: "none", days: [], dur: "forever", until: null, every: 2, lunar: false, untilDate: null };
   document.getElementById("sheetTitle").textContent = ev ? "編輯行程" : "新增行程";
   document.getElementById("titleInput").value = ev ? ev.title : "";
-  document.getElementById("startInput").value = ev ? ev.startDate : selectedDate;
-  document.getElementById("endInput").value = ev ? ev.endDate : selectedDate;
+  document.getElementById("startInput").value = inst ? inst.startDate : selectedDate;
+  document.getElementById("endInput").value = inst ? inst.endDate : selectedDate;
   document.getElementById("alldayInput").checked = ev ? ev.allDay : false;
   const st = ev ? (ev.time || "09:00") : "09:00";
   document.getElementById("timeInput").value = st;
@@ -1431,7 +1461,7 @@ function openModal(inst) {
   save.className = "save-btn";
   save.id = "saveBtn";
   save.textContent = editingId ? "更新" : "新增";
-  save.onclick = saveEvent;
+  save.onclick = () => saveEvent();
   actions.appendChild(save);
   updateSaveState();
   renderRepeat();
@@ -1447,7 +1477,7 @@ function updateSaveState() {
   if (save) save.disabled = !document.getElementById("titleInput").value.trim();
 }
 
-function saveEvent() {
+function saveEvent(mode) {
   const title = document.getElementById("titleInput").value.trim();
   if (!title) return;
   let startDate = document.getElementById("startInput").value || selectedDate;
@@ -1466,9 +1496,43 @@ function saveEvent() {
       every: formRepeat.freq === "interval" ? formRepeat.every : undefined, lunar: formRepeat.lunar || undefined,
       untilDate: formRepeat.dur === "date" ? formRepeat.untilDate : undefined };
   }
-  bumpIconUsage(formIcon);
   const wantShared = !!shareCfg.on && document.getElementById("sharedInput").checked;
   const now = Date.now();
+  const fields = { title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon };
+  const editBase = editingId ? events.find(e => e.id === editingId) : null;
+  if (editBase && editBase.repeat && editBase.repeat.freq !== "none" && mode !== "all") {
+    if (!mode) { askEditScope(editBase, currentOcc, m => saveEvent(m)); return; }
+    bumpIconUsage(formIcon);
+    // 喺舊系列拎走呢一次(或者由呢日開始截斷),之前嘅日子完全唔郁
+    const occ = currentOcc || editBase.startDate;
+    const splitNew = (extra) => {
+      const ev = { id: newId(), ...fields, exdates: [], updatedAt: now, ...extra };
+      if (wantShared) {
+        ev.shared = true;
+        ev.by = editBase.shared ? (editBase.by || shareCfg.name || "") : (shareCfg.name || "");
+        ev.byId = editBase.shared ? editBase.byId : shareCfg.uid;
+        queueShare(ev);
+      }
+      events.push(ev);
+    };
+    if (mode === "one") {
+      editBase.exdates = [...new Set([...(editBase.exdates || []), occ])];
+      splitNew({ repeat: null });
+    } else { // future
+      if (occ <= editBase.startDate) { saveEvent("all"); return; }
+      const oldRp = editBase.repeat;
+      if (repeat && (repeat.dur === "1m" || repeat.dur === "1y") && repeat.dur === oldRp.dur && oldRp.until) repeat.until = oldRp.until;
+      const laterEx = (editBase.exdates || []).filter(k => k >= occ);
+      editBase.repeat = { ...oldRp, dur: "custom", until: addDaysKey(occ, -1) };
+      editBase.exdates = (editBase.exdates || []).filter(k => k < occ);
+      splitNew({ repeat, exdates: repeat ? laterEx : [] });
+    }
+    editBase.updatedAt = now;
+    if (editBase.shared) queueShare(editBase);
+    saveEvents(); closeModal(); render();
+    return;
+  }
+  bumpIconUsage(formIcon);
   if (editingId) {
     const idx = events.findIndex(e => e.id === editingId);
     if (idx >= 0) {
