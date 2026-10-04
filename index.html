@@ -334,6 +334,142 @@
   html[data-theme="dark"] #lvSearch { background: #2A2A2F; }
   body.list-mode .lv-day, body.list-mode .lv-month { scroll-margin-top: 104px; }
   .lv-day.empty-today .lv-head { padding-bottom: 14px; }
+  /* ---------- 上/下個月日子 ---------- */
+  .week-hit button.out { background: #F1F1EE; }
+  html[data-theme="dark"] .week-hit button.out { background: #18181B; }
+  /* ---------- 任務模式 ---------- */
+  .left-actions { display: flex; align-items: center; gap: 12px; justify-self: start; }
+  .todo-toggle { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid rgba(228,0,43,.35); background: #fff; color: var(--red); display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; }
+  .todo-toggle svg { width: 20px; height: 20px; display: block; }
+  body.task-mode .todo-toggle { background: var(--red); color: #fff; border-color: var(--red); }
+  html[data-theme="dark"] .todo-toggle { background: #2A2A2F; }
+  html[data-theme="dark"] body.task-mode .todo-toggle { background: var(--red); }
+  .task-bar { display: none; align-items: center; gap: 8px; padding: 0 12px 8px; }
+  body.task-mode .task-bar { display: flex; }
+  .coin { width: 18px; height: 18px; flex-shrink: 0; display: block; }
+  .coin-pill { display: inline-flex; align-items: center; gap: 4px; background: #FFF6DB; border: 1px solid #F3D27A; border-radius: 999px; padding: 3px 10px 3px 4px; font-size: 14px; color: #8A5A00; font-variant-numeric: tabular-nums; }
+  .coin-pill.big { margin-left: auto; margin-right: 6px; font-size: 16px; }
+  .coin-pill.pop { animation: coinpop .5s ease-out; }
+  @keyframes coinpop { 0% { transform: scale(1); } 40% { transform: scale(1.25); } 100% { transform: scale(1); } }
+  .task-sum { flex: 1; min-width: 0; font-size: 11.5px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tb-btn { height: 30px; border-radius: 999px; border: 1.5px solid rgba(228,0,43,.35); background: #fff; color: var(--red); font-size: 12.5px; font-weight: 700; padding: 0 10px; font-family: inherit; cursor: pointer; white-space: nowrap; }
+  .tb-btn.solid { background: var(--red); color: #fff; border-color: var(--red); }
+  html[data-theme="dark"] .tb-btn { background: #1E1E22; }
+  html[data-theme="dark"] .tb-btn.solid { background: var(--red); }
+  html[data-theme="dark"] .coin-pill { background: #3A3020; border-color: #6B5520; color: #FFD166; }
+  .task-only { display: none !important; }
+  body.task-mode .task-only.every-row { display: flex !important; }
+  body.task-mode .task-only.task-box.show { display: block !important; }
+  .task-box { background: #F5F5F3; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; }
+  .task-box .ts { font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; color: var(--ink); }
+  .task-box .ts .dot { width: 9px; height: 9px; border-radius: 999px; }
+  .task-box button { width: 100%; height: 46px; border-radius: 999px; border: none; font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .task-box .do { background: #0ca30c; color: #fff; }
+  .task-box .undo { background: #fff; color: #666; border: 1.5px solid #ccc; }
+  .task-box .locked { background: #E6E6E3; color: #999; }
+  html[data-theme="dark"] .task-box { background: #2A2A2F; }
+  html[data-theme="dark"] .task-box .undo { background: #1E1E22; color: #bbb; border-color: #555; }
+  #coinInput, #rewardPrice { width: 90px; }
+  /* 任務喺月曆 */
+  .bar.t-done { opacity: .55; }
+  .bar.t-done span { text-decoration: line-through; }
+  .bar.t-failed { background: #D5D5D2 !important; color: #777 !important; }
+  .bar .tmark { font-size: 11px; font-weight: 900; flex-shrink: 0; margin-right: 1px; }
+  .bar.t-done .tmark { color: #0A8A0A; }
+  .bar.t-failed .tmark { color: #C0392B; }
+  /* 任務卡 */
+  .event-card .tchk { width: 30px; height: 30px; border-radius: 999px; border: 2px solid #C9C9C5; background: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: transparent; cursor: pointer; padding: 0; }
+  .event-card.t-done .tchk { background: #0ca30c; border-color: #0ca30c; color: #fff; }
+  .event-card.t-failed .tchk { background: #EDEDEA; border-color: #D5D5D2; color: #C0392B; }
+  .event-card.t-done .event-title { text-decoration: line-through; color: #999; }
+  .event-card.t-failed { opacity: .6; }
+  .t-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; margin-left: 6px; color: #8A5A00; }
+  .t-badge .coin { width: 13px; height: 13px; }
+  .t-badge.ok { color: #0A8A0A; }
+  .t-badge.ng { color: #C0392B; }
+  html[data-theme="dark"] .event-card .tchk { background: #2A2A2F; border-color: #555; }
+  /* 商店 */
+  .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .rw-card { position: relative; background: #FFF9EC; border: 1.5px solid #F3E2B8; border-radius: 14px; padding: 12px 10px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+  .rw-card .em { font-size: 34px; line-height: 1.1; }
+  .rw-card .nm { font-size: 13.5px; font-weight: 800; color: var(--ink); min-height: 34px; display: flex; align-items: center; }
+  .rw-card .pr { display: flex; align-items: center; gap: 3px; font-size: 14px; font-weight: 800; color: #8A5A00; }
+  .rw-card .buy { margin-top: 4px; width: 100%; height: 34px; border-radius: 999px; border: none; background: var(--red); color: #fff; font-size: 13px; font-weight: 800; font-family: inherit; }
+  .rw-card .buy:disabled { background: #E3E3E0; color: #aaa; }
+  .rw-card .ed { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 999px; border: none; background: rgba(0,0,0,.05); color: #999; font-size: 13px; }
+  .rw-add { border: 1.5px dashed #D5D5D2; background: none; border-radius: 14px; color: #999; font-size: 14px; font-weight: 700; min-height: 150px; font-family: inherit; }
+  html[data-theme="dark"] .rw-card { background: #2A2620; border-color: #4A3F28; }
+  .vc-item { display: flex; align-items: center; gap: 10px; background: #FFF9EC; border: 1.5px dashed #E9C97A; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+  .vc-item .em { font-size: 26px; }
+  .vc-item .info { flex: 1; min-width: 0; }
+  .vc-item .info b { display: block; font-size: 14px; color: var(--ink); }
+  .vc-item .info small { font-size: 11.5px; color: #999; }
+  .vc-item button { height: 32px; border-radius: 999px; border: none; background: #0ca30c; color: #fff; font-weight: 800; font-size: 13px; padding: 0 14px; font-family: inherit; }
+  .vc-item.used { opacity: .5; border-style: solid; border-color: #ddd; background: #F5F5F3; }
+  .vc-item.used .info b { text-decoration: line-through; }
+  html[data-theme="dark"] .vc-item { background: #2A2620; border-color: #6B5520; }
+  html[data-theme="dark"] .vc-item.used { background: #2A2A2F; border-color: #3A3A40; }
+  .log-row { display: flex; align-items: center; gap: 8px; padding: 9px 2px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .log-row .t { color: #999; font-size: 11.5px; width: 78px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .log-row .r { flex: 1; min-width: 0; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .log-row .a { font-weight: 800; font-variant-numeric: tabular-nums; }
+  .log-row .a.plus { color: #0A8A0A; } .log-row .a.minus { color: #C0392B; }
+  .reward-emoji { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+  .reward-emoji button { aspect-ratio: 1; border: none; border-radius: 10px; background: #F5F5F3; font-size: 22px; padding: 0; }
+  .reward-emoji button.on { background: var(--red-light); box-shadow: inset 0 0 0 2px var(--red); }
+  html[data-theme="dark"] .reward-emoji button { background: #2A2A2F; }
+  .shop-empty { text-align: center; color: #aaa; font-size: 13px; padding: 36px 0; }
+  /* 統計 */
+  .st-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .st-kpi { background: #F5F5F3; border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .st-kpi b { display: block; font-size: 22px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .st-kpi span { font-size: 11px; color: #888; }
+  html[data-theme="dark"] .st-kpi { background: #2A2A2F; }
+  .st-title { font-size: 13px; font-weight: 800; color: var(--ink); margin: 6px 0 8px; }
+  .st-legend { display: flex; gap: 14px; font-size: 11.5px; color: #666; margin-bottom: 4px; }
+  .st-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+  .st-chart { position: relative; }
+  .st-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .st-tip { position: absolute; transform: translate(-50%, -100%); background: #222; color: #fff; font-size: 11.5px; padding: 5px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none; display: none; z-index: 2; }
+  .st-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  .st-table th { font-size: 11px; color: #999; font-weight: 600; text-align: right; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+  .st-table th:first-child, .st-table td:first-child { text-align: left; }
+  .st-table td { padding: 7px 4px; border-bottom: 1px solid var(--line); text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .st-table td .ic { display: inline-flex; align-items: center; gap: 6px; }
+  .st-table td .ic svg { width: 20px; height: 20px; }
+  .st-rate { display: inline-block; height: 6px; border-radius: 3px; background: #0ca30c; vertical-align: middle; margin-right: 4px; }
+  .task-price { display: none; }
+  body.task-mode .task-only.task-price { display: block !important; background: #FFF9EC; border: 1.5px solid #F3E2B8; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; }
+  .task-price .pr-top { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--ink); }
+  .task-price .pr-top .coin { width: 20px; height: 20px; display: inline-block; }
+  .task-price .pr-note { font-size: 11.5px; color: #999; margin-top: 4px; line-height: 1.5; }
+  .task-price .seg { margin: 8px 0 2px; }
+  .task-price .pr-rule { font-size: 11px; color: #aaa; margin-top: 6px; line-height: 1.6; }
+  html[data-theme="dark"] body.task-mode .task-only.task-price { background: #2A2620; border-color: #4A3F28; }
+  .tb-btn.warn { background: #FFF3CD; border-color: #F3C969; color: #8A5A00; }
+  .event-card .tchk.other { border-style: dashed; opacity: .7; }
+  .t-badge.wait { color: #B9770E; }
+  .act-btn.ok { background: #0ca30c; color: #fff; font-weight: 800; }
+  .submit-card { display: flex; align-items: center; gap: 12px; background: #F5F5F3; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+  .submit-card svg { width: 34px; height: 34px; flex-shrink: 0; }
+  .submit-card b { display: block; font-size: 16px; color: var(--ink); }
+  .submit-card small { font-size: 12px; color: #888; }
+  html[data-theme="dark"] .submit-card { background: #2A2A2F; }
+  .ap-item { border: 1.5px solid #F3E2B8; background: #FFF9EC; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .ap-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .ap-head svg { width: 26px; height: 26px; flex-shrink: 0; }
+  .ap-head b { font-size: 15px; color: var(--ink); }
+  .ap-head small { display: block; font-size: 11.5px; color: #888; }
+  .ap-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); }
+  .ap-row input { width: 80px; height: 38px; text-align: center; background: #fff; border: 1px solid #E6D3A8; border-radius: 8px; font-weight: 800; font-family: inherit; color: var(--ink); }
+  .ap-row .sp { flex: 1; }
+  .ap-row button { height: 38px; border-radius: 999px; border: none; padding: 0 14px; font-weight: 800; font-size: 13px; font-family: inherit; }
+  .ap-row .yes { background: #0ca30c; color: #fff; }
+  .ap-row .no { background: #fff; color: #C0392B; border: 1.5px solid #E8B4AE; }
+  html[data-theme="dark"] .ap-item { background: #2A2620; border-color: #4A3F28; }
+  html[data-theme="dark"] .ap-row input { background: #1E1E22; border-color: #4A3F28; }
+  .give-note { font-size: 12px; color: #999; margin: 0 0 10px; line-height: 1.5; }
+  .sub-title { font-size: 13px; font-weight: 800; color: var(--ink); margin: 18px 0 8px; }
 </style>
 </head>
 <body>
@@ -348,13 +484,20 @@
 <div class="app">
   <div class="topbar">
     <div class="topbar-row">
-      <button class="brand view-toggle" id="viewBtn" aria-label="切換月曆/列表"><span class="view-badge" id="viewBadge"></span><div class="logo"><svg width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><rect width="1024" height="1024" rx="220" fill="#E4002B"/><rect x="204" y="252" width="644" height="620" rx="70" fill="#AA001E"/><rect x="190" y="230" width="644" height="620" rx="70" fill="#fff"/><rect x="190" y="230" width="644" height="170" rx="70" fill="#FFD6DE"/><rect x="190" y="330" width="644" height="70" fill="#FFD6DE"/><rect x="332" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="344" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="636" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="648" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="262" y="470" width="110" height="110" rx="26" fill="#FFB300"/><rect x="398" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><circle cx="589" cy="661" r="61" fill="#E4002B"/><path d="M589 693L560 655A16 16 0 0 1 589 641A16 16 0 0 1 618 655Z" fill="#fff"/><rect x="670" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/></svg></div><h1 class="sr-only">日曆</h1></button>
+      <div class="left-actions"><button class="brand view-toggle" id="viewBtn" aria-label="切換月曆/列表"><span class="view-badge" id="viewBadge"></span><div class="logo"><svg width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><rect width="1024" height="1024" rx="220" fill="#E4002B"/><rect x="204" y="252" width="644" height="620" rx="70" fill="#AA001E"/><rect x="190" y="230" width="644" height="620" rx="70" fill="#fff"/><rect x="190" y="230" width="644" height="170" rx="70" fill="#FFD6DE"/><rect x="190" y="330" width="644" height="70" fill="#FFD6DE"/><rect x="332" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="344" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="636" y="160" width="56" height="130" rx="28" fill="#fff"/><rect x="648" y="172" width="32" height="106" rx="16" fill="#E4002B"/><rect x="262" y="470" width="110" height="110" rx="26" fill="#FFB300"/><rect x="398" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="470" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><circle cx="589" cy="661" r="61" fill="#E4002B"/><path d="M589 693L560 655A16 16 0 0 1 589 641A16 16 0 0 1 618 655Z" fill="#fff"/><rect x="670" y="606" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="262" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="398" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="534" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/><rect x="670" y="742" width="110" height="110" rx="26" fill="#EBEBE8"/></svg></div><h1 class="sr-only">日曆</h1></button><button class="todo-toggle" id="todoBtn" aria-label="切換到任務模式"><svg viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 2.5h6v2.6H9z" fill="currentColor"/><path d="M7.6 10.4l1.4 1.4 2.4-2.6M7.6 15.6l1.4 1.4 2.4-2.6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.4 10.6h3.4M13.4 15.8h3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>
       <div class="nav">
         <button class="arrow" id="prevBtn" aria-label="上個月">&#8249;</button>
         <button class="month-label" id="monthLabel"></button>
         <button class="arrow" id="nextBtn" aria-label="下個月">&#8250;</button>
       </div>
       <div class="top-actions"><button class="today-btn" id="todayBtn">今日</button><button class="gear-btn" id="gearBtn" aria-label="設定">⚙︎</button></div>
+    </div>
+    <div class="task-bar">
+      <span class="coin-pill" id="coinPill"><svg class="coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#F6B93B"/><circle cx="12" cy="12" r="7.4" fill="#FFD166" stroke="#E0A020" stroke-width="1"/><path d="M12 7.6v8.8M9.6 9.6h3.6a1.6 1.6 0 0 1 0 3.2h-2.4a1.6 1.6 0 0 0 0 3.2h3.6" stroke="#B9770E" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg><b id="coinBalance">0</b></span>
+      <span class="task-sum" id="taskSum"></span>
+      <button class="tb-btn warn" id="approveBtn" style="display:none"></button>
+      <button class="tb-btn" id="statsBtn">📊 統計</button>
+      <button class="tb-btn solid" id="shopBtn">🎁 商店</button>
     </div>
     <div class="lv-search"><input type="search" id="lvSearch" placeholder="🔍 搜尋行程名稱或圖案" autocomplete="off" enterkeyhint="search"><span id="lvCount"></span></div>
     <div class="weekdays">
@@ -419,6 +562,8 @@
       <div class="date-sep">至</div>
       <div class="field-half"><span>結束時間</span><div class="pick"><div class="pick-text" data-for="endTimeInput"></div><input type="time" id="endTimeInput"></div></div>
     </div>
+    <div class="task-only task-box" id="taskStatusBox"></div>
+    <div class="task-only task-price" id="coinRow"></div>
     <div class="allday-row" id="shareRow"><span>♥ 同對方共享</span><label class="switch"><input type="checkbox" id="sharedInput"><span class="slider"></span></label></div>
     <span class="field-label">重複</span>
     <div class="seg" id="repSeg"><button data-v="none">不重複</button><button data-v="interval">每幾日</button><button data-v="weekly">每星期</button><button data-v="monthly">每月</button><button data-v="yearly">每年</button></div>
@@ -472,6 +617,61 @@
   </div>
 </div>
 
+<div class="overlay" id="shopOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <h2>🎁 獎勵商店</h2>
+      <span class="coin-pill big"><svg class="coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#F6B93B"/><circle cx="12" cy="12" r="7.4" fill="#FFD166" stroke="#E0A020" stroke-width="1"/><path d="M12 7.6v8.8M9.6 9.6h3.6a1.6 1.6 0 0 1 0 3.2h-2.4a1.6 1.6 0 0 0 0 3.2h3.6" stroke="#B9770E" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg><b id="shopBalance">0</b></span>
+      <button class="close-btn" id="shopCloseBtn">&times;</button>
+    </div>
+    <div class="seg" id="shopTabs"><button data-v="shop">兌換</button><button data-v="give">幫對方設定</button><button data-v="mine">我的券</button><button data-v="log">紀錄</button></div>
+    <div id="shopBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="rewardOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <h2 id="rewardTitle">新增獎勵</h2>
+      <button class="close-btn" id="rewardCloseBtn">&times;</button>
+    </div>
+    <label class="field"><span>獎勵名稱</span><input type="text" id="rewardName" placeholder="例如:飲珍珠奶茶" autocomplete="off"></label>
+    <div class="every-row"><span>需要</span><svg class="coin" style="width:20px;height:20px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#F6B93B"/><circle cx="12" cy="12" r="7.4" fill="#FFD166" stroke="#E0A020" stroke-width="1"/><path d="M12 7.6v8.8M9.6 9.6h3.6a1.6 1.6 0 0 1 0 3.2h-2.4a1.6 1.6 0 0 0 0 3.2h3.6" stroke="#B9770E" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg><input type="number" id="rewardPrice" min="1" max="99999" inputmode="numeric"><span>金幣</span></div>
+    <span class="field-label">圖案</span>
+    <div class="reward-emoji" id="rewardEmoji"></div>
+    <div class="sheet-actions" style="margin-top:18px"><button class="delete-btn" id="rewardDelBtn" style="display:none">🗑</button><button class="save-btn" id="rewardSaveBtn">儲存</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="statsOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <h2>📊 任務統計</h2>
+      <button class="close-btn" id="statsCloseBtn">&times;</button>
+    </div>
+    <div class="seg" id="statsRange"><button data-v="week">今個星期</button><button data-v="month">今個月</button><button data-v="all">全部</button></div>
+    <div id="statsBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="submitOverlay">
+  <div class="sheet">
+    <div class="sheet-header"><h2>交任務</h2><button class="close-btn" id="submitCloseBtn">&times;</button></div>
+    <div class="submit-card" id="submitCard"></div>
+    <p class="set-note" id="submitNote"></p>
+    <button class="act-btn ok" id="submitOkBtn">✓ 確認交任務</button>
+    <button class="act-btn" id="submitCancelBtn" style="color:#999">再諗諗</button>
+  </div>
+</div>
+
+<div class="overlay" id="approveOverlay">
+  <div class="sheet">
+    <div class="sheet-header"><h2>✍️ 待你審批</h2><button class="close-btn" id="approveCloseBtn">&times;</button></div>
+    <p class="set-note">對方新增咗一次性任務,請你按難度定價錢。批准之後,對方完成就會收到呢個數目嘅金幣。</p>
+    <div id="approveList"></div>
+  </div>
+</div>
+
 <div class="overlay" id="setOverlay">
   <div class="sheet">
     <div class="sheet-header">
@@ -508,7 +708,7 @@
     <div class="set-divider"></div>
     <div class="set-title">背景主題</div>
     <div class="seg theme-seg" id="themeSeg"><button data-v="light">☃︎ 白雪</button><button data-v="dark">☾ 黑夜</button></div>
-    <p class="version">版本 2026.09.26-i</p>
+    <p class="version">版本 2026.10.04-c</p>
     <p class="credit">Developed by Bill Chiu</p>
   </div>
 </div>
@@ -581,13 +781,24 @@ function loadEvents() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) { const arr = JSON.parse(raw); if (Array.isArray(arr)) return arr; }
   } catch (e) {}
-  return DEMO_EVENTS;
+  return [];
 }
 function saveEvents() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); } catch (e) {}
   if (typeof scheduleGsBackup === "function") scheduleGsBackup();
 }
 let events = loadEvents();
+try {
+  if (!localStorage.getItem("hk-calendar-demo-cleaned")) {
+    const demo = new Map(DEMO_EVENTS.map(d => [d.id, d]));
+    const before = events.length;
+    events = events.filter(e => { const d = demo.get(e.id); return !(d && !e.updatedAt && e.title === d.title); });
+    if (events.length !== before) localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+    localStorage.setItem("hk-calendar-demo-cleaned", "1");
+  }
+} catch (e) {}
+const MODE_KEY = "hk-calendar-mode";
+let taskMode = (() => { try { return localStorage.getItem(MODE_KEY) === "task"; } catch (e) { return false; } })();
 const SH_KEY = "hk-calendar-share-v1", SHQ_KEY = "hk-calendar-share-queue-v1";
 let shareCfg = (() => { try { return JSON.parse(localStorage.getItem(SH_KEY)) || {}; } catch (e) { return {}; } })();
 let shareQueue = (() => { try { return JSON.parse(localStorage.getItem(SHQ_KEY)) || {}; } catch (e) { return {}; } })();
@@ -1037,7 +1248,7 @@ function occurrencesOf(ev, fromKey, toKey) {
 }
 function instancesBetween(fromKey, toKey) {
   const out = [];
-  events.forEach(ev => { if (ev.shared && !shareCfg.on) return; out.push(...occurrencesOf(ev, fromKey, toKey)); });
+  events.forEach(ev => { if (ev.shared && !shareCfg.on) return; if ((ev.kind || "event") !== (taskMode ? "task" : "event")) return; out.push(...occurrencesOf(ev, fromKey, toKey)); });
   return out;
 }
 function repeatText(ev) {
@@ -1137,7 +1348,13 @@ function render() {
       bar.style.setProperty("--dash", darkBg ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.55)");
       const text = p.ev.title;
       if (p.ev.shared && !isMine(p.ev)) { bar.classList.add("shared"); bar.style.setProperty("--c", evColor); }
-      bar.innerHTML = iconSvg(p.ev.icon) + `<span>${escapeHtml(text)}${p.contR ? " ▸" : ""}</span>`;
+      let mark = "";
+      if (p.ev.kind === "task") {
+        const st = taskStatus(p.ev);
+        if (st === "done") { bar.classList.add("t-done"); mark = '<b class="tmark">✓</b>'; }
+        else if (st === "failed") { bar.classList.add("t-failed"); mark = '<b class="tmark">✕</b>'; }
+      }
+      bar.innerHTML = mark + iconSvg(p.ev.icon) + `<span>${escapeHtml(text)}${p.contR ? " ▸" : ""}</span>`;
       evArea.appendChild(bar);
     });
     row.appendChild(evArea);
@@ -1147,6 +1364,7 @@ function render() {
       const b = document.createElement("button");
       b.setAttribute("aria-label", cell.key);
       b.dataset.key = cell.key;
+      if (!cell.inMonth && cell.key !== selectedDate) b.classList.add("out");
       b.onclick = () => { selectDay(cell.key); };
       hit.appendChild(b);
     });
@@ -1177,11 +1395,12 @@ function fillEventList(list, key, emptyHint, markEnded, filterFn) {
     });
   list.innerHTML = "";
   if (dayEvents.length === 0) {
-    list.innerHTML = `<div class="empty"><p>沒有行程</p><p>${emptyHint}</p></div>`;
+    list.innerHTML = `<div class="empty"><p>${taskMode ? "沒有任務" : "沒有行程"}</p><p>${taskMode ? emptyHint.replace("行程", "任務") : emptyHint}</p></div>`;
   } else {
     dayEvents.forEach(ev => {
       const card = document.createElement("button");
-      card.className = "event-card" + (markEnded && isEnded(ev) ? " ended" : "");
+      const isTask = ev.kind === "task", tst = isTask ? taskStatus(ev) : "", tMine = isTask && isMineItem(ev._base || ev);
+      card.className = "event-card" + (isTask ? " t-" + tst : (markEnded && isEnded(ev) ? " ended" : ""));
       card.onclick = () => openModal(ev);
       const isMulti = ev.startDate !== ev.endDate;
       let timeText = ev.allDay ? "全天" : (ev.time ? `${ev.time} – ${ev.endTime || addHour(ev.time)}` : "");
@@ -1195,8 +1414,16 @@ function fillEventList(list, key, emptyHint, markEnded, filterFn) {
       card.innerHTML = `<span class="event-bar-side" style="background:${colorOf(ev.color)}"></span>${iconHtml}
         <div style="flex:1;min-width:0;">
           <p class="event-title">${escapeHtml(ev.title)}</p>
-          <span class="event-time">${timeText}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}${ev.shared ? `<span class="share-mark">${isMine(ev) ? "已共享" : "共享 · " + escapeHtml(ev.by || "對方")}</span>` : ""}</span>
+          <span class="event-time">${isTask && !ev.allDay && ev.time ? "截止 " + (ev.endTime || addHour(ev.time)) : timeText}${isTask ? taskBadge(ev, tst) : ""}${repeatText(ev) ? `<span class="rep-mark">↻ ${repeatText(ev)}</span>` : ""}${ev.shared ? `<span class="share-mark">${isMine(ev) ? "已共享" : "共享 · " + escapeHtml(ev.by || "對方")}</span>` : ""}</span>
         </div>`;
+      if (isTask) {
+        const chk = document.createElement("span");
+        chk.className = "tchk"; chk.setAttribute("role", "button");
+        chk.textContent = tst === "done" ? "✓" : tst === "failed" ? "✕" : "";
+        chk.onclick = e => { e.stopPropagation(); if (tMine && tst === "todo") completeTask(ev); else openModal(ev); };
+        if (!tMine) chk.classList.add("other");
+        card.appendChild(chk);
+      }
       list.appendChild(card);
     });
   }
@@ -1493,16 +1720,20 @@ function openModal(inst) {
   const ev = inst ? (inst._base || inst) : null;
   currentOcc = inst ? (inst._occ || inst.startDate) : null;
   editingId = ev ? ev.id : null;
-  document.getElementById("shareRow").style.display = shareCfg.on ? "flex" : "none";
+  document.getElementById("shareRow").style.display = shareCfg.on && !taskMode ? "flex" : "none";
   document.getElementById("sharedInput").checked = ev ? !!ev.shared : !!shareCfg.on;
   formRepeat = ev && ev.repeat ? { freq: ev.repeat.freq, days: [...(ev.repeat.days || [])], dur: ev.repeat.dur || "1y", until: ev.repeat.until || null,
                                    every: ev.repeat.every || 2, lunar: !!ev.repeat.lunar, untilDate: ev.repeat.untilDate || null }
                                : { freq: "none", days: [], dur: "forever", until: null, every: 2, lunar: false, untilDate: null };
-  document.getElementById("sheetTitle").textContent = ev ? "編輯行程" : "新增行程";
+  const nm = taskMode ? "任務" : "行程";
+  document.getElementById("sheetTitle").textContent = (ev ? "編輯" : "新增") + nm;
+  document.getElementById("titleInput").placeholder = "輸入" + nm + "名稱";
+  formDiff = ev && ev.approval && ev.approval.diff || "mid";
+  renderTaskBox(inst);
   document.getElementById("titleInput").value = ev ? ev.title : "";
   document.getElementById("startInput").value = inst ? inst.startDate : selectedDate;
   document.getElementById("endInput").value = inst ? inst.endDate : selectedDate;
-  document.getElementById("alldayInput").checked = ev ? ev.allDay : false;
+  document.getElementById("alldayInput").checked = ev ? ev.allDay : taskMode;   // 任務預設全天(當日內完成)
   const st = ev ? (ev.time || "09:00") : "09:00";
   document.getElementById("timeInput").value = st;
   document.getElementById("endTimeInput").value = ev && ev.endTime ? ev.endTime : addHour(st);
@@ -1533,6 +1764,7 @@ function openModal(inst) {
   actions.appendChild(save);
   updateSaveState();
   renderRepeat();
+  if (taskMode && ev && ev.kind === "task" && !isMineItem(ev)) actions.innerHTML = "";
 
   document.getElementById("overlay").classList.add("show");
   scrollSheetTop("overlay");
@@ -1564,9 +1796,10 @@ function saveEvent(mode) {
       every: formRepeat.freq === "interval" ? formRepeat.every : undefined, lunar: formRepeat.lunar || undefined,
       untilDate: formRepeat.dur === "date" ? formRepeat.untilDate : undefined };
   }
-  const wantShared = !!shareCfg.on && document.getElementById("sharedInput").checked;
+  const wantShared = !!shareCfg.on && (taskMode || document.getElementById("sharedInput").checked);
   const now = Date.now();
   const fields = { title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon };
+  const editTaskBase = editingId ? events.find(e => e.id === editingId) : null;
   const editBase = editingId ? events.find(e => e.id === editingId) : null;
   if (editBase && editBase.repeat && editBase.repeat.freq !== "none" && mode !== "all") {
     if (!mode) { askEditScope(editBase, currentOcc, m => saveEvent(m)); return; }
@@ -1575,6 +1808,7 @@ function saveEvent(mode) {
     const occ = currentOcc || editBase.startDate;
     const splitNew = (extra) => {
       const ev = { id: newId(), ...fields, exdates: [], updatedAt: now, ...extra };
+      if (editBase.kind === "task") Object.assign(ev, { kind: "task", done: {}, by: editBase.by }, taskFields(null, extra.repeat));
       if (wantShared) {
         ev.shared = true;
         ev.by = editBase.shared ? (editBase.by || shareCfg.name || "") : (shareCfg.name || "");
@@ -1605,7 +1839,7 @@ function saveEvent(mode) {
     const idx = events.findIndex(e => e.id === editingId);
     if (idx >= 0) {
       const old = events[idx];
-      let ev = { ...old, title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat,
+      let ev = { ...old, title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, ...(old.kind === "task" ? taskFields(old, repeat) : {}), repeat,
         exdates: repeat ? (old.exdates || []) : [], updatedAt: now };
       if (old.shared && !wantShared) {          // 由共享改返私人:通知對方刪除,自己保留一份私人
         queueShare({ ...old, updatedAt: now }, true);
@@ -1618,7 +1852,7 @@ function saveEvent(mode) {
       events[idx] = ev;
     }
   } else {
-    const ev = { id: newId(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, repeat, exdates: [], updatedAt: now };
+    const ev = { id: newId(), title, startDate, endDate, allDay, time, endTime, color: formColor, icon: formIcon, ...(taskMode ? { kind: "task", done: {}, by: shareCfg.name || "", ...taskFields(null, repeat) } : {}), repeat, exdates: [], updatedAt: now };
     if (wantShared) { ev.shared = true; ev.by = shareCfg.name || ""; ev.byId = shareCfg.uid; queueShare(ev); }
     events.push(ev);
   }
@@ -2085,7 +2319,7 @@ const evDays = ev => Math.max(0, Math.round((parseKey(ev.endDate || ev.startDate
 function memTemplates() {
   const map = new Map();
   events.forEach(ev => {
-    if (!ev || !ev.title || (ev.shared && !shareCfg.on)) return;
+    if (!ev || !ev.title || (ev.shared && !shareCfg.on) || (ev.kind || "event") !== (taskMode ? "task" : "event")) return;
     const k = [ev.title, ev.icon || "", colorOf(ev.color), ev.allDay ? 1 : 0, ev.allDay ? "" : (ev.time || ""), ev.allDay ? "" : (ev.endTime || ""), evDays(ev)].join("|");
     const t = ev.updatedAt || 0, cur = map.get(k);
     if (!cur) map.set(k, { ev, t, k }); else if (t > cur.t) { cur.t = t; cur.ev = ev; }
@@ -2115,6 +2349,7 @@ function applyTemplateToForm(src) {
   document.getElementById("alldayInput").checked = !!src.allDay;
   if (!src.allDay && src.time) { document.getElementById("timeInput").value = src.time; document.getElementById("endTimeInput").value = src.endTime || addHour(src.time); }
   formColor = colorOf(src.color); formIcon = src.icon || "";
+  if (src.kind === "task") formDiff = (src.approval && src.approval.diff) || "mid";
   updateTimeFieldVisibility(); syncPickers(); renderColors(); renderIcons(); updateSaveState();
 }
 function renderTitleSugg() {
@@ -2199,7 +2434,8 @@ function closeMem() {
 function applyMemory(src, key) {
   const ev = { id: newId(), title: src.title, startDate: key, endDate: addDaysKey(key, evDays(src)),
     allDay: !!src.allDay, time: src.allDay ? "" : (src.time || ""), endTime: src.allDay ? "" : (src.endTime || ""),
-    color: colorOf(src.color), icon: src.icon || "", repeat: null, exdates: [], updatedAt: Date.now() };
+    color: colorOf(src.color), icon: src.icon || "", repeat: null, exdates: [], updatedAt: Date.now(),
+    ...(src.kind === "task" ? { kind: "task", done: {}, by: shareCfg.name || "", approval: { status: "pending", diff: (src.approval && src.approval.diff) || "mid" } } : {}) };
   if (shareCfg.on && src.shared) { ev.shared = true; ev.by = shareCfg.name || ""; ev.byId = shareCfg.uid; queueShare(ev); }
   events.push(ev);
   bumpIconUsage(ev.icon);
@@ -2282,6 +2518,429 @@ document.getElementById("lvSearch").addEventListener("input", () => { if (listMo
 document.getElementById("lvSearch").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
 document.getElementById("memSearch").addEventListener("input", () => { renderMem(); document.getElementById("memList").scrollLeft = 0; });
 document.getElementById("memSearch").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
+
+/* ======================= 任務模式 ======================= */
+const COIN_SVG = '<svg class="coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#F6B93B"/><circle cx="12" cy="12" r="7.4" fill="#FFD166" stroke="#E0A020" stroke-width="1"/><path d="M12 7.6v8.8M9.6 9.6h3.6a1.6 1.6 0 0 1 0 3.2h-2.4a1.6 1.6 0 0 0 0 3.2h3.6" stroke="#B9770E" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>';
+const DIFF = { easy: { name: "簡單", sug: 20 }, mid: { name: "普通", sug: 40 }, hard: { name: "困難", sug: 80 } };
+let formDiff = "mid";
+const isOneTime = t => !t.repeat || t.repeat.freq === "none";
+const isMineItem = it => !it.shared || isMine(it);
+// 系統定價:重複得越密,每次越少錢;一年一次就多啲;一次性要對方審批
+function repeatPrice(rp) {
+  if (!rp || rp.freq === "none") return null;
+  if (rp.freq === "interval") { const n = Math.max(1, parseInt(rp.every, 10) || 1); return n <= 1 ? 2 : n <= 3 ? 3 : 4; }
+  if (rp.freq === "weekly") { const k = (rp.days || []).length || 1; return k >= 4 ? 3 : k >= 2 ? 4 : 5; }
+  if (rp.freq === "monthly") return 15;
+  if (rp.freq === "yearly") return 60;
+  return null;
+}
+function taskPrice(t) {                       // null = 未定價(待審批 / 被拒)
+  if (!isOneTime(t)) return repeatPrice(t.repeat);
+  return t.approval && t.approval.status === "approved" ? t.approval.price : null;
+}
+function taskFields(old, repeat) {
+  if (repeat && repeat.freq !== "none") return { kind: "task", approval: undefined, coins: undefined };
+  const keep = old && old.approval && isOneTime(old) && old.approval.diff === formDiff && old.approval.status !== "rejected";
+  return { kind: "task", coins: undefined, approval: keep ? old.approval : { status: "pending", diff: formDiff, t: Date.now() } };
+}
+function entryCoins(task, entry) {
+  if (isOneTime(task)) return task.approval && task.approval.status === "approved" ? task.approval.price : 0;
+  if (entry && typeof entry === "object" && entry.c != null) return entry.c;
+  return repeatPrice(task.repeat) ?? (task.coins ?? 10);
+}
+function myLedger() {
+  const out = [];
+  events.forEach(ev => {
+    if (ev.kind === "task" && isMineItem(ev) && ev.done) {
+      Object.entries(ev.done).forEach(([k, e]) => {
+        const wait = isOneTime(ev) && !(ev.approval && ev.approval.status === "approved");
+        out.push({ t: typeof e === "object" ? e.t : e, n: entryCoins(ev, e), r: `完成「${ev.title}」${wait ? (ev.approval && ev.approval.status === "rejected" ? "(被拒絕)" : "(等審批)") : ""}`, wait });
+      });
+    }
+    if (ev.kind === "voucher" && isMineItem(ev)) out.push({ t: ev.t || ev.updatedAt, n: -(ev.price || 0), r: `兌換「${ev.title}」` });
+  });
+  return out.sort((x, y) => y.t - x.t);
+}
+const myBalance = () => myLedger().reduce((a, x) => a + x.n, 0);
+const occOf = ev => ev._occ || ev.startDate;
+function taskStatus(ev) {
+  const base = ev._base || ev;
+  if (base.done && base.done[occOf(ev)]) return "done";
+  return isEnded(ev) ? "failed" : "todo";
+}
+function priceBadge(base) {
+  const pr = taskPrice(base);
+  if (pr != null) return `${COIN_SVG}${pr}`;
+  return base.approval && base.approval.status === "rejected" ? "被拒絕" : "待審批";
+}
+function taskBadge(ev, st) {
+  const base = ev._base || ev, pr = taskPrice(base);
+  if (st === "done") return pr != null ? `<span class="t-badge ok">✓ 已完成 +${pr}${COIN_SVG}</span>` : `<span class="t-badge wait">✓ 已完成 ・ ${priceBadge(base)}</span>`;
+  if (st === "failed") return `<span class="t-badge ng">✕ 未能完成</span>`;
+  return `<span class="t-badge${pr == null ? " wait" : ""}">${priceBadge(base)}</span>`;
+}
+function renderPriceRow() {
+  const box = document.getElementById("coinRow"); if (!box) return;
+  if (!taskMode) { box.innerHTML = ""; return; }
+  const base = editingId ? events.find(e => e.id === editingId) : null;
+  const mine = !base || isMineItem(base);
+  const rp = formRepeat.freq === "none" ? null : formRepeat;
+  if (rp) {
+    const pr = repeatPrice({ ...rp, days: rp.days });
+    box.innerHTML = `<div class="pr-top">完成獎勵 ${COIN_SVG}${pr} 金幣 / 次</div><div class="pr-note">重複任務由系統定價,唔可以自己改。</div>
+      <div class="pr-rule">每日 2 ・ 每2-3日 3 ・ 每4日以上 4 ・ 每星期4日或以上 3 ・ 每星期2-3日 4 ・ 每星期1日 5 ・ 每月 15 ・ 每年 60</div>`;
+    return;
+  }
+  const ap = base && isOneTime(base) ? base.approval : null;
+  let status = "要對方審批同定價錢";
+  if (ap && ap.status === "approved" && ap.diff === formDiff) status = `已批准:${ap.price} 金幣(${escapeHtml(ap.by || "對方")}定)`;
+  else if (ap && ap.status === "rejected" && ap.diff === formDiff) status = "對方拒絕咗,改難度可以重新申請";
+  else if (ap && ap.status === "pending" && ap.diff === formDiff) status = "等緊對方審批";
+  box.innerHTML = `<div class="pr-top">一次性任務 ・ 揀難度</div>
+    <div class="seg" id="diffSeg">${Object.entries(DIFF).map(([k, d]) => `<button type="button" data-v="${k}" class="${k === formDiff ? "on" : ""}" ${mine ? "" : "disabled"}>${d.name}(建議${d.sug})</button>`).join("")}</div>
+    <div class="pr-note">${status}${shareCfg.on ? "" : " ・ 要開咗共享日曆,對方先收到審批"}</div>`;
+  box.querySelectorAll("#diffSeg button").forEach(b => b.onclick = () => { formDiff = b.dataset.v; renderPriceRow(); });
+}
+{ const _rr = renderRepeat; renderRepeat = function () { _rr(); renderPriceRow(); }; }
+
+/* ---- 交任務(要再確認一次) ---- */
+let submitTarget = null;
+function completeTask(inst) {
+  const base = inst._base || inst;
+  if (!isMineItem(base) || taskStatus(inst) !== "todo") return;
+  submitTarget = inst;
+  const [, m, d] = occOf(inst).split("-").map(Number), pr = taskPrice(base);
+  document.getElementById("submitCard").innerHTML = `${iconSvg(base.icon)}<div><b>${escapeHtml(base.title)}</b><small>${m}月${d}日 ・ ${pr != null ? "完成可以收 " + pr + " 金幣" : priceBadge(base) + "(批准之後先計金幣)"}</small></div>`;
+  document.getElementById("submitNote").textContent = "確定已經完成?交咗之後就會記錄落去,對方都會見到。";
+  document.getElementById("submitOverlay").classList.add("show");
+}
+function doSubmit() {
+  const inst = submitTarget; submitTarget = null;
+  document.getElementById("submitOverlay").classList.remove("show");
+  if (!inst) return;
+  const base = inst._base || inst, k = occOf(inst);
+  const entry = { t: Date.now(), by: shareCfg.name || "" };
+  if (!isOneTime(base)) entry.c = repeatPrice(base.repeat);
+  base.done = { ...(base.done || {}), [k]: entry };
+  base.updatedAt = Date.now();
+  if (base.shared) queueShare(base);
+  saveEvents(); closeModal(); render(); popCoin();
+  const pr = taskPrice(base);
+  showTaskToast(pr != null ? `🎉 交咗「${base.title}」!+${pr} 金幣` : `🎉 交咗「${base.title}」,等對方審批價錢`);
+}
+document.getElementById("submitOkBtn").onclick = doSubmit;
+const closeSubmit = () => { submitTarget = null; document.getElementById("submitOverlay").classList.remove("show"); };
+document.getElementById("submitCancelBtn").onclick = closeSubmit;
+document.getElementById("submitCloseBtn").onclick = closeSubmit;
+document.getElementById("submitOverlay").onclick = e => { if (e.target.id === "submitOverlay") closeSubmit(); };
+function undoTask(inst) {
+  const base = inst._base || inst, k = occOf(inst);
+  if (!isMineItem(base) || !base.done || !base.done[k]) return;
+  if (!confirm(`取消交「${base.title}」?呢次嘅金幣會扣返。`)) return;
+  const d = { ...base.done }; delete d[k]; base.done = d;
+  base.updatedAt = Date.now();
+  if (base.shared) queueShare(base);
+  saveEvents(); closeModal(); render();
+}
+function popCoin() { const p = document.getElementById("coinPill"); p.classList.remove("pop"); void p.offsetWidth; p.classList.add("pop"); }
+
+/* ---- 審批 ---- */
+function pendingForMe() {
+  if (!shareCfg.on) return [];
+  return events.filter(ev => ev.kind === "task" && ev.shared && !isMineItem(ev) && isOneTime(ev) && (!ev.approval || ev.approval.status === "pending"));
+}
+function approveTask(t, price, ok) {
+  t.approval = { ...(t.approval || { diff: "mid" }), status: ok ? "approved" : "rejected", price: ok ? price : 0, by: shareCfg.name || "", t: Date.now() };
+  t.updatedAt = Date.now();
+  if (t.shared) queueShare(t);
+  saveEvents(); render();
+}
+function approvalControls(t, onDone) {
+  const wrap = document.createElement("div");
+  const d = DIFF[(t.approval && t.approval.diff) || "mid"];
+  wrap.innerHTML = `<div class="ap-row"><span>對方揀咗「${d.name}」・ 你定</span><input type="number" min="0" max="99999" inputmode="numeric" value="${d.sug}"><span>金幣</span></div>
+    <div class="ap-row" style="margin-top:8px"><span class="sp"></span><button class="no">拒絕</button><button class="yes">✓ 批准</button></div>`;
+  const inp = wrap.querySelector("input");
+  wrap.querySelector(".yes").onclick = () => { const v = Math.max(0, parseInt(inp.value, 10) || 0); if (!confirm(`批准「${t.title}」,完成可以收 ${v} 金幣?`)) return; approveTask(t, v, true); onDone && onDone(); };
+  wrap.querySelector(".no").onclick = () => { if (!confirm(`拒絕「${t.title}」?對方完成都唔會有金幣。`)) return; approveTask(t, 0, false); onDone && onDone(); };
+  return wrap;
+}
+function renderApproveList() {
+  const list = document.getElementById("approveList"); list.innerHTML = "";
+  const items = pendingForMe();
+  if (!items.length) { list.innerHTML = `<div class="shop-empty">冇任務等你審批</div>`; return; }
+  items.forEach(t => {
+    const [, m, d] = t.startDate.split("-").map(Number);
+    const it = document.createElement("div"); it.className = "ap-item";
+    it.innerHTML = `<div class="ap-head">${iconSvg(t.icon)}<div><b>${escapeHtml(t.title)}</b><small>${escapeHtml(t.by || "對方")} ・ ${m}月${d}日${t.allDay ? "" : " ・ 截止 " + (t.endTime || "")}</small></div></div>`;
+    it.appendChild(approvalControls(t, () => { if (pendingForMe().length) renderApproveList(); else closeApprove(); }));
+    list.appendChild(it);
+  });
+}
+document.getElementById("approveBtn").onclick = () => { renderApproveList(); document.getElementById("approveOverlay").classList.add("show"); scrollSheetTop("approveOverlay"); };
+const closeApprove = () => document.getElementById("approveOverlay").classList.remove("show");
+document.getElementById("approveCloseBtn").onclick = closeApprove;
+document.getElementById("approveOverlay").onclick = e => { if (e.target.id === "approveOverlay") closeApprove(); };
+
+/* ---- 表單入面嘅任務狀態 ---- */
+function renderTaskBox(inst) {
+  const box = document.getElementById("taskStatusBox");
+  box.classList.remove("show"); box.innerHTML = "";
+  if (!taskMode || !inst || (inst._base || inst).kind !== "task") return;
+  const st = taskStatus(inst), base = inst._base || inst, mine = isMineItem(base), pr = taskPrice(base);
+  const [, m, d] = occOf(inst).split("-").map(Number);
+  const label = { todo: ["#F6B93B", `${m}月${d}日 ・ 未完成`], done: ["#0ca30c", `${m}月${d}日 ・ 已交`], failed: ["#C0392B", `${m}月${d}日 ・ 時間已過,未能完成`] }[st];
+  box.innerHTML = `<div class="ts"><span class="dot" style="background:${label[0]}"></span>${label[1]}${mine ? "" : ` ・ ${escapeHtml(base.by || "對方")}嘅任務`}</div>`;
+  if (!mine) {
+    if (shareCfg.on && isOneTime(base) && (!base.approval || base.approval.status === "pending")) box.appendChild(approvalControls(base, () => { closeModal(); }));
+    else box.insertAdjacentHTML("beforeend", `<div class="pr-note" style="font-size:12px;color:#888">價錢:${priceBadge(base)} ・ 只可以由${escapeHtml(base.by || "對方")}自己交任務</div>`);
+    box.classList.add("show"); return;
+  }
+  const b = document.createElement("button");
+  if (st === "todo") { b.className = "do"; b.innerHTML = pr != null ? `✓ 交任務 +${pr} ${COIN_SVG}` : `✓ 交任務(${priceBadge(base)})`; b.onclick = () => completeTask(inst); }
+  else if (st === "done") { b.className = "undo"; b.textContent = "取消交任務"; b.onclick = () => undoTask(inst); }
+  else { b.className = "locked"; b.textContent = "已過期 ・ 改遲截止時間先可以再交"; b.disabled = true; }
+  box.appendChild(b);
+  box.classList.add("show");
+}
+let taskToastTimer = null;
+function showTaskToast(msg) {
+  const t = document.getElementById("memToast");
+  document.getElementById("memToastText").textContent = msg;
+  document.getElementById("memUndoBtn").style.display = "none";
+  t.classList.add("show");
+  clearTimeout(taskToastTimer); clearTimeout(memToastTimer);
+  taskToastTimer = setTimeout(() => { t.classList.remove("show"); document.getElementById("memUndoBtn").style.display = ""; }, 2600);
+}
+function taskInstances(from, to, mineOnly) {
+  const out = [];
+  events.forEach(ev => { if (ev.kind !== "task" || (ev.shared && !shareCfg.on) || (mineOnly && !isMineItem(ev))) return; out.push(...occurrencesOf(ev, from, to)); });
+  return out;
+}
+function renderTaskBar() {
+  const bal = myBalance();
+  document.getElementById("coinBalance").textContent = bal;
+  const sb = document.getElementById("shopBalance"); if (sb) sb.textContent = bal;
+  const ab = document.getElementById("approveBtn"), n = pendingForMe().length;
+  ab.style.display = n ? "" : "none"; ab.textContent = `✍️ 審批 ${n}`;
+  if (!taskMode) return;
+  const list = taskInstances(todayKey, todayKey, true);
+  const done = list.filter(x => taskStatus(x) === "done").length;
+  document.getElementById("taskSum").textContent = list.length ? `今日 ${done}/${list.length} 完成` : "今日未有任務";
+}
+function applyTaskMode() {
+  document.body.classList.toggle("task-mode", taskMode);
+  document.getElementById("todoBtn").setAttribute("aria-label", taskMode ? "切換返行程" : "切換到任務模式");
+  document.getElementById("fabBtn").setAttribute("aria-label", taskMode ? "新增任務" : "新增行程");
+  document.querySelector("#memPanel .mem-title").textContent = taskMode ? "記憶任務" : "記憶行程";
+  renderTaskBar();
+}
+document.getElementById("todoBtn").onclick = () => {
+  taskMode = !taskMode;
+  try { localStorage.setItem(MODE_KEY, taskMode ? "task" : "event"); } catch (e) {}
+  if (memOpen) closeMem();
+  applyTaskMode(); render();
+};
+setInterval(() => { if (taskMode && document.visibilityState === "visible" && !document.querySelector(".overlay.show")) render(); }, 60000);
+
+/* ---------- 商店:獎勵只可以由對方設定 ---------- */
+let shopTab = "shop";
+const fmtT = t => { const d = new Date(t); return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const visible = it => !(it.shared && !shareCfg.on);
+function newSharedItem(o) {
+  const it = { id: newId(), startDate: todayKey, endDate: todayKey, updatedAt: Date.now(), by: shareCfg.name || "", ...o };
+  if (shareCfg.on) { it.shared = true; it.byId = shareCfg.uid; queueShare(it); }
+  events.push(it); saveEvents(); return it;
+}
+function removeItem(it) {
+  if (it.shared) queueShare({ ...it, updatedAt: Date.now() }, true);
+  events = events.filter(e => e.id !== it.id); saveEvents();
+}
+function touchItem(it) { it.updatedAt = Date.now(); if (it.shared) queueShare(it); saveEvents(); }
+function voucherRow(v, canUse) {
+  const it = document.createElement("div"); it.className = "vc-item" + (v.used ? " used" : "");
+  it.innerHTML = `<span class="em">${v.emoji || "🎁"}</span><div class="info"><b>${escapeHtml(v.title)}</b><small>${fmtT(v.t || v.updatedAt)} 兌換 ・ ${v.price} 金幣${v.used ? " ・ " + fmtT(v.used) + " 已使用" : ""}</small></div>`;
+  if (!v.used && canUse) {
+    const b = document.createElement("button"); b.textContent = "使用";
+    b.onclick = () => { if (!confirm(`而家使用「${v.title}」?`)) return; v.used = Date.now(); touchItem(v); renderShop(); };
+    it.appendChild(b);
+  }
+  return it;
+}
+function renderShop() {
+  const bal = myBalance();
+  document.getElementById("shopBalance").textContent = bal;
+  document.querySelectorAll("#shopTabs button").forEach(b => b.classList.toggle("on", b.dataset.v === shopTab));
+  const body = document.getElementById("shopBody");
+  body.innerHTML = "";
+  const rewardsAll = events.filter(e => e.kind === "reward" && visible(e));
+  if (shopTab === "shop") {
+    const list = rewardsAll.filter(r => !isMineItem(r));
+    if (!list.length) { body.innerHTML = `<div class="shop-empty">未有獎勵可以兌換<br>${shareCfg.on ? "要等對方幫你設定獎勵" : "要開共享日曆,等對方幫你設定獎勵"}</div>`; return; }
+    const g = document.createElement("div"); g.className = "shop-grid";
+    list.forEach(r => {
+      const c = document.createElement("div"); c.className = "rw-card";
+      c.innerHTML = `<span class="em">${r.emoji}</span><span class="nm">${escapeHtml(r.title)}</span><span class="pr">${COIN_SVG}${r.price}</span><small style="font-size:11px;color:#aaa">${escapeHtml(r.by || "對方")}設定</small>`;
+      const buy = document.createElement("button"); buy.className = "buy";
+      buy.textContent = bal >= r.price ? "兌換" : `仲差 ${r.price - bal}`;
+      buy.disabled = bal < r.price;
+      buy.onclick = () => {
+        if (!confirm(`用 ${r.price} 金幣兌換「${r.title}」?`)) return;
+        newSharedItem({ kind: "voucher", title: r.title, emoji: r.emoji, price: r.price, rewardBy: r.by || "", t: Date.now(), used: null });
+        shopTab = "mine"; renderShop(); renderTaskBar();
+        showTaskToast(`🎁 已兌換「${r.title}」,喺「我的券」度用`);
+      };
+      c.appendChild(buy); g.appendChild(c);
+    });
+    body.appendChild(g);
+  } else if (shopTab === "give") {
+    body.insertAdjacentHTML("beforeend", `<p class="give-note">喺度設定嘅獎勵係俾對方兌換嘅,你自己唔可以兌換。${shareCfg.on ? "" : "<br>要開共享日曆,對方先見到。"}</p>`);
+    const g = document.createElement("div"); g.className = "shop-grid";
+    rewardsAll.filter(r => isMineItem(r)).forEach(r => {
+      const c = document.createElement("div"); c.className = "rw-card";
+      c.innerHTML = `<button class="ed" aria-label="修改">✎</button><span class="em">${r.emoji}</span><span class="nm">${escapeHtml(r.title)}</span><span class="pr">${COIN_SVG}${r.price}</span>`;
+      c.querySelector(".ed").onclick = () => openRewardEditor(r);
+      g.appendChild(c);
+    });
+    const add = document.createElement("button"); add.className = "rw-add"; add.textContent = "+ 幫對方新增獎勵";
+    add.onclick = () => openRewardEditor(null);
+    g.appendChild(add); body.appendChild(g);
+    const theirs = events.filter(e => e.kind === "voucher" && visible(e) && !isMineItem(e));
+    if (theirs.length) {
+      body.insertAdjacentHTML("beforeend", `<div class="sub-title">對方兌換咗嘅獎勵券</div>`);
+      theirs.sort((x, y) => (y.t || 0) - (x.t || 0)).forEach(v => body.appendChild(voucherRow(v, false)));
+    }
+  } else if (shopTab === "mine") {
+    const mine = events.filter(e => e.kind === "voucher" && isMineItem(e)).sort((x, y) => (y.t || 0) - (x.t || 0));
+    if (!mine.length) { body.innerHTML = `<div class="shop-empty">未有獎勵券<br>交任務儲金幣,去「兌換」度換啦</div>`; return; }
+    mine.forEach(v => body.appendChild(voucherRow(v, true)));
+  } else {
+    const led = myLedger();
+    const earned = led.filter(x => x.n > 0).reduce((a, x) => a + x.n, 0), spent = -led.filter(x => x.n < 0).reduce((a, x) => a + x.n, 0);
+    body.innerHTML = `<div class="st-kpis" style="grid-template-columns:repeat(3,1fr)"><div class="st-kpi"><b>${bal}</b><span>而家有</span></div><div class="st-kpi"><b>${earned}</b><span>總共賺咗</span></div><div class="st-kpi"><b>${spent}</b><span>總共用咗</span></div></div>`;
+    if (!led.length) { body.innerHTML += `<div class="shop-empty">未有紀錄</div>`; return; }
+    led.slice(0, 300).forEach(l => body.insertAdjacentHTML("beforeend", `<div class="log-row"><span class="t">${fmtT(l.t)}</span><span class="r">${escapeHtml(l.r)}</span><span class="a ${l.n > 0 ? "plus" : l.n < 0 ? "minus" : ""}">${l.n > 0 ? "+" : ""}${l.n}</span></div>`));
+  }
+}
+document.getElementById("shopBtn").onclick = () => { shopTab = "shop"; renderShop(); document.getElementById("shopOverlay").classList.add("show"); scrollSheetTop("shopOverlay"); };
+document.getElementById("shopCloseBtn").onclick = () => document.getElementById("shopOverlay").classList.remove("show");
+document.getElementById("shopOverlay").onclick = e => { if (e.target.id === "shopOverlay") e.target.classList.remove("show"); };
+document.querySelectorAll("#shopTabs button").forEach(b => b.onclick = () => { shopTab = b.dataset.v; renderShop(); });
+const REWARD_EMOJI = ["🧋","🍰","🍦","🍣","🍜","🍕","🍫","☕","🎮","🎬","🎤","🎧","📚","🛍️","👕","👟","💆","💅","😴","🛀","🌸","🎁","✈️","🏖️","🎢","🐸","🐱","💐","💄","📱","💰","⭐"];
+let rwEditing = null, rwEmoji = "🎁";
+function openRewardEditor(r) {
+  rwEditing = r; rwEmoji = r ? r.emoji : "🎁";
+  document.getElementById("rewardTitle").textContent = r ? "修改俾對方嘅獎勵" : "幫對方新增獎勵";
+  document.getElementById("rewardName").value = r ? r.title : "";
+  document.getElementById("rewardPrice").value = r ? r.price : 50;
+  document.getElementById("rewardDelBtn").style.display = r ? "flex" : "none";
+  const g = document.getElementById("rewardEmoji"); g.innerHTML = "";
+  REWARD_EMOJI.forEach(e => { const b = document.createElement("button"); b.textContent = e; b.className = e === rwEmoji ? "on" : ""; b.onclick = () => { rwEmoji = e; g.querySelectorAll("button").forEach(x => x.classList.toggle("on", x.textContent === e)); }; g.appendChild(b); });
+  document.getElementById("rewardOverlay").classList.add("show");
+}
+const closeReward = () => document.getElementById("rewardOverlay").classList.remove("show");
+document.getElementById("rewardCloseBtn").onclick = closeReward;
+document.getElementById("rewardOverlay").onclick = e => { if (e.target.id === "rewardOverlay") closeReward(); };
+document.getElementById("rewardSaveBtn").onclick = () => {
+  const name = document.getElementById("rewardName").value.trim();
+  const price = Math.max(1, parseInt(document.getElementById("rewardPrice").value, 10) || 0);
+  if (!name) { alert("請填獎勵名稱"); return; }
+  if (rwEditing) { Object.assign(rwEditing, { title: name, price, emoji: rwEmoji }); touchItem(rwEditing); }
+  else newSharedItem({ kind: "reward", title: name, price, emoji: rwEmoji });
+  closeReward(); renderShop();
+};
+document.getElementById("rewardDelBtn").onclick = () => {
+  if (!rwEditing || !confirm(`刪除獎勵「${rwEditing.title}」?`)) return;
+  removeItem(rwEditing); closeReward(); renderShop();
+};
+
+/* ---------- 統計 ---------- */
+let statsRange = "month";
+const MISS_COLOR = () => document.documentElement.getAttribute("data-theme") === "dark" ? "#6b6a66" : "#b9b8b3";
+function renderStats() {
+  document.querySelectorAll("#statsRange button").forEach(b => b.classList.toggle("on", b.dataset.v === statsRange));
+  const t = new Date(), tk = todayKey;
+  let from, to, title;
+  if (statsRange === "week") { const s0 = new Date(t); s0.setDate(t.getDate() - t.getDay()); from = dateKey(s0.getFullYear(), s0.getMonth(), s0.getDate()); to = addDaysKey(from, 6); title = "今個星期每日"; }
+  else if (statsRange === "month") { from = dateKey(t.getFullYear(), t.getMonth(), 1); to = dateKey(t.getFullYear(), t.getMonth(), new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate()); title = `${t.getMonth() + 1}月每日`; }
+  else {
+    const ks = events.filter(e => e.kind === "task" && isMineItem(e)).map(e => e.startDate).sort();
+    from = ks[0] || tk; to = tk; title = "每個月";
+  }
+  const insts = taskInstances(from, to, true).map(x => ({ x, st: taskStatus(x), k: occOf(x) })).filter(o => o.k >= from && o.k <= to);
+  const done = insts.filter(o => o.st === "done").length, failed = insts.filter(o => o.st === "failed").length, todo = insts.filter(o => o.st === "todo").length;
+  const decided = done + failed, rate = decided ? Math.round(done / decided * 100) : 0;
+  const coins = insts.filter(o => o.st === "done").reduce((a, o) => { const bt = o.x._base || o.x; return a + entryCoins(bt, bt.done[o.k]); }, 0);
+  // 長條:每日(星期/月)或每月(全部)
+  const buckets = [];
+  if (statsRange === "all") {
+    let [y, m] = from.split("-").map(Number); const [ty, tm] = to.split("-").map(Number);
+    while (y < ty || (y === ty && m <= tm)) { const ym = `${y}-${pad(m)}`; buckets.push({ id: ym, lbl: `${m}月`, full: `${y}年${m}月` }); m++; if (m > 12) { m = 1; y++; } }
+    if (buckets.length > 12) buckets.splice(0, buckets.length - 12);
+  } else {
+    for (let k = from; k <= to; k = addDaysKey(k, 1)) { const [, m, d] = k.split("-").map(Number); buckets.push({ id: k, lbl: statsRange === "week" ? "日一二三四五六"[parseKey(k).getDay()] : String(d), full: `${m}月${d}日` }); }
+  }
+  buckets.forEach(b => {
+    const mine = insts.filter(o => statsRange === "all" ? o.k.startsWith(b.id) : o.k === b.id);
+    b.done = mine.filter(o => o.st === "done").length; b.failed = mine.filter(o => o.st === "failed").length;
+  });
+  const max = Math.max(1, ...buckets.map(b => b.done + b.failed));
+  const W = 340, H = 150, padL = 22, padB = 18, padT = 8, cw = (W - padL) / buckets.length, bw = Math.max(4, Math.min(22, cw * 0.62));
+  const yv = v => padT + (H - padT - padB) * (1 - v / max);
+  const step = max <= 4 ? 1 : Math.ceil(max / 4);
+  let grid = "";
+  for (let v = 0; v <= max; v += step) grid += `<line x1="${padL}" x2="${W}" y1="${yv(v)}" y2="${yv(v)}" stroke="var(--line)" stroke-width="1"/><text x="${padL - 5}" y="${yv(v) + 3.5}" font-size="9" fill="#999" text-anchor="end">${v}</text>`;
+  let bars = "";
+  buckets.forEach((b, i) => {
+    const cx = padL + cw * i + cw / 2, x = cx - bw / 2, y0 = yv(0);
+    const hd = y0 - yv(b.done), hf = y0 - yv(b.failed);
+    if (b.done) bars += `<path d="M${x} ${y0}V${y0 - hd + Math.min(4, hd)}q0 -${Math.min(4, hd)} ${Math.min(4, bw / 2)} -${Math.min(4, hd)}H${x + bw - Math.min(4, bw / 2)}q${Math.min(4, bw / 2)} 0 ${Math.min(4, bw / 2)} ${Math.min(4, hd)}V${y0}z" fill="#0ca30c"/>`;
+    if (b.failed) { const top = y0 - hd - (b.done ? 2 : 0); const h = Math.max(1, hf - (b.done ? 2 : 0)); const r = Math.min(4, h, bw / 2);
+      bars += `<path d="M${x} ${top}V${top - h + r}q0 -${r} ${r} -${r}H${x + bw - r}q${r} 0 ${r} ${r}V${top}z" fill="${MISS_COLOR()}"/>`; }
+    const show = buckets.length <= 12 || i % Math.ceil(buckets.length / 10) === 0 || b.id === tk;
+    if (show) bars += `<text x="${cx}" y="${H - 4}" font-size="9" fill="${b.id === tk ? "#E4002B" : "#999"}" font-weight="${b.id === tk ? 800 : 400}" text-anchor="middle">${b.lbl}</text>`;
+    bars += `<rect class="hitb" data-i="${i}" x="${padL + cw * i}" y="${padT}" width="${cw}" height="${H - padT - padB}" fill="transparent"/>`;
+  });
+  // 按圖案統計
+  const byIcon = {};
+  insts.forEach(o => { const id = (o.x._base || o.x).icon || ""; const r = byIcon[id] || (byIcon[id] = { done: 0, failed: 0, todo: 0 }); r[o.st]++; });
+  const rows = Object.entries(byIcon).sort((a, b) => (b[1].done + b[1].failed + b[1].todo) - (a[1].done + a[1].failed + a[1].todo));
+  const body = document.getElementById("statsBody");
+  body.innerHTML = `
+    <div class="st-kpis">
+      <div class="st-kpi"><b style="color:#0A8A0A">${done}</b><span>✓ 完成</span></div>
+      <div class="st-kpi"><b style="color:#C0392B">${failed}</b><span>✕ 未能完成</span></div>
+      <div class="st-kpi"><b>${rate}<small style="font-size:12px">%</small></b><span>完成率</span></div>
+      <div class="st-kpi"><b style="color:#B9770E">${coins}</b><span>賺到金幣</span></div>
+    </div>
+    ${todo ? `<p class="set-note" style="margin:-6px 0 12px">仲有 ${todo} 個任務未到時間</p>` : ""}
+    <div class="st-title">${title}</div>
+    <div class="st-legend"><span><i style="background:#0ca30c"></i>完成</span><span><i style="background:${MISS_COLOR()}"></i>未能完成</span></div>
+    <div class="st-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}完成同未能完成數量">${grid}${bars}</svg><div class="st-tip" id="stTip"></div></div>
+    <div class="st-title" style="margin-top:16px">按圖案統計</div>
+    ${rows.length ? `<table class="st-table"><tr><th>圖案</th><th>完成</th><th>未能完成</th><th>完成率</th></tr>${rows.map(([id, r]) => {
+      const dec = r.done + r.failed, rt = dec ? Math.round(r.done / dec * 100) : null, lbl = (ICON_MAP[id] || {}).label || "冇圖案";
+      return `<tr><td><span class="ic">${iconSvg(id)}${lbl}</span></td><td>${r.done}</td><td>${r.failed}</td><td>${rt === null ? "—" : `<span class="st-rate" style="width:${Math.max(2, rt * .4)}px"></span>${rt}%`}</td></tr>`;
+    }).join("")}</table>` : `<div class="shop-empty">呢段時間未有任務</div>`}`;
+  const tip = document.getElementById("stTip"), svg = body.querySelector(".st-chart svg");
+  body.querySelectorAll(".hitb").forEach(r => {
+    const showTip = () => {
+      const b = buckets[+r.dataset.i], box = svg.getBoundingClientRect(), sc = box.width / W;
+      tip.innerHTML = `${b.full}<br>✓ 完成 ${b.done} ・ ✕ 未能完成 ${b.failed}`;
+      tip.style.left = ((padL + cw * (+r.dataset.i) + cw / 2) * sc) + "px";
+      tip.style.top = (yv(b.done + b.failed) * sc - 6) + "px";
+      tip.style.display = "block";
+    };
+    r.addEventListener("pointerenter", showTip); r.addEventListener("pointerdown", showTip);
+    r.addEventListener("pointerleave", () => { tip.style.display = "none"; });
+  });
+}
+document.getElementById("statsBtn").onclick = () => { renderStats(); document.getElementById("statsOverlay").classList.add("show"); scrollSheetTop("statsOverlay"); };
+document.getElementById("statsCloseBtn").onclick = () => document.getElementById("statsOverlay").classList.remove("show");
+document.getElementById("statsOverlay").onclick = e => { if (e.target.id === "statsOverlay") e.target.classList.remove("show"); };
+document.querySelectorAll("#statsRange button").forEach(b => b.onclick = () => { statsRange = b.dataset.v; renderStats(); });
+{ const _r = render; render = function () { _r(); renderTaskBar(); }; }
+applyTaskMode();
 
 render();
 refreshOfficialHolidays();
